@@ -55,7 +55,7 @@ public class Messages {
 	private static String restoreExperienceLevel;
 	
     public void setMessages(FileConfiguration config) {       	
-    	pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "Inventory Rollback" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
+    	pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollback" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
     	reload = convertColourCodes(config.getString("messages.reload"));
     	noPermission = convertColourCodes(config.getString("messages.noPermission"));
     	error = convertColourCodes(config.getString("messages.error"));

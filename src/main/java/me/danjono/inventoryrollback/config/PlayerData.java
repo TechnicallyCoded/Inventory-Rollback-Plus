@@ -21,7 +21,7 @@ public class PlayerData {
 	public PlayerData(Player player, String logType) {
 		this.logType = logType;
 		this.uuid = player.getUniqueId();		
-		this.folderLocation = ConfigFile.folderLocation;
+		this.folderLocation = new File(ConfigFile.folderLocation, "saves/");
 		
 		findPlayerFile();
 		findPlayerData();
@@ -30,7 +30,7 @@ public class PlayerData {
 	public PlayerData(OfflinePlayer player, String logType) {
 		this.logType = logType;
 		this.uuid = player.getUniqueId();	
-		this.folderLocation = ConfigFile.folderLocation;
+		this.folderLocation = new File(ConfigFile.folderLocation, "saves/");
 		
 		findPlayerFile();
 		findPlayerData();
@@ -39,13 +39,15 @@ public class PlayerData {
 	public PlayerData(UUID uuid, String logType) {
 		this.logType = logType;
 		this.uuid = uuid;	
-		this.folderLocation = ConfigFile.folderLocation;
+		this.folderLocation = new File(ConfigFile.folderLocation, "saves/");
 		
 		findPlayerFile();
 		findPlayerData();
 	}
 		
-	private boolean findPlayerFile() {		
+	private boolean findPlayerFile() {	
+		System.out.println(new File(folderLocation, "joins/" + uuid + ".yml"));
+		
 		if (logType.equalsIgnoreCase("JOIN")) {
 			this.playerFile = new File(folderLocation, "joins/" + uuid + ".yml");
 		} else if (logType.equalsIgnoreCase("QUIT")) {
