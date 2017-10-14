@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		<modelVersion>4.0.0</modelVersion>
+		<groupId>InventoryRollback</groupId>
+		<artifactId>InventoryRollback</artifactId>
+		<version>1.1b</version>
+		<name>InventoryRollback</name>
+
+		<organization>
+				<url>http://twitter.com/danjono</url>
+				<name>danjono</name>
+		</organization>
+
+		<properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		</properties>
+
+		<repositories>
+				<repository>
+						<id>spigot-repo</id>
+						<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+				</repository>
+				<repository>
+						<id>bstats-repo</id>
+						<url>http://repo.bstats.org/content/repositories/releases/</url>
+				</repository>
+		</repositories>
+
+		<dependencies>
+				<!-- Spigot API -->
+				<dependency>
+						<groupId>org.spigotmc</groupId>
+						<artifactId>spigot-api</artifactId>
+						<version>1.8-R0.1-SNAPSHOT</version>
+						<scope>provided</scope>
+				</dependency>
+
+				<!-- bStats API -->
+				<dependency>
+						<groupId>org.bstats</groupId>
+						<artifactId>bstats-bukkit</artifactId>
+						<version>1.2</version>
+				</dependency>
+		</dependencies>
+
+		<build>
+				<finalName>${project.name}-${project.version}</finalName>
+				<resources>
+						<resource>
+								<directory>${project.basedir}/src/main/resources</directory>
+								<includes>
+										<include>**</include>
+								</includes>
+								<filtering>true</filtering>
+						</resource>
+				</resources>
+				<plugins>
+						<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-compiler-plugin</artifactId>
+								<version>3.1</version>
+								<configuration>
+										<source>1.7</source>
+										<target>1.7</target>
+										<showWarnings>true</showWarnings>
+										<showDeprecation>true</showDeprecation>
+								</configuration>
+						</plugin>
+						<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-shade-plugin</artifactId>
+								<version>2.4</version>
+								<configuration>
+										<artifactSet>
+												<includes>
+														<include>org.bstats:*</include>
+												</includes>
+										</artifactSet>
+										<relocations>
+												<relocation>
+														<pattern>org.bstats</pattern>
+														<shadedPattern>me.danjono.inventoryrollback</shadedPattern>
+												</relocation>
+										</relocations>
+								</configuration>
+								<executions>
+										<execution>
+												<phase>package</phase>
+												<goals>
+														<goal>shade</goal>
+												</goals>
+										</execution>
+								</executions>
+						</plugin>
+
+				</plugins>
+		</build>
+		<description>Allows server moderators to restore player items and data from backups.</description>
+</project>

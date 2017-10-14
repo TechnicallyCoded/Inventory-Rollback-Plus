@@ -1,0 +1,41 @@
+name: ${project.name}
+main: me.danjono.inventoryrollback.InventoryRollback
+version: ${project.version}
+description: ${project.description}
+author: ${project.organization.name}
+website: ${project.organization.url}
+commands:
+  inventoryrollback:
+    description: Allows you to run the command.
+    usage: /<command>
+    permission: inventoryrollback.cmd
+    aliases: ir
+permissions:
+  inventoryrollback.*:
+    description: Gives access to all InventoryRollback commands.
+    children:
+      inventoryrollback.cmd: true
+      inventoryrollback.deathsave: true
+      inventoryrollback.joinsave: true
+      inventoryrollback.leavesave: true
+      inventoryrollback.worldchangesave: true
+      inventoryrollback.restore: true
+    default: op
+  inventoryrollback.cmd:
+    description: Allows InventoryRollback commands to work.
+    default: true
+  inventoryrollback.deathsave:
+    description: Player inventories will be saved when they die.
+    default: true
+  inventoryrollback.joinsave:
+    description: Player inventories will be saved when the join.
+    default: true
+  inventoryrollback.leavesave:
+    description: Player inventories will be saved when they leave.
+    default: true
+  inventoryrollback.worldchangesave:
+    description: Player inventories will be saved when they change worlds.
+    default: true
+  inventoryrollback.restore:
+    description: Grants access to perform player rollbacks.
+    default: op
