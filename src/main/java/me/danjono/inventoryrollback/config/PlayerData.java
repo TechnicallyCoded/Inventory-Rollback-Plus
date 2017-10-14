@@ -45,9 +45,7 @@ public class PlayerData {
 		findPlayerData();
 	}
 		
-	private boolean findPlayerFile() {	
-		System.out.println(new File(folderLocation, "joins/" + uuid + ".yml"));
-		
+	private boolean findPlayerFile() {			
 		if (logType.equalsIgnoreCase("JOIN")) {
 			this.playerFile = new File(folderLocation, "joins/" + uuid + ".yml");
 		} else if (logType.equalsIgnoreCase("QUIT")) {
