@@ -3,7 +3,7 @@
 		<modelVersion>4.0.0</modelVersion>
 		<groupId>InventoryRollback</groupId>
 		<artifactId>InventoryRollback</artifactId>
-		<version>1.11b</version>
+		<version>1.12b</version>
 		<name>InventoryRollback</name>
 
 		<organization>
