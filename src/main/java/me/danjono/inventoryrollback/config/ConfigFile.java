@@ -65,6 +65,8 @@ public class ConfigFile {
 	public static String timeZone;
 	public static String timeFormat;
 	
+	public static boolean updateChecker;
+	
 	public void setVariables() {		
 		String folder = config.getString("folderLocation");
 
@@ -93,6 +95,8 @@ public class ConfigFile {
 		
 		timeZone = config.getString("icons.rollbackMenu.time.timeZone");
 		timeFormat = config.getString("icons.rollbackMenu.time.timeFormat");
+		
+		updateChecker = config.getBoolean("updateChecker", true);
 		
 		new Messages().setMessages(config); 	
 		new Sounds().setSounds(config);

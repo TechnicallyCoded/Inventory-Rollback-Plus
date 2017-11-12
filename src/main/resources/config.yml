@@ -50,6 +50,9 @@ icons:
     time:
       timeZone: 'UTC'
       timeFormat: 'dd/MM/yyyy HH:mm:ss a'
+      
+## Check for updates on Spigot when the server is started
+updateChecker: true
 
 ## You can change the text that is displayed in chat and the GUI here.
 messages:

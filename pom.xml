@@ -3,7 +3,7 @@
 		<modelVersion>4.0.0</modelVersion>
 		<groupId>InventoryRollback</groupId>
 		<artifactId>InventoryRollback</artifactId>
-		<version>1.12b</version>
+		<version>1.12</version>
 		<name>InventoryRollback</name>
 
 		<organization>
@@ -60,8 +60,8 @@
 								<artifactId>maven-compiler-plugin</artifactId>
 								<version>3.1</version>
 								<configuration>
-										<source>1.7</source>
-										<target>1.7</target>
+										<source>1.8</source>
+										<target>1.8</target>
 										<showWarnings>true</showWarnings>
 										<showDeprecation>true</showDeprecation>
 								</configuration>

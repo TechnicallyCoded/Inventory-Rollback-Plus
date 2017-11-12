@@ -25,7 +25,7 @@ import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBT;
 
 public class ClickGUI implements Listener {
-
+		
 	@EventHandler
 	private void onMainMenuClick(InventoryClickEvent e) {
 		if (!e.getView().getTopInventory().getName().equals(InventoryNames.mainMenu))
