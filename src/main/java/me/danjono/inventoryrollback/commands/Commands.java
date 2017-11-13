@@ -62,8 +62,10 @@ public class Commands implements CommandExecutor {
 						break;
 					} case "forcebackup": {
 						if (sender.hasPermission("inventoryrollback.forcebackup")) {
-							if (args.length == 1 || args.length > 2)
+							if (args.length == 1 || args.length > 2) {
+								sender.sendMessage(Messages.pluginName + Messages.error);
 								break;
+							}
 							
 							@SuppressWarnings("deprecation")
 							OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
@@ -71,11 +73,16 @@ public class Commands implements CommandExecutor {
 								sender.sendMessage(Messages.pluginName + messages.neverOnServer(player.getName()));
 								break;
 							} else if (!player.isOnline()) {
-								//Player is offline
+								sender.sendMessage(Messages.pluginName + messages.notOnline(player.getName()));
 								break;
 							}
 														
-							new SaveInventory().createSave((Player) player, "FORCE", null);
+							if (new SaveInventory().createSave((Player) player, "FORCE", null)) {
+								sender.sendMessage(Messages.pluginName + messages.forceSaved(player.getName()));
+							} else {
+								sender.sendMessage(Messages.pluginName + messages.notForcedSaved(player.getName()));
+							}
+							break;
 						} else {
 							sender.sendMessage(Messages.pluginName + Messages.noPermission);
 						}
@@ -102,7 +109,7 @@ public class Commands implements CommandExecutor {
 						break;
 					} case "reload": { 
 						if (sender.hasPermission("InventoryRollback.reload")) {										
-							new InventoryRollback().startupTasks();
+							InventoryRollback.startupTasks();
 	
 							sender.sendMessage(Messages.pluginName + Messages.reloadMessage);
 						} else {

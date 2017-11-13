@@ -16,6 +16,9 @@ public class Messages extends ConfigFile {
 	public static String playerOnly;
 	
 	private static String neverOnServer;
+	private static String notOnline;
+	private static String forceSaved;
+	private static String notForcedSaved;
 	
 	private static String enderChestNotEmpty;
 	private static String enderChestRestored;
@@ -70,18 +73,21 @@ public class Messages extends ConfigFile {
 		playerOnly = convertColourCodes((String) c.getDefaultValue("messages.playerOnly", "&cCommand can only be run by a player"));
 		
 		neverOnServer = convertColourCodes((String) c.getDefaultValue("messages.neverOnServer", "%NAME% has never played on this server"));
+		notOnline = convertColourCodes((String) c.getDefaultValue("messages.notOnline", "%NAME% is not currently online"));
+		forceSaved = convertColourCodes((String) c.getDefaultValue("messages.forceSaved", "%NAME%'s inventory has been force saved"));
+		notForcedSaved = convertColourCodes((String) c.getDefaultValue("messages.notForcedSaved", "There was an issue with saving %NAME%'s inventory"));
 		
 		enderChestNotEmpty = convertColourCodes((String) c.getDefaultValue("messages.enderChestNotEmpty", "Cannot rollback %NAME%'s ender chest yet as they have items in it that would be lost. Get the player to remove the items first from their Ender Chest."));
-		enderChestRestored = convertColourCodes((String) c.getDefaultValue("messages.enderChestRestored", "%NAME%''s ender chest has been restored."));
+		enderChestRestored = convertColourCodes((String) c.getDefaultValue("messages.enderChestRestored", "%NAME%'s ender chest has been restored."));
 		enderChestRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.enderChestRestoredPlayer", "Your ender chest has been restored by %NAME%"));
 		enderChestNotOnline = convertColourCodes((String) c.getDefaultValue("messages.enderChestNotOnline", "%NAME% is not online to have their ender chest set."));
-		healthRestored = convertColourCodes((String) c.getDefaultValue("messages.healthRestored", "%NAME%''s health has been restored."));
+		healthRestored = convertColourCodes((String) c.getDefaultValue("messages.healthRestored", "%NAME%'s health has been restored."));
 		healthRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.healthRestoredPlayer", "Your health has been restored by %NAME%"));
 		healthNotOnline = convertColourCodes((String) c.getDefaultValue("messages.healthNotOnline", "%NAME% is not online to have their health set."));
-		hungerRestored = convertColourCodes((String) c.getDefaultValue("messages.hungerRestored", "%NAME%''s hunger has been restored."));
+		hungerRestored = convertColourCodes((String) c.getDefaultValue("messages.hungerRestored", "%NAME%'s hunger has been restored."));
 		hungerRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.hungerRestoredPlayer", "Your hunger has been restored by %NAME%"));
 		hungerNotOnline = convertColourCodes((String) c.getDefaultValue("messages.hungerNotOnline", "%NAME% is not online to have their hunger set."));
-		experienceRestored = convertColourCodes((String) c.getDefaultValue("messages.experienceRestored", "%NAME%''s XP has been set to level %XP%"));
+		experienceRestored = convertColourCodes((String) c.getDefaultValue("messages.experienceRestored", "%NAME%'s XP has been set to level %XP%"));
 		experienceRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.experienceRestoredPlayer", "Your XP has been restored to level %XP% by %NAME%"));
 		experienceNotOnline = convertColourCodes((String) c.getDefaultValue("messages.experienceNotOnline", "%NAME% is not online to have their XP set."));
 		
@@ -116,6 +122,18 @@ public class Messages extends ConfigFile {
     
     public String neverOnServer(String name) {
     	return neverOnServer.replaceAll("%NAME%", name);
+    }
+    
+    public String notOnline(String name) {
+    	return notOnline.replaceAll("%NAME%", name);
+    }
+    
+    public String forceSaved(String name) {
+    	return forceSaved.replaceAll("%NAME%", name);
+    }
+    
+    public String notForcedSaved(String name) {
+    	return notForcedSaved.replaceAll("%NAME%", name);
     }
     
     public String enderChestNotEmpty(String name) {

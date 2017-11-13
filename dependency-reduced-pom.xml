@@ -4,7 +4,7 @@
   <groupId>InventoryRollback</groupId>
   <artifactId>InventoryRollback</artifactId>
   <name>InventoryRollback</name>
-  <version>1.12</version>
+  <version>1.2b</version>
   <description>Allows server moderators to restore player items and data from backups.</description>
   <organization>
     <name>danjono</name>

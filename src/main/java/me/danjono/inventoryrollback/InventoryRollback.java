@@ -76,13 +76,13 @@ public class InventoryRollback extends JavaPlugin {
 		return false;
 	}
 
-	public void startupTasks() {
+	public static void startupTasks() {
 		ConfigFile config = new ConfigFile();
 
 		config.setVariables();
 		config.createStorageFolders();		
 		
-		checkUpdate(ConfigFile.updateChecker);
+		instance.checkUpdate(ConfigFile.updateChecker);
 	}
 
 	@SuppressWarnings("unused")

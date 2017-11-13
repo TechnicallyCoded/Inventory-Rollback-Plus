@@ -110,9 +110,7 @@ public class ConfigFile {
 		
 		if (saveChanges) {
 			saveConfig();
-			System.out.println("Changes saved");
-		} else {
-			System.out.println("No changes detected");
+			saveChanges = false;
 		}
 	}
 	
