@@ -27,7 +27,7 @@ public class EventLogs implements Listener {
 	@EventHandler
 	private void playerQuit(PlayerQuitEvent e) {
 		if (!ConfigFile.enabled) return;
-		
+				
 		Player player = e.getPlayer();
 		
 		if (player.hasPermission("inventoryrollback.leavesave")) {				

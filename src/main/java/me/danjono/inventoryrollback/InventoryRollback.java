@@ -95,9 +95,8 @@ public class InventoryRollback extends JavaPlugin {
 			return;
 		
 		log.info(String.format("[%s] " + "Checking for updates...", getDescription().getName()));
-		
-		final UpdateChecker updater = new UpdateChecker(instance, 48074, enabled);
-		final UpdateResult result = updater.getResult();
+
+		final UpdateResult result = new UpdateChecker(instance, 48074, enabled).getResult();
 				
 		switch (result) {
 			case FAIL_SPIGOT: {

@@ -7,6 +7,7 @@ maxSaves:
   quit: 10
   death: 50
   worldChange: 10
+  force: 10
 
 ## Set folder path where the data is saved to. Set as "DEFAULT" to keep it in the plugin folder.
 folderLocation: 'DEFAULT'  
@@ -46,6 +47,9 @@ icons:
     worldChangeIcon:
       item: 'COMPASS'
       name: '&eWorld Changes'
+    forceSaveIcon:
+      item: 'DIAMOND'
+      name: '&bForce Saves'
   rollbackMenu:
     time:
       timeZone: 'UTC'

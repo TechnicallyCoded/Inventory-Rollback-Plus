@@ -11,6 +11,7 @@ import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.config.Messages;
 import me.danjono.inventoryrollback.gui.MainMenu;
+import me.danjono.inventoryrollback.inventory.SaveInventory;
 
 public class Commands implements CommandExecutor {
 
@@ -28,7 +29,7 @@ public class Commands implements CommandExecutor {
 			} else {
 				switch (args[0]) {
 					case "restore": {
-						if(sender instanceof Player) {
+						if (sender instanceof Player) {
 							if (sender.hasPermission("inventoryrollback.restore")) {
 								if (!ConfigFile.enabled) {
 									sender.sendMessage(Messages.pluginName + Messages.disabledMessage);
@@ -45,6 +46,7 @@ public class Commands implements CommandExecutor {
 	
 									if (!rollbackPlayer.hasPlayedBefore()) {
 										sender.sendMessage(Messages.pluginName + messages.neverOnServer(rollbackPlayer.getName()));
+										break;
 									}
 	
 									staff.openInventory(new MainMenu(staff, rollbackPlayer).getMenu());
@@ -58,7 +60,27 @@ public class Commands implements CommandExecutor {
 							sender.sendMessage(Messages.pluginName + Messages.playerOnly);
 						}
 						break;
-					} case "enable": { 
+					} case "forcebackup": {
+						if (sender.hasPermission("inventoryrollback.forcebackup")) {
+							if (args.length == 1 || args.length > 2)
+								break;
+							
+							@SuppressWarnings("deprecation")
+							OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+							if (!player.hasPlayedBefore()) {
+								sender.sendMessage(Messages.pluginName + messages.neverOnServer(player.getName()));
+								break;
+							} else if (!player.isOnline()) {
+								//Player is offline
+								break;
+							}
+														
+							new SaveInventory().createSave((Player) player, "FORCE", null);
+						} else {
+							sender.sendMessage(Messages.pluginName + Messages.noPermission);
+						}
+						break;
+					} case "enable": {
 						if (sender.hasPermission("InventoryRollback.enable")) {
 							config.setEnabled(true);
 							config.saveConfig();
@@ -74,7 +96,6 @@ public class Commands implements CommandExecutor {
 							config.saveConfig();
 	
 							sender.sendMessage(Messages.pluginName + Messages.disabledMessage);
-	
 						} else {
 							sender.sendMessage(Messages.pluginName + Messages.noPermission);
 						}

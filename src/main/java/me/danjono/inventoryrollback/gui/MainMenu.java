@@ -34,6 +34,7 @@ public class MainMenu {
 		File quitsFile = new PlayerData(player, "QUIT").getFile();
 		File deathsFile = new PlayerData(player, "DEATH").getFile();
 		File worldChangeFile = new PlayerData(player, "WORLDCHANGE").getFile();
+		File forceSaveFile = new PlayerData(player, "FORCE").getFile();
 
 		mainMenu.setItem(0, buttons.playerHead(player.getName(), null));
 
@@ -56,6 +57,11 @@ public class MainMenu {
 
 		if (worldChangeFile.exists()) {
 			mainMenu.setItem(position, buttons.createLogTypeButton(new ItemStack(Material.getMaterial(ConfigFile.worldChangeIcon)), uuid, Messages.worldChangeIconName, "WORLDCHANGE", null));
+			position++;
+		}
+		
+		if (forceSaveFile.exists()) {
+			mainMenu.setItem(position, buttons.createLogTypeButton(new ItemStack(Material.getMaterial(ConfigFile.forceSaveIcon)), uuid, Messages.forceSaveIconName, "FORCE", null));
 			position++;
 		}
 

@@ -6,7 +6,7 @@ author: ${project.organization.name}
 website: ${project.organization.url}
 commands:
   inventoryrollback:
-    description: Allows you to run the command.
+    description: ${project.description}
     usage: /<command>
     permission: inventoryrollback.cmd
     aliases: ir
@@ -20,6 +20,7 @@ permissions:
       inventoryrollback.leavesave: true
       inventoryrollback.worldchangesave: true
       inventoryrollback.restore: true
+      inventoryrollback.forcebackup: true
     default: op
   inventoryrollback.cmd:
     description: Allows InventoryRollback commands to work.
@@ -37,5 +38,8 @@ permissions:
     description: Player inventories will be saved when they change worlds.
     default: true
   inventoryrollback.restore:
-    description: Grants access to perform player rollbacks.
+    description: Grants access to perform player roll backs.
+    default: op
+  inventoryrollback.forcebackup:
+    description: Forces a backup for an online player. 
     default: op

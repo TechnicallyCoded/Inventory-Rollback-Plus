@@ -54,8 +54,10 @@ public class PlayerData {
 			this.playerFile = new File(folderLocation, "deaths/" + uuid + ".yml");
 		} else if (logType.equalsIgnoreCase("WORLDCHANGE")) {
 			this.playerFile = new File(folderLocation, "worldChanges/" + uuid + ".yml");
+		} else if (logType.equalsIgnoreCase("FORCE")) {
+			this.playerFile = new File(folderLocation, "force/" + uuid + ".yml");
 		}
-		
+				
 		if (this.playerFile == null)
 			return false;
 			
@@ -99,7 +101,9 @@ public class PlayerData {
 			return ConfigFile.maxSavesDeath;
 		} else if (logType.equalsIgnoreCase("WORLDCHANGE")) {
 			return ConfigFile.maxSavesWorldChange;
-		} else {
+		} else if (logType.equalsIgnoreCase("FORCE")) {
+			return ConfigFile.maxSavesForce;
+		}  else {
 			return 0;
 		}
 	}

@@ -32,7 +32,7 @@ public class UpdateChecker {
    
     public UpdateChecker(JavaPlugin plugin, Integer resourceId, boolean enabled) {
         this.plugin = plugin;      
-        this.currentVersion = this.plugin.getDescription().getVersion();
+        this.currentVersion = regex(this.plugin.getDescription().getVersion());
        
         if (!enabled) {
             result = UpdateResult.DISABLED;
@@ -59,7 +59,7 @@ public class UpdateChecker {
 		}
         
         try {
-			availableVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+			availableVersion = regex(new BufferedReader(new InputStreamReader(con.getInputStream())).readLine());
 		} catch (IOException e) {
 			result = UpdateResult.FAIL_SPIGOT;
 			return;
@@ -85,7 +85,11 @@ public class UpdateChecker {
     }
    
     public String getVersion() {
-        return this.availableVersion;
+        return regex(this.availableVersion);
+    }
+    
+    private String regex(String version) {
+    	return version.replaceAll("[^0-9.]", "");
     }
 	
 }

@@ -18,7 +18,7 @@ import me.danjono.inventoryrollback.config.PlayerData;
 
 public class SaveInventory {
 
-	public void createSave(Player player, String logType, String deathReason) {
+	public boolean createSave(Player player, String logType, String saveReason) {
 		PlayerData data = new PlayerData(player, logType);
 		FileConfiguration inventoryData = data.getData();
 		
@@ -64,12 +64,15 @@ public class SaveInventory {
 		inventoryData.set("data." + time + ".location.z", (int) player.getLocation().getZ());
 		inventoryData.set("data." + time + ".logType", logType);
 
-		if (deathReason != null)
-			inventoryData.set("data." + time + ".deathReason", deathReason);
+		if (saveReason != null)
+			inventoryData.set("data." + time + ".deathReason", saveReason);
 		
 		inventoryData.set("saves", saves + 1);
 
-		data.saveData();
+		if (data.saveData())
+			return true;
+		
+		return false;
 	}
 		
 	//Conversion to Base64 code courtesy of github.com/JustRayz	

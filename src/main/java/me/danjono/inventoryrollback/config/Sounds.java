@@ -3,7 +3,7 @@ package me.danjono.inventoryrollback.config;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Sounds {
+public class Sounds extends ConfigFile {
 
 	public static Sound enderChest;
 	public static boolean enderChestEnabled;
@@ -21,36 +21,38 @@ public class Sounds {
 	public static boolean experienceEnabled;
 	public static float experienceVolume;
 
-	public void setSounds(FileConfiguration config) {		
+	public void setSounds(FileConfiguration config) {
+		ConfigFile c = new ConfigFile(config);
+		
 		//If sounds are invalid they will be disabled.
 		try {
-			enderChest = Sound.valueOf(config.getString("sounds.enderChest.sound"));
-			enderChestEnabled = config.getBoolean("sounds.enderChest.enabled");
-			enderChestVolume = Float.parseFloat(config.getString("sounds.enderChest.volume"));
+			enderChest = Sound.valueOf((String) c.getDefaultValue("sounds.enderChest.sound", "ENTITY_ENDERDRAGON_FLAP"));
+			enderChestEnabled = (boolean) c.getDefaultValue("sounds.enderChest.enabled", true);
+			enderChestVolume = ((Double) c.getDefaultValue("sounds.enderChest.volume", 0.5)).floatValue();
 		} catch (IllegalArgumentException e) {
 			enderChestEnabled = false;
 		}
 
 		try {
-			food = Sound.valueOf(config.getString("sounds.food.sound"));
-			foodEnabled = config.getBoolean("sounds.food.enabled");
-			foodVolume = Float.parseFloat(config.getString("sounds.food.volume"));
+			food = Sound.valueOf((String) c.getDefaultValue("sounds.food.sound", "ENTITY_GENERIC_EAT"));
+			foodEnabled = (boolean) c.getDefaultValue("sounds.food.enabled", true);
+			foodVolume = ((Double) c.getDefaultValue("sounds.food.volume", 0.5)).floatValue();
 		} catch (IllegalArgumentException e) {
 			enderChestEnabled = false;
 		}
 
 		try {
-			hunger = Sound.valueOf(config.getString("sounds.hunger.sound"));
-			hungerEnabled = config.getBoolean("sounds.hunger.enabled");
-			hungerVolume = Float.parseFloat(config.getString("sounds.hunger.volume"));
+			hunger = Sound.valueOf((String) c.getDefaultValue("sounds.hunger.sound", "ENTITY_HORSE_EAT"));
+			hungerEnabled = (boolean) c.getDefaultValue("sounds.hunger.enabled", true);
+			hungerVolume = ((Double) c.getDefaultValue("sounds.hunger.volume", 0.5)).floatValue();
 		} catch (IllegalArgumentException e) {
 			enderChestEnabled = false;
 		}
 
 		try {
-			experience = Sound.valueOf(config.getString("sounds.xp.sound"));
-			experienceEnabled = config.getBoolean("sounds.xp.enabled");
-			experienceVolume = Float.parseFloat(config.getString("sounds.xp.volume"));
+			experience = Sound.valueOf((String) c.getDefaultValue("sounds.xp.sound", "ENTITY_PLAYER_LEVELUP"));
+			experienceEnabled = (boolean) c.getDefaultValue("sounds.xp.enabled", true);
+			experienceVolume = ((Double) c.getDefaultValue("sounds.xp.volume", 0.5)).floatValue();
 		} catch (IllegalArgumentException e) {
 			enderChestEnabled = false;
 		}

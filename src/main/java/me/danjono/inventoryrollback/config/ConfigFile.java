@@ -21,7 +21,12 @@ public class ConfigFile {
 		this.configFile = new File(folderLocation, "config.yml");
 		this.config = YamlConfiguration.loadConfiguration(configFile);
 	}
-
+	
+	public ConfigFile(FileConfiguration config) {
+		this.configFile = new File(folderLocation, "config.yml");
+		this.config = config;
+	}
+	
 	public File getConfigFile() {
 		return this.configFile;
 	}
@@ -41,7 +46,7 @@ public class ConfigFile {
 		return true;
 	}
 
-	public static boolean enabled = false;
+	public static boolean enabled;
 
 	public void setEnabled(boolean enabled) {		
 		ConfigFile.enabled = enabled;
@@ -55,12 +60,13 @@ public class ConfigFile {
 	public static int maxSavesQuit;
 	public static int maxSavesDeath;
 	public static int maxSavesWorldChange;
-	public static File savesLocation;
+	public static int maxSavesForce;
 	
 	public static String deathIcon;
 	public static String joinIcon;
 	public static String quitIcon;
 	public static String worldChangeIcon;
+	public static String forceSaveIcon;
 	
 	public static String timeZone;
 	public static String timeFormat;
@@ -68,9 +74,9 @@ public class ConfigFile {
 	public static boolean updateChecker;
 	
 	public void setVariables() {		
-		String folder = config.getString("folderLocation");
+		String folder = (String) getDefaultValue("folderLocation", "DEFAULT");
 
-		if (folder.equalsIgnoreCase("DEFAULT")) {
+		if (folder.equalsIgnoreCase("DEFAULT") || folder.isEmpty() || folder == null) {
 			folderLocation = InventoryRollback.instance.getDataFolder();
 		} else {
 			try {
@@ -80,26 +86,34 @@ public class ConfigFile {
 			}
 		}
 
-		enabled = config.getBoolean("enabled");
+		enabled = (boolean) getDefaultValue("enabled", true);
 		
-		maxSavesJoin = config.getInt("maxSaves.join");
-		maxSavesQuit = config.getInt("maxSaves.quit");	
-		maxSavesDeath = config.getInt("maxSaves.death");
-		maxSavesWorldChange = config.getInt("maxSaves.worldChange");	
-		savesLocation = new File(InventoryRollback.instance.getDataFolder(), "saves/");
+		maxSavesJoin = (int) getDefaultValue("maxSaves.join", 10);
+		maxSavesQuit = (int) getDefaultValue("maxSaves.quit", 10);	
+		maxSavesDeath = (int) getDefaultValue("maxSaves.death", 50);
+		maxSavesWorldChange = (int) getDefaultValue("maxSaves.worldChange", 10);	
+		maxSavesForce = (int) getDefaultValue("maxSaves.force", 10);
 		
-		deathIcon = config.getString("icons.mainMenu.deathIcon.item");
-		joinIcon = config.getString("icons.mainMenu.joinIcon.item");
-		quitIcon = config.getString("icons.mainMenu.quitIcon.item");
-		worldChangeIcon = config.getString("icons.mainMenu.worldChangeIcon.item");
+		deathIcon = (String) getDefaultValue("icons.mainMenu.deathIcon.item", "BONE");
+		joinIcon = (String) getDefaultValue("icons.mainMenu.joinIcon.item", "SAPLING");
+		quitIcon = (String) getDefaultValue("icons.mainMenu.quitIcon.item", "BED");
+		worldChangeIcon = (String) getDefaultValue("icons.mainMenu.worldChangeIcon.item", "COMPASS");
+		forceSaveIcon = (String) getDefaultValue("icons.mainMenu.forceSaveIcon.item", "DIAMOND");
 		
-		timeZone = config.getString("icons.rollbackMenu.time.timeZone");
-		timeFormat = config.getString("icons.rollbackMenu.time.timeFormat");
+		timeZone = (String) getDefaultValue("icons.rollbackMenu.time.timeZone", "UTC");
+		timeFormat = (String) getDefaultValue("icons.rollbackMenu.time.timeFormat", "dd/MM/yyyy HH:mm:ss a");
 		
-		updateChecker = config.getBoolean("updateChecker", true);
+		updateChecker = (boolean) getDefaultValue("updateChecker", true);
 		
 		new Messages().setMessages(config); 	
 		new Sounds().setSounds(config);
+		
+		if (saveChanges) {
+			saveConfig();
+			System.out.println("Changes saved");
+		} else {
+			System.out.println("No changes detected");
+		}
 	}
 	
 	public void createStorageFolders() {		
@@ -127,6 +141,25 @@ public class ConfigFile {
 		File worldChangesFolder = new File(folderLocation, "saves/worldChanges");
 		if(!worldChangesFolder.exists())
 			worldChangesFolder.mkdir();
+		
+		//Create folder for force saves
+		File forceSavesFolder = new File(folderLocation, "saves/force");
+		if(!forceSavesFolder.exists())
+			forceSavesFolder.mkdir();
+	}
+	
+	private static boolean saveChanges = false;
+	public Object getDefaultValue(String path, Object defaultValue) {
+		Object obj = config.get(path);
+		
+		if (obj == null) {
+			obj = defaultValue;
+			
+			config.set(path, defaultValue);
+			saveChanges = true;
+		}
+		
+		return obj;
 	}
 
 }

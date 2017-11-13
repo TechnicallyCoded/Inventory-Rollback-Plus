@@ -3,7 +3,7 @@ package me.danjono.inventoryrollback.config;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Messages {
+public class Messages extends ConfigFile {
 		
 	public static String pluginName;
 	public static String reload;
@@ -35,6 +35,7 @@ public class Messages {
 	public static String joinIconName;
 	public static String quitIconName;
 	public static String worldChangeIconName;
+	public static String forceSaveIconName;
 	
 	private static String deathLocationWorld;
 	private static String deathLocationX;
@@ -54,55 +55,59 @@ public class Messages {
 	public static String restoreExperience;
 	private static String restoreExperienceLevel;
 	
-    public void setMessages(FileConfiguration config) {       	
-    	pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollback" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
-    	reload = convertColourCodes(config.getString("messages.reload"));
-    	noPermission = convertColourCodes(config.getString("messages.noPermission"));
-    	error = convertColourCodes(config.getString("messages.error"));
+    public void setMessages(FileConfiguration config) {  
+    	ConfigFile c = new ConfigFile(config);
     	
-    	enabledMessage = convertColourCodes(config.getString("messages.enable"));
-		disabledMessage = convertColourCodes(config.getString("messages.disable"));
-		reloadMessage = convertColourCodes(config.getString("messages.reload"));
-		playerOnly = convertColourCodes(config.getString("messages.playerOnly"));
+    	pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollback" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
+    	
+    	reload = convertColourCodes((String) c.getDefaultValue("messages.reload", "&2The plugin has been reloaded successfully"));
+    	noPermission = convertColourCodes((String) c.getDefaultValue("messages.noPermission", "&cYou do not have permission!"));
+    	error = convertColourCodes((String) c.getDefaultValue("messages.error", "&cInvalid command"));
+    	
+    	enabledMessage = convertColourCodes((String) c.getDefaultValue("messages.enable", "&2The plugin has been enabled"));
+		disabledMessage = convertColourCodes((String) c.getDefaultValue("messages.disable", "&2The plugin has been disabled"));
+		reloadMessage = convertColourCodes((String) c.getDefaultValue("messages.reload", "&2The plugin has been reloaded successfully"));
+		playerOnly = convertColourCodes((String) c.getDefaultValue("messages.playerOnly", "&cCommand can only be run by a player"));
 		
-		neverOnServer = convertColourCodes(config.getString("messages.neverOnServer"));
+		neverOnServer = convertColourCodes((String) c.getDefaultValue("messages.neverOnServer", "%NAME% has never played on this server"));
 		
-		enderChestNotEmpty = convertColourCodes(config.getString("messages.enderChestNotEmpty"));
-		enderChestRestored = convertColourCodes(config.getString("messages.enderChestRestored"));
-		enderChestRestoredPlayer = convertColourCodes(config.getString("messages.enderChestRestoredPlayer"));
-		enderChestNotOnline = convertColourCodes(config.getString("messages.enderChestNotOnline"));
-		healthRestored = convertColourCodes(config.getString("messages.healthRestored"));
-		healthRestoredPlayer = convertColourCodes(config.getString("messages.healthRestoredPlayer"));
-		healthNotOnline = convertColourCodes(config.getString("messages.healthNotOnline"));
-		hungerRestored = convertColourCodes(config.getString("messages.hungerRestored"));
-		hungerRestoredPlayer = convertColourCodes(config.getString("messages.hungerRestoredPlayer"));
-		hungerNotOnline = convertColourCodes(config.getString("messages.hungerNotOnline"));
-		experienceRestored = convertColourCodes(config.getString("messages.experienceRestored"));
-		experienceRestoredPlayer = convertColourCodes(config.getString("messages.experienceRestoredPlayer"));
-		experienceNotOnline = convertColourCodes(config.getString("messages.experienceNotOnline"));
+		enderChestNotEmpty = convertColourCodes((String) c.getDefaultValue("messages.enderChestNotEmpty", "Cannot rollback %NAME%'s ender chest yet as they have items in it that would be lost. Get the player to remove the items first from their Ender Chest."));
+		enderChestRestored = convertColourCodes((String) c.getDefaultValue("messages.enderChestRestored", "%NAME%''s ender chest has been restored."));
+		enderChestRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.enderChestRestoredPlayer", "Your ender chest has been restored by %NAME%"));
+		enderChestNotOnline = convertColourCodes((String) c.getDefaultValue("messages.enderChestNotOnline", "%NAME% is not online to have their ender chest set."));
+		healthRestored = convertColourCodes((String) c.getDefaultValue("messages.healthRestored", "%NAME%''s health has been restored."));
+		healthRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.healthRestoredPlayer", "Your health has been restored by %NAME%"));
+		healthNotOnline = convertColourCodes((String) c.getDefaultValue("messages.healthNotOnline", "%NAME% is not online to have their health set."));
+		hungerRestored = convertColourCodes((String) c.getDefaultValue("messages.hungerRestored", "%NAME%''s hunger has been restored."));
+		hungerRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.hungerRestoredPlayer", "Your hunger has been restored by %NAME%"));
+		hungerNotOnline = convertColourCodes((String) c.getDefaultValue("messages.hungerNotOnline", "%NAME% is not online to have their hunger set."));
+		experienceRestored = convertColourCodes((String) c.getDefaultValue("messages.experienceRestored", "%NAME%''s XP has been set to level %XP%"));
+		experienceRestoredPlayer = convertColourCodes((String) c.getDefaultValue("messages.experienceRestoredPlayer", "Your XP has been restored to level %XP% by %NAME%"));
+		experienceNotOnline = convertColourCodes((String) c.getDefaultValue("messages.experienceNotOnline", "%NAME% is not online to have their XP set."));
 		
-		deathIconName = convertColourCodes(config.getString("icons.mainMenu.deathIcon.name"));
-		joinIconName = convertColourCodes(config.getString("icons.mainMenu.joinIcon.name"));
-		quitIconName = convertColourCodes(config.getString("icons.mainMenu.quitIcon.name"));
-		worldChangeIconName = convertColourCodes(config.getString("icons.mainMenu.worldChangeIcon.name"));
+		deathIconName = convertColourCodes((String) c.getDefaultValue("icons.mainMenu.deathIcon.name", "&cDeaths"));
+		joinIconName = convertColourCodes((String) c.getDefaultValue("icons.mainMenu.joinIcon.name", "&aJoins"));
+		quitIconName = convertColourCodes((String) c.getDefaultValue("icons.mainMenu.quitIcon.name", "&6Quits"));
+		worldChangeIconName = convertColourCodes((String) c.getDefaultValue("icons.mainMenu.worldChangeIcon.name", "&eWorld Changes"));
+		forceSaveIconName = convertColourCodes((String) c.getDefaultValue("icons.mainMenu.forceSaveIcon.name", "&bForce Saves"));
 		
-		deathLocationWorld = convertColourCodes(config.getString("messages.deathLocationWorld"));
-		deathLocationX = convertColourCodes(config.getString("messages.deathLocationX"));
-		deathLocationY = convertColourCodes(config.getString("messages.deathLocationY"));
-		deathLocationZ = convertColourCodes(config.getString("messages.deathLocationZ"));
-		deathReason = convertColourCodes(config.getString("messages.deathReason"));
-		deathTime = convertColourCodes(config.getString("messages.deathTime"));
+		deathLocationWorld = convertColourCodes((String) c.getDefaultValue("messages.deathLocationWorld", "&6World: &f%WORLD%"));
+		deathLocationX = convertColourCodes((String) c.getDefaultValue("messages.deathLocationX", "&6X: &f%X%"));
+		deathLocationY = convertColourCodes((String) c.getDefaultValue("messages.deathLocationY", "&6Y: &f%Y%"));
+		deathLocationZ = convertColourCodes((String) c.getDefaultValue("messages.deathLocationZ", "&6Z: &f%Z%"));
+		deathReason = convertColourCodes((String) c.getDefaultValue("messages.deathReason", "&6Death reason: &f%REASON%"));
+		deathTime = convertColourCodes((String) c.getDefaultValue("messages.deathTime", "&6Time: &f%TIME%"));
 		
-		mainMenuButton = convertColourCodes(config.getString("messages.mainMenuButton"));
-		nextPageButton = convertColourCodes(config.getString("messages.nextPageButton"));
-		previousPageButton = convertColourCodes(config.getString("messages.previousPageButton"));
-		backButton  = convertColourCodes(config.getString("messages.backButton"));
+		mainMenuButton = convertColourCodes((String) c.getDefaultValue("messages.mainMenuButton", "&fMain Menu"));
+		nextPageButton = convertColourCodes((String) c.getDefaultValue("messages.nextPageButton", "&fNext Page"));
+		previousPageButton = convertColourCodes((String) c.getDefaultValue("messages.previousPageButton", "&fPrevious Page"));
+		backButton  = convertColourCodes((String) c.getDefaultValue("messages.backButton", "&fBack"));
 		
-		restoreEnderChest = convertColourCodes(config.getString("messages.restoreEnderChest"));
-		restoreFood = convertColourCodes(config.getString("messages.restoreFood"));
-		restoreHunger = convertColourCodes(config.getString("messages.restoreHunger"));
-		restoreExperience = convertColourCodes(config.getString("messages.restoreExperience"));
-		restoreExperienceLevel = convertColourCodes(config.getString("messages.restoreExperienceLevel"));
+		restoreEnderChest = convertColourCodes((String) c.getDefaultValue("messages.restoreEnderChest", "&dRestore Ender Chest"));
+		restoreFood = convertColourCodes((String) c.getDefaultValue("messages.restoreFood", "&aRestore Health"));
+		restoreHunger = convertColourCodes((String) c.getDefaultValue("messages.restoreHunger", "&cRestore Food"));
+		restoreExperience = convertColourCodes((String) c.getDefaultValue("messages.restoreExperience", "&2Restore Player XP"));
+		restoreExperienceLevel = convertColourCodes((String) c.getDefaultValue("messages.restoreExperienceLevel", "&rLevel %XP%"));
     }
     
     private static String convertColourCodes(String text) {
