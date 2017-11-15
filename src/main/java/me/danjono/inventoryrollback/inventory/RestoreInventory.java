@@ -24,6 +24,21 @@ public class RestoreInventory {
 		return inv;
 	}
 	
+	public ItemStack[] retrieveArmour(FileConfiguration playerData, Long timestamp) {
+		ItemStack[] inv = null;
+
+		try {
+			inv = stacksFromBase64(playerData.getString("data." + timestamp + ".armour"));
+			
+			if (inv.length == 0)
+				inv = null;
+		} catch (IllegalArgumentException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return inv;
+	}
+	
 	public ItemStack[] retrieveEnderChestInventory(FileConfiguration playerData, Long timestamp) {
 		ItemStack[] inv = null;
 

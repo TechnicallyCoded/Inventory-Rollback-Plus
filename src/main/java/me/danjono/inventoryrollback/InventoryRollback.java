@@ -70,10 +70,20 @@ public class InventoryRollback extends JavaPlugin {
 		v1_11_R1,
 		v1_12_R1
 	}
+	
+	private static boolean isVersion_1_8 = false;
+	public static boolean isVersion_1_8() {
+		return isVersion_1_8;
+	}
 
 	private boolean isCompatible() {
 		for (Versions v : Versions.values()) {
 			if (v.name().equalsIgnoreCase(packageVersion)) {
+				if (v.name().substring(0, 4).equalsIgnoreCase("v1_8")) {
+					isVersion_1_8 = true;
+					System.out.println("Is 1.8");
+				}
+				
 				return true;
 			}
 		}

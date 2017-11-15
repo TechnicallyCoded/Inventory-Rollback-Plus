@@ -14,6 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.PlayerData;
 
 public class SaveInventory {
@@ -24,6 +25,10 @@ public class SaveInventory {
 		
 		PlayerInventory inv = player.getInventory();
 		Inventory enderchest = player.getEnderChest();
+		
+		ItemStack[] armour = null;
+		if (InventoryRollback.isVersion_1_8())
+			armour = inv.getArmorContents();
 		
 		int maxSaves = data.getMaxSaves();
 				
@@ -53,6 +58,10 @@ public class SaveInventory {
 		}
 
 		inventoryData.set("data." + time + ".inventory", toBase64(inv));
+		
+		if (InventoryRollback.isVersion_1_8() && armour != null)
+			inventoryData.set("data." + time + ".armour", toBase64(armour));
+		
 		inventoryData.set("data." + time + ".enderchest", toBase64(enderchest));
 		inventoryData.set("data." + time + ".xp", xp);
 		inventoryData.set("data." + time + ".health", player.getHealth());

@@ -16,18 +16,20 @@ public class BackupMenu {
 	private String logType;
 	private Long timestamp;
 	private ItemStack[] mainInventory;
+	private ItemStack[] armour;
 	private boolean enderChestAvailable;
 	private double health;
 	private int hunger;
 	private float saturation;
 	private float xp;
 	
-	public BackupMenu(Player staff, UUID playerUUID, String logType, Long timestamp, ItemStack[] main, boolean enderchest, Double health, int hunger, float saturation, float xp) {
+	public BackupMenu(Player staff, UUID playerUUID, String logType, Long timestamp, ItemStack[] main, ItemStack[] armour, boolean enderchest, Double health, int hunger, float saturation, float xp) {
 		this.staff = staff;
 		this.playerUUID = playerUUID;
 		this.logType = logType;
 		this.timestamp = timestamp;
 		this.mainInventory = main;
+		this.armour = armour;
 		this.enderChestAvailable = enderchest;
 		this.health = health;
 		this.hunger = hunger;
@@ -55,14 +57,21 @@ public class BackupMenu {
 		item = 36;
 		position = 44;
 
-		//Add armour							
-		for (int i = 36; i < mainInventory.length; i++) {
-			if (mainInventory[item] != null) {	
-				inv.setItem(position, mainInventory[item]);
+		//Add armour
+		if (armour != null) {
+			for (int i = 0; i < armour.length; i++) {
+				inv.setItem(position, armour[i]);
 				position--;
 			}
-			
-			item++;
+		} else {
+			for (int i = 36; i < mainInventory.length; i++) {
+				if (mainInventory[item] != null) {	
+					inv.setItem(position, mainInventory[item]);
+					position--;
+				}
+				
+				item++;
+			}
 		}
 		
 		//Add back button

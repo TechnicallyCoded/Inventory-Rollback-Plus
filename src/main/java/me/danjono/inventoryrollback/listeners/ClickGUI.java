@@ -100,6 +100,7 @@ public class ClickGUI implements Listener {
 				FileConfiguration playerData = new PlayerData(uuid, logType).getData();
 				RestoreInventory restore = new RestoreInventory();
 				ItemStack[] inventory = restore.retrieveMainInventory(playerData, timestamp);
+				ItemStack[] armour = restore.retrieveArmour(playerData, timestamp);
 
 				boolean enderchest = false;				
 				for (ItemStack item : restore.retrieveEnderChestInventory(playerData, timestamp)) {
@@ -112,7 +113,7 @@ public class ClickGUI implements Listener {
 				int hunger = restore.getHunger(playerData, timestamp);
 				float saturation = restore.getSaturation(playerData, timestamp);
 
-				staff.openInventory(new BackupMenu(staff, uuid, logType, timestamp, inventory, enderchest, health, hunger, saturation, xp).showItems());
+				staff.openInventory(new BackupMenu(staff, uuid, logType, timestamp, inventory, armour, enderchest, health, hunger, saturation, xp).showItems());
 			} else if (currentItem.getType().equals(Material.BANNER)) {
 				int page = nbt.getInt("page");
 
