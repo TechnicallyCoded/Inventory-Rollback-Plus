@@ -52,7 +52,7 @@ icons:
       name: '&bForce Saves'
   rollbackMenu:
     time:
-      timeZone: 'UTC'
+      timeZone: 'GMT'
       timeFormat: 'dd/MM/yyyy HH:mm:ss a'
       
 ## Check for updates on Spigot when the server is started

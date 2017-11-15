@@ -47,7 +47,12 @@ public class InventoryRollback extends JavaPlugin {
 	}
 
 	private String convertConsoleMessage(String text) {
-		String os = System.getProperty("os.name").substring(0, 7);
+		String os;
+		try {
+			os = System.getProperty("os.name").substring(0, 7);
+		} catch (StringIndexOutOfBoundsException e) {
+			return text;
+		}
 
 		if (os.equalsIgnoreCase("Windows"))
 			text = ChatColor.stripColor(text);
