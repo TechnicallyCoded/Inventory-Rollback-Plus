@@ -39,7 +39,7 @@ public class RollbackListMenu {
 	}
 		
 	public Inventory showBackups() {						
-		Inventory backupMenu = Bukkit.createInventory(staff, 45, InventoryNames.rollbackList);	
+		Inventory backupMenu = Bukkit.createInventory(staff, 45, InventoryName.ROLLBACK_LIST.getName());	
 		
 		Buttons buttons = new Buttons();
 		Messages messages = new Messages();

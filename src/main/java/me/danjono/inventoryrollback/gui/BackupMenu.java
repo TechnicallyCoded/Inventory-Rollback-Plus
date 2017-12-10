@@ -38,7 +38,7 @@ public class BackupMenu {
 	}
 		
 	public Inventory showItems() {
-		Inventory inv = Bukkit.createInventory(staff, 54, InventoryNames.backup);
+		Inventory inv = Bukkit.createInventory(staff, 54, InventoryName.BACKUP.getName());
 		Buttons buttons = new Buttons();
 		
 		int item = 0;

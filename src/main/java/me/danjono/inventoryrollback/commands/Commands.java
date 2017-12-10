@@ -60,7 +60,7 @@ public class Commands implements CommandExecutor {
 							sender.sendMessage(Messages.pluginName + Messages.playerOnly);
 						}
 						break;
-					} case "forcebackup": {
+					} case "forcebackup": {						
 						if (sender.hasPermission("inventoryrollback.forcebackup")) {
 							if (args.length == 1 || args.length > 2) {
 								sender.sendMessage(Messages.pluginName + Messages.error);

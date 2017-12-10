@@ -18,7 +18,7 @@ import me.danjono.inventoryrollback.config.Messages;
 import me.danjono.inventoryrollback.config.PlayerData;
 import me.danjono.inventoryrollback.config.Sounds;
 import me.danjono.inventoryrollback.gui.BackupMenu;
-import me.danjono.inventoryrollback.gui.InventoryNames;
+import me.danjono.inventoryrollback.gui.InventoryName;
 import me.danjono.inventoryrollback.gui.MainMenu;
 import me.danjono.inventoryrollback.gui.RollbackListMenu;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
@@ -28,7 +28,7 @@ public class ClickGUI implements Listener {
 		
 	@EventHandler
 	private void onMainMenuClick(InventoryClickEvent e) {
-		if (!e.getView().getTopInventory().getName().equals(InventoryNames.mainMenu))
+		if (!e.getView().getTopInventory().getName().equals(InventoryName.MAIN_MENU.getName()))
 			return;
 		
 		e.setCancelled(true);
@@ -45,7 +45,7 @@ public class ClickGUI implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		ItemStack cursorItem = e.getCursor();
 
-		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9) && e.getClickedInventory().getName().equals(InventoryNames.mainMenu)) {				
+		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9) && e.getClickedInventory().getName().equals(InventoryName.MAIN_MENU.getName())) {				
 			//Clicked in menu area	
 			if (currentItem.getType() == Material.AIR && cursorItem.getType() == Material.AIR) {
 				return;
@@ -66,7 +66,7 @@ public class ClickGUI implements Listener {
 
 	@EventHandler
 	private void onRollbackListMenuClick(InventoryClickEvent e) {
-		if (!e.getView().getTopInventory().getName().equals(InventoryNames.rollbackList))
+		if (!e.getView().getTopInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName()))
 			return;
 		
 		e.setCancelled(true);
@@ -83,7 +83,7 @@ public class ClickGUI implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		ItemStack cursorItem = e.getCursor();
 
-		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 45) && e.getClickedInventory().getName().equals(InventoryNames.rollbackList)) {
+		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 45) && e.getClickedInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName())) {
 			//Clicked in menu area	
 			if (currentItem.getType() == Material.AIR && cursorItem.getType() == Material.AIR)
 				return;
@@ -135,7 +135,7 @@ public class ClickGUI implements Listener {
 
 	@EventHandler
 	private void onBackupMenuClick(InventoryClickEvent e) {
-		if (!e.getView().getTopInventory().getName().equals(InventoryNames.backup))
+		if (!e.getView().getTopInventory().getName().equals(InventoryName.BACKUP.getName()))
 			return;
 		
 		e.setCancelled(true);
@@ -152,7 +152,7 @@ public class ClickGUI implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		Messages messages = new Messages();
 
-		if ((e.getRawSlot() >= 45 && e.getRawSlot() < 54) && e.getClickedInventory().getName().equals(InventoryNames.backup)) {
+		if ((e.getRawSlot() >= 45 && e.getRawSlot() < 54) && e.getClickedInventory().getName().equals(InventoryName.BACKUP.getName())) {
 			NBT nbt = new NBT(currentItem);
 			if (!nbt.hasUUID())
 				return;
@@ -258,7 +258,7 @@ public class ClickGUI implements Listener {
 
 	@EventHandler
 	private void blockMenuDrags(InventoryDragEvent e) {
-		if (!e.getInventory().getName().equals(InventoryNames.mainMenu) && !e.getInventory().getName().equals(InventoryNames.rollbackList))
+		if (!e.getInventory().getName().equals(InventoryName.MAIN_MENU.getName()) && !e.getInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName()))
 			return;
 
 		e.setCancelled(true);

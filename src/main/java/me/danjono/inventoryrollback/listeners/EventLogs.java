@@ -48,7 +48,7 @@ public class EventLogs implements Listener {
 	}
 	
 	@EventHandler
-	private void playerDeath(PlayerChangedWorldEvent e) {
+	private void playerChangeWorld(PlayerChangedWorldEvent e) {
 		if (!ConfigFile.enabled) return;
 
 		Player player = e.getPlayer();

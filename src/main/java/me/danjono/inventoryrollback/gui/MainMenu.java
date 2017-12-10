@@ -25,7 +25,7 @@ public class MainMenu {
 	}
 
 	public Inventory getMenu() {				
-		Inventory mainMenu = Bukkit.createInventory(staff, 9, InventoryNames.mainMenu);
+		Inventory mainMenu = Bukkit.createInventory(staff, 9, InventoryName.MAIN_MENU.getName());
 		Buttons buttons = new Buttons();
 
 		UUID uuid = player.getUniqueId();
