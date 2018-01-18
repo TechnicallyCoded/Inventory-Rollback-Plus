@@ -53,7 +53,7 @@ icons:
   rollbackMenu:
     time:
       timeZone: 'GMT'
-      timeFormat: 'dd/MM/yyyy HH:mm:ss a'
+      timeFormat: 'dd/MM/yyyy hh:mm:ss a z'
       
 ## Check for updates on Spigot when the server is started
 updateChecker: true

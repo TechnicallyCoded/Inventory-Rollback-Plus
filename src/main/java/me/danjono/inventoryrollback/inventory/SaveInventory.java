@@ -18,8 +18,8 @@ import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.PlayerData;
 
 public class SaveInventory {
-
-	public boolean createSave(Player player, String logType, String saveReason) {
+		
+	public void createSave(Player player, String logType, String saveReason) {
 		PlayerData data = new PlayerData(player, logType);
 		FileConfiguration inventoryData = data.getData();
 		
@@ -78,10 +78,7 @@ public class SaveInventory {
 		
 		inventoryData.set("saves", saves + 1);
 
-		if (data.saveData())
-			return true;
-		
-		return false;
+		data.saveData();
 	}
 		
 	//Conversion to Base64 code courtesy of github.com/JustRayz	

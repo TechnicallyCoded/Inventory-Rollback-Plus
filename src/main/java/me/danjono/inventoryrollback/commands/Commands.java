@@ -77,11 +77,9 @@ public class Commands implements CommandExecutor {
 								break;
 							}
 														
-							if (new SaveInventory().createSave((Player) player, "FORCE", null)) {
-								sender.sendMessage(Messages.pluginName + messages.forceSaved(player.getName()));
-							} else {
-								sender.sendMessage(Messages.pluginName + messages.notForcedSaved(player.getName()));
-							}
+							new SaveInventory().createSave((Player) player, "FORCE", null);
+							sender.sendMessage(Messages.pluginName + messages.forceSaved(player.getName()));
+
 							break;
 						} else {
 							sender.sendMessage(Messages.pluginName + Messages.noPermission);

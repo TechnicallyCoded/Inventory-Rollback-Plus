@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import me.danjono.inventoryrollback.InventoryRollback;
+
 public class PlayerData {
 	
 	private UUID uuid;
@@ -81,15 +83,18 @@ public class PlayerData {
 		return this.playerData;
 	}
 	
-	public boolean saveData() {
-		try {
-			playerData.save(playerFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
+	public void saveData() {
+		InventoryRollback.instance.getServer().getScheduler().runTaskAsynchronously(InventoryRollback.instance, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					playerData.save(playerFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					
+				}
+			}
+		});
 	}
 	
 	public int getMaxSaves() {

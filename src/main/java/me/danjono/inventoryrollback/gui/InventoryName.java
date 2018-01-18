@@ -2,7 +2,7 @@ package me.danjono.inventoryrollback.gui;
 
 public enum InventoryName {
 	
-	MAIN_MENU("Inventory Rollback Test"),
+	MAIN_MENU("Inventory Rollback"),
 	ROLLBACK_LIST("Rollbacks"),
 	BACKUP("Backup");
 	
