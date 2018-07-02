@@ -73,6 +73,8 @@ public class ConfigFile {
 	
 	public static boolean updateChecker;
 	
+	public static boolean bStatsEnabled;
+	
 	public void setVariables() {		
 		String folder = (String) getDefaultValue("folderLocation", "DEFAULT");
 
@@ -104,6 +106,8 @@ public class ConfigFile {
 		timeFormat = (String) getDefaultValue("icons.rollbackMenu.time.timeFormat", "dd/MM/yyyy HH:mm:ss a");
 		
 		updateChecker = (boolean) getDefaultValue("updateChecker", true);
+		
+		bStatsEnabled = (boolean) getDefaultValue("bStats", true);
 		
 		new Messages().setMessages(config); 	
 		new Sounds().setSounds(config);

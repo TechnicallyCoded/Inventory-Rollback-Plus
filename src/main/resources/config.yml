@@ -58,6 +58,10 @@ icons:
 ## Check for updates on Spigot when the server is started
 updateChecker: true
 
+## Allow bStats to collect anonymous server data. Please leave enabled
+## as it allows me to see which versions people are running and where.
+bStats: true
+
 ## You can change the text that is displayed in chat and the GUI here.
 messages:
   reload: '&2Plugin has been reloaded!'

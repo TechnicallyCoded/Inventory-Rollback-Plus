@@ -107,7 +107,7 @@ public class Commands implements CommandExecutor {
 						break;
 					} case "reload": { 
 						if (sender.hasPermission("InventoryRollback.reload")) {										
-							InventoryRollback.startupTasks();
+							new InventoryRollback().startupTasks();
 	
 							sender.sendMessage(Messages.pluginName + Messages.reloadMessage);
 						} else {

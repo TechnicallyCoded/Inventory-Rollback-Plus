@@ -28,7 +28,6 @@ public class InventoryRollback extends JavaPlugin {
 		packageVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
 
 		startupTasks();	
-		bStats();
 
 		if (!isCompatible()) {			
 			log.info(String.format("[%s]" + convertConsoleMessage(ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **"), getDescription().getName()));
@@ -91,13 +90,16 @@ public class InventoryRollback extends JavaPlugin {
 		return false;
 	}
 
-	public static void startupTasks() {
+	public void startupTasks() {
 		ConfigFile config = new ConfigFile();
 
 		config.setVariables();
 		config.createStorageFolders();		
 		
 		instance.checkUpdate(ConfigFile.updateChecker);
+		
+		if (ConfigFile.bStatsEnabled)
+			bStats();
 	}
 
 	@SuppressWarnings("unused")
