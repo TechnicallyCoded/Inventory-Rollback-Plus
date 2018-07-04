@@ -149,7 +149,7 @@ public class Buttons {
         return button;
 	}
 	
-	public ItemStack createInventoryButton(ItemStack item, UUID uuid, String logType, Long time, String displayName, List<String> lore) {    	
+	public ItemStack createInventoryButton(ItemStack item, UUID uuid, String logType, String location, Long time, String displayName, List<String> lore) {    	
     	ItemMeta meta = item.getItemMeta();
 		//meta.setDisplayName(name);
     	
@@ -166,6 +166,7 @@ public class Buttons {
 		nbt.setString("uuid", uuid + "");
 		nbt.setString("logType", logType);
 		nbt.setLong("timestamp", time);
+		nbt.setString("location", location);
 		item = nbt.setItemData();
 		
     	return item;
@@ -204,6 +205,24 @@ public class Buttons {
     	skull.setItemMeta(skullMeta);
 		    			
     	return skull;
+    }
+	
+	public ItemStack enderPearlButton(UUID uuid, String logType, Long timestamp, String location) {    	
+    	ItemStack item = new ItemStack(Material.ENDER_PEARL);
+    	
+    	ItemMeta meta = item.getItemMeta();
+    	meta.setDisplayName(Messages.deathLocationMessage);
+    	    	
+    	item.setItemMeta(meta);
+    	
+    	NBT nbt = new NBT(item);
+    	
+    	nbt.setString("uuid", uuid + "");
+    	nbt.setString("logType", logType);
+    	nbt.setString("location", location);
+    	item = nbt.setItemData();
+		    			
+    	return item;
     }
 	
 	public ItemStack enderChestButton(UUID uuid, String logType, Long timestamp) {    	

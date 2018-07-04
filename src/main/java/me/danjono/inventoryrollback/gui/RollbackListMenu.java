@@ -84,12 +84,18 @@ public class RollbackListMenu {
 				if (deathReason != null)
 					lore.add(deathReason);
 				
-				lore.add(messages.deathLocationWorld(playerData.getString("data." + time + ".location.world")));
-				lore.add(messages.deathLocationX(playerData.getString("data." + time + ".location.x")));
-				lore.add(messages.deathLocationY(playerData.getString("data." + time + ".location.y")));
-				lore.add(messages.deathLocationZ(playerData.getString("data." + time + ".location.z")));
+				String world = playerData.getString("data." + time + ".location.world");
+				String x = playerData.getString("data." + time + ".location.x");
+				String y = playerData.getString("data." + time + ".location.y");
+				String z = playerData.getString("data." + time + ".location.z");
+				String location = world + "," + x + "," + y + "," + z;
 				
-				ItemStack inventory = buttons.createInventoryButton(new ItemStack(Material.CHEST), playerUUID, logType, time, displayName, lore);
+				lore.add(messages.deathLocationWorld(world));
+				lore.add(messages.deathLocationX(x));
+				lore.add(messages.deathLocationY(y));
+				lore.add(messages.deathLocationZ(z));
+				
+				ItemStack inventory = buttons.createInventoryButton(new ItemStack(Material.CHEST), playerUUID, logType, location, time, displayName, lore);
 				
 				backupMenu.setItem(position, inventory);
 				

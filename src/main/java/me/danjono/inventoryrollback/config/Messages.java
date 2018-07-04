@@ -1,6 +1,7 @@
 package me.danjono.inventoryrollback.config;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Messages extends ConfigFile {
@@ -44,6 +45,8 @@ public class Messages extends ConfigFile {
 	private static String deathLocationX;
 	private static String deathLocationY;
 	private static String deathLocationZ;
+	private static String deathLocationTeleport;
+	public static String deathLocationMessage;
 	private static String deathReason;
 	private static String deathTime;
 	
@@ -101,6 +104,8 @@ public class Messages extends ConfigFile {
 		deathLocationX = convertColourCodes((String) c.getDefaultValue("messages.deathLocationX", "&6X: &f%X%"));
 		deathLocationY = convertColourCodes((String) c.getDefaultValue("messages.deathLocationY", "&6Y: &f%Y%"));
 		deathLocationZ = convertColourCodes((String) c.getDefaultValue("messages.deathLocationZ", "&6Z: &f%Z%"));
+		deathLocationTeleport = convertColourCodes((String) c.getDefaultValue("messages.deathLocationTeleport", "You have been teleported to %LOCATION%"));
+		deathLocationMessage = convertColourCodes((String) c.getDefaultValue("messages.deathLocationMessage", "&3Teleport to where this entry was logged."));
 		deathReason = convertColourCodes((String) c.getDefaultValue("messages.deathReason", "&6Death reason: &f%REASON%"));
 		deathTime = convertColourCodes((String) c.getDefaultValue("messages.deathTime", "&6Time: &f%TIME%"));
 		
@@ -202,6 +207,10 @@ public class Messages extends ConfigFile {
     
     public String deathLocationZ(String z) {
     	return deathLocationZ.replaceAll("%Z%", z);
+    }
+    
+    public String deathLocationTeleport(Location location) {
+    	return deathLocationTeleport.replaceAll("%LOCATION%", "X:" + location.getX() + " Y:" + location.getY() + " Z:" + location.getZ());
     }
     
     public String deathReason(String reason) {

@@ -4,6 +4,10 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Sounds extends ConfigFile {
+	
+	public static Sound enderPearl;
+	public static boolean enderPearlEnabled;
+	public static float enderPearlVolume;
 
 	public static Sound enderChest;
 	public static boolean enderChestEnabled;
@@ -25,6 +29,14 @@ public class Sounds extends ConfigFile {
 		ConfigFile c = new ConfigFile(config);
 		
 		//If sounds are invalid they will be disabled.
+		try {
+			enderPearl = Sound.valueOf((String) c.getDefaultValue("sounds.enderChest.sound", "ENTITY_ENDERMEN_TELEPORT"));
+			enderPearlEnabled = (boolean) c.getDefaultValue("sounds.enderChest.enabled", true);
+			enderPearlVolume = ((Double) c.getDefaultValue("sounds.enderChest.volume", 0.5)).floatValue();
+		} catch (IllegalArgumentException e) {
+			enderPearlEnabled = false;
+		}
+		
 		try {
 			enderChest = Sound.valueOf((String) c.getDefaultValue("sounds.enderChest.sound", "ENTITY_ENDERDRAGON_FLAP"));
 			enderChestEnabled = (boolean) c.getDefaultValue("sounds.enderChest.enabled", true);

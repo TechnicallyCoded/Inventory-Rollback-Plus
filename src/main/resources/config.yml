@@ -15,6 +15,10 @@ folderLocation: 'DEFAULT'
 ## Set the sounds to play to the player when you restore parts of their inventory.
 ## For 1.8 sounds, the legacy name for the sound will need to be used - https://www.spigotmc.org/wiki/cc-sounds-list/
 sounds:
+  enderPearl:
+    enabled: true
+    sound: 'ENTITY_ENDERMEN_TELEPORT'
+    volume: 0.5
   enderChest:
     enabled: true
     sound: 'ENTITY_ENDERDRAGON_FLAP'
@@ -92,6 +96,8 @@ messages:
   deathLocationX: '&6X: &f%X%'
   deathLocationY: '&6Y: &f%Y%'
   deathLocationZ: '&6Z: &f%Z%'
+  deathLocationTeleport: 'You have been teleported to %LOCATION%'
+  deathLocationMessage: '&3Teleport to where this entry was logged.'
   deathReason: '&6Death reason: &f%REASON%'
   deathTime: '&6Time: &f%TIME%'
   mainMenuButton: '&fMain Menu'

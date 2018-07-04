@@ -4,8 +4,10 @@ import java.util.ListIterator;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,18 +27,18 @@ import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBT;
 
 public class ClickGUI implements Listener {
-		
+
 	@EventHandler
 	private void onMainMenuClick(InventoryClickEvent e) {
 		if (!e.getView().getTopInventory().getName().equals(InventoryName.MAIN_MENU.getName()))
 			return;
-		
+
 		e.setCancelled(true);
 
 		final Player staff = (Player) e.getWhoClicked();
 		if (!staff.hasPermission("inventoryrollback.restore"))
 			return;
-		
+
 		if (e.getClickedInventory() == null) {
 			e.setCancelled(false);
 			return;
@@ -57,7 +59,7 @@ public class ClickGUI implements Listener {
 
 			final String logType = nbt.getString("logType");
 			final OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
-			
+
 			staff.openInventory(new RollbackListMenu(staff, player, logType, 1).showBackups());
 		} else if (!e.isShiftClick()){
 			e.setCancelled(false);
@@ -68,7 +70,7 @@ public class ClickGUI implements Listener {
 	private void onRollbackListMenuClick(InventoryClickEvent e) {
 		if (!e.getView().getTopInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName()))
 			return;
-		
+
 		e.setCancelled(true);
 
 		final Player staff = (Player) e.getWhoClicked();
@@ -96,6 +98,7 @@ public class ClickGUI implements Listener {
 				UUID uuid = UUID.fromString(nbt.getString("uuid"));
 				Long timestamp = nbt.getLong("timestamp");
 				String logType = nbt.getString("logType");
+				String location = nbt.getString("location");
 
 				FileConfiguration playerData = new PlayerData(uuid, logType).getData();
 				RestoreInventory restore = new RestoreInventory();
@@ -113,7 +116,7 @@ public class ClickGUI implements Listener {
 				int hunger = restore.getHunger(playerData, timestamp);
 				float saturation = restore.getSaturation(playerData, timestamp);
 
-				staff.openInventory(new BackupMenu(staff, uuid, logType, timestamp, inventory, armour, enderchest, health, hunger, saturation, xp).showItems());
+				staff.openInventory(new BackupMenu(staff, uuid, logType, timestamp, inventory, armour, location, enderchest, health, hunger, saturation, xp).showItems());
 			} else if (currentItem.getType().equals(Material.BANNER)) {
 				int page = nbt.getInt("page");
 
@@ -137,7 +140,7 @@ public class ClickGUI implements Listener {
 	private void onBackupMenuClick(InventoryClickEvent e) {
 		if (!e.getView().getTopInventory().getName().equals(InventoryName.BACKUP.getName()))
 			return;
-		
+
 		e.setCancelled(true);
 
 		final Player staff = (Player) e.getWhoClicked();
@@ -160,7 +163,7 @@ public class ClickGUI implements Listener {
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
 			String logType = nbt.getString("logType");
 			Long timestamp = nbt.getLong("timestamp");
-			
+
 			PlayerData data = new PlayerData(offlinePlayer, logType);		
 			FileConfiguration playerData = data.getData();
 
@@ -169,6 +172,25 @@ public class ClickGUI implements Listener {
 			if (currentItem.getType().equals(Material.BANNER)) {
 				//Click on back button
 				staff.openInventory(new RollbackListMenu(staff, offlinePlayer, logType, 1).showBackups());
+			} else if (currentItem.getType().equals(Material.ENDER_PEARL)) {
+				//Clicked Ender Pearl
+				String[] location = nbt.getString("location").split(",");
+				
+				World world = null;
+				try {
+					world = Bukkit.getWorld(location[0]);
+				} catch (NullPointerException e1) {
+					//World is not available
+				}
+				
+				Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3]));
+				
+				staff.teleport(loc);
+
+				if (Sounds.enderPearlEnabled)
+					staff.playSound(loc, Sounds.enderPearl, Sounds.enderPearlVolume, 1);
+
+				staff.sendMessage(Messages.pluginName + messages.deathLocationTeleport(loc));
 			} else if (currentItem.getType().equals(Material.ENDER_CHEST)) {
 				//Clicked Ender Chest
 
@@ -214,7 +236,7 @@ public class ClickGUI implements Listener {
 				}
 			} else if (currentItem.getType().equals(Material.ROTTEN_FLESH)) {
 				//Clicked hunger button	
-				
+
 				if (offlinePlayer.isOnline()) {
 					Player player = (Player) offlinePlayer;	
 					int hunger = nbt.getInt("hunger");
@@ -234,7 +256,7 @@ public class ClickGUI implements Listener {
 				}
 			} else if (currentItem.getType().equals(Material.EXP_BOTTLE)) {
 				//Clicked XP button
-				
+
 				if (offlinePlayer.isOnline()) {				
 					Player player = (Player) offlinePlayer;	
 					Float xp = nbt.getFloat("xp");
@@ -277,5 +299,5 @@ public class ClickGUI implements Listener {
 
 		return empty;
 	}
-	
+
 }

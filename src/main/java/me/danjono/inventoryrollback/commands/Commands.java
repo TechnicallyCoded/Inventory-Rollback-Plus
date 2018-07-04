@@ -76,8 +76,9 @@ public class Commands implements CommandExecutor {
 								sender.sendMessage(Messages.pluginName + messages.notOnline(player.getName()));
 								break;
 							}
-														
-							new SaveInventory().createSave((Player) player, "FORCE", null);
+								
+							Player onlinePlayer = (Player) player;
+							new SaveInventory(onlinePlayer, "FORCE", null, onlinePlayer.getInventory(), onlinePlayer.getEnderChest()).createSave();
 							sender.sendMessage(Messages.pluginName + messages.forceSaved(player.getName()));
 
 							break;

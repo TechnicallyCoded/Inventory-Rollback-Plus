@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,17 +19,30 @@ import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.PlayerData;
 
 public class SaveInventory {
+	
+	private Player player;
+	private String logType;
+	private DamageCause deathCause;
+	
+	private PlayerInventory mainInventory;
+	private Inventory enderChestInventory;
+	
+	public SaveInventory(Player player, String logType, DamageCause deathCause, PlayerInventory mainInventory, Inventory enderChestInventory) {
+		this.player = player;
+		this.logType = logType;
+		this.deathCause = deathCause;
 		
-	public void createSave(Player player, String logType, String saveReason) {
+		this.mainInventory = mainInventory;
+		this.enderChestInventory = enderChestInventory;
+	}
+		
+	public void createSave() {
 		PlayerData data = new PlayerData(player, logType);
 		FileConfiguration inventoryData = data.getData();
 		
-		PlayerInventory inv = player.getInventory();
-		Inventory enderchest = player.getEnderChest();
-		
 		ItemStack[] armour = null;
 		if (InventoryRollback.isVersion_1_8())
-			armour = inv.getArmorContents();
+			armour = mainInventory.getArmorContents();
 		
 		int maxSaves = data.getMaxSaves();
 				
@@ -57,12 +71,12 @@ public class SaveInventory {
 			}
 		}
 
-		inventoryData.set("data." + time + ".inventory", toBase64(inv));
+		inventoryData.set("data." + time + ".inventory", toBase64(mainInventory));
 		
 		if (InventoryRollback.isVersion_1_8() && armour != null)
 			inventoryData.set("data." + time + ".armour", toBase64(armour));
 		
-		inventoryData.set("data." + time + ".enderchest", toBase64(enderchest));
+		inventoryData.set("data." + time + ".enderchest", toBase64(enderChestInventory));
 		inventoryData.set("data." + time + ".xp", xp);
 		inventoryData.set("data." + time + ".health", player.getHealth());
 		inventoryData.set("data." + time + ".hunger", player.getFoodLevel());
@@ -73,8 +87,8 @@ public class SaveInventory {
 		inventoryData.set("data." + time + ".location.z", (int) player.getLocation().getZ());
 		inventoryData.set("data." + time + ".logType", logType);
 
-		if (saveReason != null)
-			inventoryData.set("data." + time + ".deathReason", saveReason);
+		if (deathCause != null)
+			inventoryData.set("data." + time + ".deathReason", deathCause.name());
 		
 		inventoryData.set("saves", saves + 1);
 
