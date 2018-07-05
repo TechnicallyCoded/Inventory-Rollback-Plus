@@ -183,7 +183,7 @@ public class ClickGUI implements Listener {
 					//World is not available
 				}
 				
-				Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3]));
+				Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3])).add(0.5, 0, 0.5);
 				
 				staff.teleport(loc);
 
