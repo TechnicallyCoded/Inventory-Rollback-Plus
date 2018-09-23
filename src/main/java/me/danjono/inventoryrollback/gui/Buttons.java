@@ -29,7 +29,7 @@ import me.inventoryrollback.danjono.data.LogType;
 public class Buttons {
     
     private static final Material pageSelector = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "WHITE_BANNER" : "BANNER");
-    private static final Material teleport = Material.ENDER_PEARL;
+    private static final Material enderPearl = Material.ENDER_PEARL;
     private static final Material enderChest = Material.ENDER_CHEST;
     private static final Material health = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "MELON_SLICE" : "MELON");
     private static final Material hunger = Material.ROTTEN_FLESH;
@@ -39,8 +39,8 @@ public class Buttons {
         return new ItemStack(pageSelector);
     }
     
-    public static ItemStack getTeleportIcon() {
-        return new ItemStack(teleport);
+    public static ItemStack getEnderPearlIcon() {
+        return new ItemStack(enderPearl);
     }
     
     public static ItemStack getEnderChestIcon() {
@@ -267,7 +267,7 @@ public class Buttons {
     }
 	
 	public ItemStack enderPearlButton(UUID uuid, LogType logType, Long timestamp, String location) {    	
-    	ItemStack item = new ItemStack(Material.ENDER_PEARL);
+    	ItemStack item = new ItemStack(getEnderPearlIcon());
     	
     	ItemMeta meta = item.getItemMeta();
     	meta.setDisplayName(MessageData.deathLocationMessage);
@@ -285,7 +285,7 @@ public class Buttons {
     }
 	
 	public ItemStack enderChestButton(UUID uuid, LogType logType, Long timestamp) {    	
-    	ItemStack item = new ItemStack(Material.ENDER_CHEST);
+    	ItemStack item = new ItemStack(getEnderChestIcon());
     	
     	ItemMeta meta = item.getItemMeta();
     	meta.setDisplayName(MessageData.restoreEnderChest);
@@ -303,7 +303,7 @@ public class Buttons {
     }
 	
 	public ItemStack healthButton(UUID uuid, LogType logType, Double health) {    	
-    	ItemStack item = new ItemStack(Material.MELON);
+    	ItemStack item = new ItemStack(getHealthIcon());
     	
     	ItemMeta meta = item.getItemMeta();
     	meta.setDisplayName(MessageData.restoreFood);
@@ -321,7 +321,7 @@ public class Buttons {
     }
 	
 	public ItemStack hungerButton(UUID uuid, LogType logType, int hunger, float saturation) {    	
-    	ItemStack item = new ItemStack(Material.ROTTEN_FLESH);
+    	ItemStack item = new ItemStack(getHungerIcon());
     	
     	ItemMeta meta = item.getItemMeta();
     	meta.setDisplayName(MessageData.restoreHunger);
@@ -340,7 +340,7 @@ public class Buttons {
     }
 	
 	public ItemStack experiencePotion(UUID uuid, LogType logType, float xp) {    	
-    	ItemStack item = new ItemStack(Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE"));
+    	ItemStack item = new ItemStack(getExperienceIcon());
     	MessageData messages = new MessageData();
     	
     	ItemMeta meta = item.getItemMeta();

@@ -180,7 +180,7 @@ public class ClickGUI extends Buttons implements Listener {
 			if (currentItem.getType().equals(getPageSelectorIcon().getType())) {
 				//Click on back button
 				staff.openInventory(new RollbackListMenu(staff, offlinePlayer, logType, 1).showBackups());
-			} else if (currentItem.getType().equals(getTeleportIcon().getType())) {
+			} else if (currentItem.getType().equals(getEnderPearlIcon().getType())) {
 				//Clicked Ender Pearl
 				String[] location = nbt.getString("location").split(",");
 				
