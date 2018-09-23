@@ -16,18 +16,20 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.config.PlayerData;
+import me.danjono.inventoryrollback.InventoryRollback.VersionName;
+import me.inventoryrollback.danjono.data.LogType;
+import me.inventoryrollback.danjono.data.PlayerData;
 
 public class SaveInventory {
 	
 	private Player player;
-	private String logType;
+	private LogType logType;
 	private DamageCause deathCause;
 	
 	private PlayerInventory mainInventory;
 	private Inventory enderChestInventory;
 	
-	public SaveInventory(Player player, String logType, DamageCause deathCause, PlayerInventory mainInventory, Inventory enderChestInventory) {
+	public SaveInventory(Player player, LogType logType, DamageCause deathCause, PlayerInventory mainInventory, Inventory enderChestInventory) {
 		this.player = player;
 		this.logType = logType;
 		this.deathCause = deathCause;
@@ -41,9 +43,9 @@ public class SaveInventory {
 		FileConfiguration inventoryData = data.getData();
 		
 		ItemStack[] armour = null;
-		if (InventoryRollback.isVersion_1_8())
-			armour = mainInventory.getArmorContents();
-		
+        if (InventoryRollback.getVersion().equals(VersionName.v1_8))
+            armour = mainInventory.getArmorContents();
+				
 		int maxSaves = data.getMaxSaves();
 				
 		float xp = getTotalExperience(player);
@@ -71,10 +73,10 @@ public class SaveInventory {
 			}
 		}
 
-		inventoryData.set("data." + time + ".inventory", toBase64(mainInventory));
+		inventoryData.set("data." + time + ".inventory", toBase64(mainInventory));	
 		
-		if (InventoryRollback.isVersion_1_8() && armour != null)
-			inventoryData.set("data." + time + ".armour", toBase64(armour));
+		if (InventoryRollback.getVersion().equals(VersionName.v1_8) && armour != null)
+            inventoryData.set("data." + time + ".armour", toBase64(armour));
 		
 		inventoryData.set("data." + time + ".enderchest", toBase64(enderChestInventory));
 		inventoryData.set("data." + time + ".xp", xp);
@@ -85,7 +87,8 @@ public class SaveInventory {
 		inventoryData.set("data." + time + ".location.x", (int) player.getLocation().getX());
 		inventoryData.set("data." + time + ".location.y", (int) player.getLocation().getY());
 		inventoryData.set("data." + time + ".location.z", (int) player.getLocation().getZ());
-		inventoryData.set("data." + time + ".logType", logType);
+		inventoryData.set("data." + time + ".logType", logType.name());
+		inventoryData.set("data." + time + ".version", InventoryRollback.getPackageVersion());
 
 		if (deathCause != null)
 			inventoryData.set("data." + time + ".deathReason", deathCause.name());

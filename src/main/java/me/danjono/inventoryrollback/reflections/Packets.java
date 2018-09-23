@@ -8,7 +8,7 @@ public class Packets {
 		Class<?> c = null;
 		
 		try {
-			c = Class.forName("net.minecraft.server." + InventoryRollback.packageVersion + "." + name);
+			c = Class.forName("net.minecraft.server." + InventoryRollback.getPackageVersion() + "." + name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -20,7 +20,7 @@ public class Packets {
 		Class<?> c = null;
 		
 		try {
-			c = Class.forName("org.bukkit.craftbukkit." + InventoryRollback.packageVersion + "." + name);
+			c = Class.forName("org.bukkit.craftbukkit." + InventoryRollback.getPackageVersion() + "." + name);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

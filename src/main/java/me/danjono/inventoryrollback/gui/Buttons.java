@@ -1,5 +1,7 @@
 package me.danjono.inventoryrollback.gui;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -7,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -16,14 +19,48 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import me.danjono.inventoryrollback.config.Messages;
+import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.InventoryRollback.VersionName;
+import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBT;
+import me.inventoryrollback.danjono.data.LogType;
 
 public class Buttons {
+    
+    private static final Material pageSelector = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "WHITE_BANNER" : "BANNER");
+    private static final Material teleport = Material.ENDER_PEARL;
+    private static final Material enderChest = Material.ENDER_CHEST;
+    private static final Material health = Material.MELON;
+    private static final Material hunger = Material.ROTTEN_FLESH;
+    private static final Material experience = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE");
 
-	public ItemStack nextButton(String displayName, UUID uuid, String logType, int page, List<String> lore) {
-		ItemStack button = new ItemStack(Material.BANNER);
+    public static ItemStack getPageSelectorIcon() {
+        return new ItemStack(pageSelector);
+    }
+    
+    public static ItemStack getTeleportIcon() {
+        return new ItemStack(teleport);
+    }
+    
+    public static ItemStack getEnderChestIcon() {
+        return new ItemStack(enderChest);
+    }
+    
+    public static ItemStack getHealthIcon() {
+        return new ItemStack(health);
+    }
+    
+    public static ItemStack getHungerIcon() {
+        return new ItemStack(hunger);
+    }
+    
+    public static ItemStack getExperienceIcon() {
+        return new ItemStack(experience);
+    }
+
+	public ItemStack nextButton(String displayName, UUID uuid, LogType logType, int page, List<String> lore) {
+		ItemStack button = getPageSelectorIcon();
         BannerMeta meta = (BannerMeta) button.getItemMeta();
         
         List<Pattern> patterns = new ArrayList<Pattern>();
@@ -50,16 +87,16 @@ public class Buttons {
         
         NBT nbt = new NBT(button);
         
-        nbt.setString("uuid", uuid + "");
-        nbt.setString("logType", logType);
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
         nbt.setInt("page", page);
         button = nbt.setItemData();   
         
         return button;
 	}
 	
-	public ItemStack backButton(String displayName, UUID uuid, String logType, int page, List<String> lore) {
-		ItemStack button = new ItemStack(Material.BANNER);
+	public ItemStack backButton(String displayName, UUID uuid, LogType logType, int page, List<String> lore) {
+		ItemStack button = getPageSelectorIcon();
         BannerMeta meta = (BannerMeta) button.getItemMeta();
         
         List<Pattern> patterns = new ArrayList<Pattern>();
@@ -84,16 +121,16 @@ public class Buttons {
         
         NBT nbt = new NBT(button);
         
-        nbt.setString("uuid", uuid + "");
-        nbt.setString("logType", logType);
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
         nbt.setInt("page", page);
         button = nbt.setItemData();
         
         return button;
 	}
-	
+
 	public ItemStack mainMenuBackButton(String displayName, UUID uuid) {
-		ItemStack button = new ItemStack(Material.BANNER);
+		ItemStack button = getPageSelectorIcon();
         BannerMeta meta = (BannerMeta) button.getItemMeta();
         
         List<Pattern> patterns = new ArrayList<Pattern>();
@@ -114,14 +151,14 @@ public class Buttons {
         
         NBT nbt = new NBT(button);
         
-        nbt.setString("uuid", uuid + "");
+        nbt.setString("uuid", uuid.toString());
         button = nbt.setItemData();
                 
         return button;
 	}
 	
-	public ItemStack inventoryMenuBackButton(String displayName, UUID uuid, String logType) {
-		ItemStack button = new ItemStack(Material.BANNER);
+	public ItemStack inventoryMenuBackButton(String displayName, UUID uuid, LogType logType) {
+		ItemStack button = getPageSelectorIcon();
         BannerMeta meta = (BannerMeta) button.getItemMeta();
         
         List<Pattern> patterns = new ArrayList<Pattern>();
@@ -142,14 +179,14 @@ public class Buttons {
         
         NBT nbt = new NBT(button);
         
-        nbt.setString("uuid", uuid + "");
-        nbt.setString("logType", logType);
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
         button = nbt.setItemData();
         
         return button;
 	}
 	
-	public ItemStack createInventoryButton(ItemStack item, UUID uuid, String logType, String location, Long time, String displayName, List<String> lore) {    	
+	public ItemStack createInventoryButton(ItemStack item, UUID uuid, LogType logType, String location, Long time, String displayName, List<String> lore) {    	
     	ItemMeta meta = item.getItemMeta();
 		//meta.setDisplayName(name);
     	
@@ -163,8 +200,8 @@ public class Buttons {
 		
 		NBT nbt = new NBT(item);
    		
-		nbt.setString("uuid", uuid + "");
-		nbt.setString("logType", logType);
+		nbt.setString("uuid", uuid.toString());
+		nbt.setString("logType", logType.name());
 		nbt.setLong("timestamp", time);
 		nbt.setString("location", location);
 		item = nbt.setItemData();
@@ -172,7 +209,7 @@ public class Buttons {
     	return item;
     }
 	
-	public ItemStack createLogTypeButton(ItemStack item, UUID uuid, String name, String logType, List<String> lore) {    	
+	public ItemStack createLogTypeButton(ItemStack item, UUID uuid, String name, LogType logType, List<String> lore) {    	
     	ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
     	
@@ -184,19 +221,41 @@ public class Buttons {
 		
 		NBT nbt = new NBT(item);
    		
-		nbt.setString("logType", logType);
-		nbt.setString("uuid", uuid + "");
+		nbt.setString("uuid", uuid.toString());
+		nbt.setString("logType", logType.name());
 		item = nbt.setItemData();
 		
     	return item;
     }
 	
-	public ItemStack playerHead(String playerName, List<String> lore) {    	
-    	ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+	public ItemStack playerHead(OfflinePlayer player, List<String> lore) {    	
+    	ItemStack skull = null;
+    	
+    	if (InventoryRollback.getVersion().equals(VersionName.v1_13)) {
+    	    skull = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
+    	} else {
+    	    skull = new ItemStack(Material.getMaterial("SKULL_ITEM"), 1, (short) SkullType.PLAYER.ordinal());
+    	}
     	
     	SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-    	skullMeta.setOwner(playerName);
-    	skullMeta.setDisplayName(ChatColor.RESET + playerName);
+    	
+        try {
+            if (InventoryRollback.getVersion().equals(VersionName.v1_13)) {              
+                Method method = skullMeta.getClass().getMethod("setOwningPlayer", OfflinePlayer.class);
+                method.setAccessible(true);
+                method.invoke(skullMeta, player);
+                method.setAccessible(false);
+            } else {
+                Method method = skullMeta.getClass().getMethod("setOwner", String.class);
+                method.setAccessible(true);
+                method.invoke(skullMeta, player.getName());
+                method.setAccessible(false);
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+    	skullMeta.setDisplayName(ChatColor.RESET + player.getName());
     	
 		if (lore != null) {	    	
 			skullMeta.setLore(lore);
@@ -207,72 +266,72 @@ public class Buttons {
     	return skull;
     }
 	
-	public ItemStack enderPearlButton(UUID uuid, String logType, Long timestamp, String location) {    	
+	public ItemStack enderPearlButton(UUID uuid, LogType logType, Long timestamp, String location) {    	
     	ItemStack item = new ItemStack(Material.ENDER_PEARL);
     	
     	ItemMeta meta = item.getItemMeta();
-    	meta.setDisplayName(Messages.deathLocationMessage);
+    	meta.setDisplayName(MessageData.deathLocationMessage);
     	    	
     	item.setItemMeta(meta);
     	
     	NBT nbt = new NBT(item);
     	
-    	nbt.setString("uuid", uuid + "");
-    	nbt.setString("logType", logType);
+    	nbt.setString("uuid", uuid.toString());
+    	nbt.setString("logType", logType.name());
     	nbt.setString("location", location);
     	item = nbt.setItemData();
 		    			
     	return item;
     }
 	
-	public ItemStack enderChestButton(UUID uuid, String logType, Long timestamp) {    	
+	public ItemStack enderChestButton(UUID uuid, LogType logType, Long timestamp) {    	
     	ItemStack item = new ItemStack(Material.ENDER_CHEST);
     	
     	ItemMeta meta = item.getItemMeta();
-    	meta.setDisplayName(Messages.restoreEnderChest);
+    	meta.setDisplayName(MessageData.restoreEnderChest);
     	    	
     	item.setItemMeta(meta);
     	
     	NBT nbt = new NBT(item);
     	
-    	nbt.setString("uuid", uuid + "");
-    	nbt.setString("logType", logType);
+    	nbt.setString("uuid", uuid.toString());
+    	nbt.setString("logType", logType.name());
     	nbt.setLong("timestamp", timestamp);
     	item = nbt.setItemData();
 		    			
     	return item;
     }
 	
-	public ItemStack healthButton(UUID uuid, String logType, Double health) {    	
+	public ItemStack healthButton(UUID uuid, LogType logType, Double health) {    	
     	ItemStack item = new ItemStack(Material.MELON);
     	
     	ItemMeta meta = item.getItemMeta();
-    	meta.setDisplayName(Messages.restoreFood);
+    	meta.setDisplayName(MessageData.restoreFood);
     	    	
     	item.setItemMeta(meta);
     	
     	NBT nbt = new NBT(item);
     	
-    	nbt.setString("uuid", uuid + "");
-    	nbt.setString("logType", logType);
+    	nbt.setString("uuid", uuid.toString());
+    	nbt.setString("logType", logType.name());
     	nbt.setDouble("health", health);
     	item = nbt.setItemData();
 		    			
     	return item;
     }
 	
-	public ItemStack hungerButton(UUID uuid, String logType, int hunger, float saturation) {    	
+	public ItemStack hungerButton(UUID uuid, LogType logType, int hunger, float saturation) {    	
     	ItemStack item = new ItemStack(Material.ROTTEN_FLESH);
     	
     	ItemMeta meta = item.getItemMeta();
-    	meta.setDisplayName(Messages.restoreHunger);
+    	meta.setDisplayName(MessageData.restoreHunger);
     	    	
     	item.setItemMeta(meta);
     	
     	NBT nbt = new NBT(item);
     	
-    	nbt.setString("uuid", uuid + "");
-    	nbt.setString("logType", logType);
+    	nbt.setString("uuid", uuid.toString());
+    	nbt.setString("logType", logType.name());
     	nbt.setInt("hunger", hunger);
     	nbt.setFloat("saturation", saturation);
     	item = nbt.setItemData();
@@ -280,23 +339,23 @@ public class Buttons {
     	return item;
     }
 	
-	public ItemStack experiencePotion(UUID uuid, String logType, float xp) {    	
-    	ItemStack item = new ItemStack(Material.EXP_BOTTLE);
-    	Messages messages = new Messages();
+	public ItemStack experiencePotion(UUID uuid, LogType logType, float xp) {    	
+    	ItemStack item = new ItemStack(Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE"));
+    	MessageData messages = new MessageData();
     	
     	ItemMeta meta = item.getItemMeta();
-    	meta.setDisplayName(Messages.restoreExperience);
+    	meta.setDisplayName(MessageData.restoreExperience);
     	
     	List<String> lore = new ArrayList<String>();
-    	lore.add(messages.restoreExperienceLevel((int) new RestoreInventory().getLevel(xp) + ""));
+    	lore.add(messages.restoreExperienceLevel((int) RestoreInventory.getLevel(xp) + ""));
    		meta.setLore(lore);
     	
     	item.setItemMeta(meta);
     	
     	NBT nbt = new NBT(item);
     	
-    	nbt.setString("uuid", uuid + "");
-    	nbt.setString("logType", logType);
+    	nbt.setString("uuid", uuid.toString());
+    	nbt.setString("logType", logType.name());
     	nbt.setFloat("xp", xp);
     	item = nbt.setItemData();
 		    			

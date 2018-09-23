@@ -7,13 +7,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.danjono.inventoryrollback.config.Messages;
+import me.danjono.inventoryrollback.config.MessageData;
+import me.inventoryrollback.danjono.data.LogType;
 
 public class BackupMenu {
 	
 	private Player staff;
 	private UUID playerUUID;
-	private String logType;
+	private LogType logType;
 	private Long timestamp;
 	private ItemStack[] mainInventory;
 	private ItemStack[] armour;
@@ -24,7 +25,7 @@ public class BackupMenu {
 	private float saturation;
 	private float xp;
 	
-	public BackupMenu(Player staff, UUID playerUUID, String logType, Long timestamp, ItemStack[] main, ItemStack[] armour, String location, boolean enderchest, Double health, int hunger, float saturation, float xp) {
+	public BackupMenu(Player staff, UUID playerUUID, LogType logType, Long timestamp, ItemStack[] main, ItemStack[] armour, String location, boolean enderchest, Double health, int hunger, float saturation, float xp) {
 		this.staff = staff;
 		this.playerUUID = playerUUID;
 		this.logType = logType;
@@ -46,14 +47,20 @@ public class BackupMenu {
 		int item = 0;
 		int position = 0;
 
-		//Add items
-		for (int i = 0; i < mainInventory.length - 5; i++) {
-			if (mainInventory[item] != null) {	
-				inv.setItem(position, mainInventory[item]);
-				position++;
-			}
-			
-			item++;
+		//If the backup file is invalid it will return null, we want to catch it here
+		try {
+    		//Add items
+    		for (int i = 0; i < mainInventory.length - 5; i++) {
+    			if (mainInventory[item] != null) {	
+    				inv.setItem(position, mainInventory[item]);
+    				position++;
+    			}
+    			
+    			item++;
+    		}
+		} catch (NullPointerException e) {
+		    staff.sendMessage(MessageData.pluginName + MessageData.errorInventory);
+		    return null;
 		}
 
 		item = 36;
@@ -77,7 +84,7 @@ public class BackupMenu {
 		}
 		
 		//Add back button
-		inv.setItem(46, buttons.inventoryMenuBackButton(Messages.backButton, playerUUID, logType));
+		inv.setItem(46, buttons.inventoryMenuBackButton(MessageData.backButton, playerUUID, logType));
 		
 		//Add teleport back button
 		if (location != null)

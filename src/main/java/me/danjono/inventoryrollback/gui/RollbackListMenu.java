@@ -17,19 +17,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.config.ConfigFile;
-import me.danjono.inventoryrollback.config.Messages;
-import me.danjono.inventoryrollback.config.PlayerData;
+import me.danjono.inventoryrollback.config.MessageData;
+import me.inventoryrollback.danjono.data.LogType;
+import me.inventoryrollback.danjono.data.PlayerData;
 
 public class RollbackListMenu {
 	
 	private Player staff;
 	private UUID playerUUID;
-	private String logType;
+	private LogType logType;
 	private int pageNumber;
 	
 	private FileConfiguration playerData;
 	
-	public RollbackListMenu(Player staff, OfflinePlayer player, String logType, int pageNumber) {
+	public RollbackListMenu(Player staff, OfflinePlayer player, LogType logType, int pageNumber) {
 		this.staff = staff;
 		this.playerUUID = player.getUniqueId();
 		this.logType = logType;
@@ -42,7 +43,7 @@ public class RollbackListMenu {
 		Inventory backupMenu = Bukkit.createInventory(staff, 45, InventoryName.ROLLBACK_LIST.getName());	
 		
 		Buttons buttons = new Buttons();
-		Messages messages = new Messages();
+		MessageData messages = new MessageData();
 					
 		//Check how many backups there are in total
 		int backups = 0;
@@ -107,13 +108,13 @@ public class RollbackListMenu {
 		List<String> lore = new ArrayList<String>();
 		
 		if (pageNumber == 1) {
-			ItemStack mainMenu = buttons.backButton(Messages.mainMenuButton, playerUUID, logType, 0, null);						
+			ItemStack mainMenu = buttons.backButton(MessageData.mainMenuButton, playerUUID, logType, 0, null);						
 			backupMenu.setItem(position + 1, mainMenu);
 		}		
 		
 		if (pageNumber > 1) {
 			lore.add("Page " + (pageNumber - 1));
-			ItemStack previousPage = buttons.backButton(Messages.previousPageButton, playerUUID, logType, pageNumber - 1, lore);
+			ItemStack previousPage = buttons.backButton(MessageData.previousPageButton, playerUUID, logType, pageNumber - 1, lore);
 						
 			backupMenu.setItem(position + 1, previousPage);
 			lore.clear();
@@ -121,7 +122,7 @@ public class RollbackListMenu {
 		
 		if (pageNumber < pagesRequired) {
 			lore.add("Page " + (pageNumber + 1));
-			ItemStack nextPage = buttons.nextButton(Messages.nextPageButton, playerUUID, logType, pageNumber + 1, lore);
+			ItemStack nextPage = buttons.nextButton(MessageData.nextPageButton, playerUUID, logType, pageNumber + 1, lore);
 						
 			backupMenu.setItem(position + 7, nextPage);
 			lore.clear();

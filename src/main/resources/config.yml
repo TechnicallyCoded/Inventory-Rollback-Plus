@@ -21,7 +21,7 @@ sounds:
     volume: 0.5
   enderChest:
     enabled: true
-    sound: 'ENTITY_ENDERDRAGON_FLAP'
+    sound: 'ENTITY_ENDER_DRAGON_FLAP'
     volume: 0.5
   food:
     enabled: true
@@ -43,10 +43,10 @@ icons:
       item: 'BONE'
       name: '&cDeaths'
     joinIcon:
-      item: 'SAPLING'
+      item: 'OAK_SAPLING'
       name: '&aJoins'
     quitIcon:
-      item: 'BED'
+      item: 'RED_BED'
       name: '&6Quits'
     worldChangeIcon:
       item: 'COMPASS'
@@ -71,6 +71,7 @@ messages:
   reload: '&2Plugin has been reloaded!'
   noPermission: '&cYou do not have permission!'
   error: '&cInvalid command'
+  errorInventory: '&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.'
   enable: '&2The plugin has been enabled'
   disable: '&2The plugin has been disabled'
   reload: '&2The plugin has been reloaded successfully'

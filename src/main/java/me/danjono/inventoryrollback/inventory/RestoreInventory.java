@@ -3,94 +3,134 @@ package me.danjono.inventoryrollback.inventory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.config.MessageData;
+
 public class RestoreInventory {
 
-	public ItemStack[] retrieveMainInventory(FileConfiguration playerData, Long timestamp) {
-		ItemStack[] inv = null;
+    private FileConfiguration playerData;
+    private Long timestamp;
 
-		try {
-			inv = stacksFromBase64(playerData.getString("data." + timestamp + ".inventory"));
-		} catch (IllegalArgumentException | IOException e) {
-			e.printStackTrace();
-		}
+    public RestoreInventory(FileConfiguration playerData, Long timestamp) {
+        this.playerData = playerData;
+        this.timestamp = timestamp;
+    }
 
-		return inv;
-	}
-	
-	public ItemStack[] retrieveArmour(FileConfiguration playerData, Long timestamp) {
-		ItemStack[] inv = null;
+    public ItemStack[] retrieveMainInventory() {
+        ItemStack[] inv = null;
 
-		try {
-			inv = stacksFromBase64(playerData.getString("data." + timestamp + ".armour"));
-			
-			if (inv.length == 0)
-				inv = null;
-		} catch (IllegalArgumentException | IOException e) {
-			e.printStackTrace();
-		}
+        try {
+            inv = stacksFromBase64(playerData.getString("data." + timestamp + ".inventory"));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
 
-		return inv;
-	}
-	
-	public ItemStack[] retrieveEnderChestInventory(FileConfiguration playerData, Long timestamp) {
-		ItemStack[] inv = null;
+        return inv;
+    }
 
-		try {
-			inv = stacksFromBase64(playerData.getString("data." + timestamp + ".enderchest"));
-		} catch (IllegalArgumentException | IOException e) {
-			e.printStackTrace();
-		}
+    public ItemStack[] retrieveArmour() {
+        ItemStack[] inv = null;
 
-		return inv;
-	}
-	
-	private ItemStack[] stacksFromBase64(String data) throws IOException {
-		try {
-			if(data == null || Base64Coder.decodeLines(data) == null) return new ItemStack[]{};
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
-			BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-			ItemStack[] stacks = new ItemStack[dataInput.readInt()];
+        try {
+            inv = stacksFromBase64(playerData.getString("data." + timestamp + ".armour"));
 
-			for (int i = 0; i < stacks.length; i++) {
-				stacks[i] = (ItemStack) dataInput.readObject();
-			}
-			dataInput.close();
-			return stacks;
-		} catch (ClassNotFoundException e) {
-			throw new IOException("Unable to decode class type.", e);
-		}
-	}
-	
-	public Double getHealth(FileConfiguration playerData, Long timestamp) {
-		return playerData.getDouble("data." + timestamp + ".health");
-	}
+            if (inv.length == 0)
+                inv = null;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
 
-	public int getHunger(FileConfiguration playerData, Long timestamp) {
-		return playerData.getInt("data." + timestamp + ".hunger");
-	}
-	
-	public float getSaturation(FileConfiguration playerData, Long timestamp) {
-		return (float) playerData.getDouble("data." + timestamp + ".saturation");
-	}
+        return inv;
+    }
 
-	public float getXP(FileConfiguration playerData, Long timestamp) {
-		return (float) playerData.getDouble("data." + timestamp + ".xp");
-	}
+    public ItemStack[] retrieveEnderChestInventory() {
+        ItemStack[] inv = null;
 
-	//Credits to Dev_Richard (https://www.spigotmc.org/members/dev_richard.38792/)
-	//https://gist.github.com/RichardB122/8958201b54d90afbc6f0
-	public void setTotalExperience(Player player, float xpFloat) {
+        try {
+            inv = stacksFromBase64(playerData.getString("data." + timestamp + ".enderchest"));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        return inv;
+    }
+
+    private ItemStack[] stacksFromBase64(String data) {
+        if (data == null || Base64Coder.decodeLines(data) == null) 
+            return new ItemStack[]{};
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+        BukkitObjectInputStream dataInput = null;
+        ItemStack[] stacks = null;
+
+        try {
+            dataInput = new BukkitObjectInputStream(inputStream);
+            stacks = new ItemStack[dataInput.readInt()];
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        for (int i = 0; i < stacks.length; i++) {
+            try {
+                stacks[i] = (ItemStack) dataInput.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                String packageVersion = playerData.getString("data." + timestamp + ".version");
+
+                //Backup generated before InventoryRollback 1.3
+                if (packageVersion == null) {
+                    InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. This is likely caused by a now incompatible material ID if the backup was originally generated on a different Minecraft server version.");
+                } 
+                //Backup was not generated on the same server version
+                else if (!packageVersion.equalsIgnoreCase(InventoryRollback.getPackageVersion())) {
+                    InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");   
+                } 
+                //Unknown error
+                else if (packageVersion.equalsIgnoreCase(InventoryRollback.getPackageVersion())) {
+                    InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. Please upload the affected players backup file to Pastebin and send a link to it in the discussion page on Spigot for InventoryRollback detailing the problem as accurately as you can.");
+                }
+
+                try { dataInput.close(); } catch (IOException e1) {}
+                return null;
+            }
+        }
+
+        try { dataInput.close(); } catch (IOException e1) {}
+
+        return stacks;
+    }
+
+    public Double getHealth() {
+        return playerData.getDouble("data." + timestamp + ".health");
+    }
+
+    public int getHunger() {
+        return playerData.getInt("data." + timestamp + ".hunger");
+    }
+
+    public float getSaturation() {
+        return (float) playerData.getDouble("data." + timestamp + ".saturation");
+    }
+
+    public float getXP() {
+        return (float) playerData.getDouble("data." + timestamp + ".xp");
+    }
+
+    //Credits to Dev_Richard (https://www.spigotmc.org/members/dev_richard.38792/)
+    //https://gist.github.com/RichardB122/8958201b54d90afbc6f0
+    public static void setTotalExperience(Player player, float xpFloat) {
         int xp = (int) xpFloat;
-		
-		//Levels 0 through 15
-        if(xp >= 0 && xp < 351) {
+
+        //Levels 0 through 15
+        if (xp >= 0 && xp < 351) {
             //Calculate Everything
             int a = 1; int b = 6; int c = -xp;
             int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
@@ -104,7 +144,7 @@ public class RestoreInventory {
             player.setLevel(level);
             player.setExp(experience);
             //Levels 16 through 30
-        } else if(xp >= 352 && xp < 1507) {
+        } else if (xp >= 352 && xp < 1507) {
             //Calculate Everything
             double a = 2.5; double b = -40.5; int c = -xp + 360;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
@@ -135,12 +175,12 @@ public class RestoreInventory {
             player.setExp(experience);
         }
     }
-	
-	public float getLevel(float floatXP) {
+
+    public static float getLevel(float floatXP) {
         int xp = (int) floatXP;
-		
-		//Levels 0 through 15
-        if(xp >= 0 && xp < 351) {
+
+        //Levels 0 through 15
+        if (xp >= 0 && xp < 351) {
             //Calculate Everything
             int a = 1; int b = 6; int c = -xp;
             int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
@@ -152,7 +192,7 @@ public class RestoreInventory {
 
             return level;
             //Levels 16 through 30
-        } else if(xp >= 352 && xp < 1507) {
+        } else if (xp >= 352 && xp < 1507) {
             //Calculate Everything
             double a = 2.5; double b = -40.5; int c = -xp + 360;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
@@ -183,7 +223,7 @@ public class RestoreInventory {
     }
 
     private static float round(float d, int decimalPlace) {
-        BigDecimal bd = new BigDecimal((double) d); //works the same, see http://stackoverflow.com/a/916110
+        BigDecimal bd = new BigDecimal((double) d);
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_DOWN);
         return bd.floatValue();
     }

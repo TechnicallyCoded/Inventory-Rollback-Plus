@@ -9,22 +9,22 @@ import org.bukkit.entity.Player;
 
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigFile;
-import me.danjono.inventoryrollback.config.Messages;
+import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.gui.MainMenu;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
+import me.inventoryrollback.danjono.data.LogType;
 
-public class Commands implements CommandExecutor {
+public class Commands extends ConfigFile implements CommandExecutor {
 
 	@Override		
 	public boolean onCommand(CommandSender sender, Command cmd, String Label, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("inventoryrollback") || cmd.getName().equalsIgnoreCase("ir")) {
 
-			Messages messages = new Messages();
-			ConfigFile config = new ConfigFile();
+			MessageData messages = new MessageData();
 
 			if (args.length == 0) {
 				//Give version information
-				sender.sendMessage(Messages.pluginName + "Server is running v" + InventoryRollback.version + " - Created by danjono");
+				sender.sendMessage(MessageData.pluginName + "Server is running v" + InventoryRollback.getPluginVersion() + " - Created by danjono");
 				return true;
 			} else {
 				switch (args[0]) {
@@ -32,7 +32,7 @@ public class Commands implements CommandExecutor {
 						if (sender instanceof Player) {
 							if (sender.hasPermission("inventoryrollback.restore")) {
 								if (!ConfigFile.enabled) {
-									sender.sendMessage(Messages.pluginName + Messages.disabledMessage);
+									sender.sendMessage(MessageData.pluginName + MessageData.disabledMessage);
 									break;
 								}
 								
@@ -45,74 +45,74 @@ public class Commands implements CommandExecutor {
 									OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
 	
 									if (!rollbackPlayer.hasPlayedBefore()) {
-										sender.sendMessage(Messages.pluginName + messages.neverOnServer(rollbackPlayer.getName()));
+										sender.sendMessage(MessageData.pluginName + messages.neverOnServer(rollbackPlayer.getName()));
 										break;
 									}
 	
 									staff.openInventory(new MainMenu(staff, rollbackPlayer).getMenu());
 								} else {
-									sender.sendMessage(Messages.pluginName + Messages.error);
+									sender.sendMessage(MessageData.pluginName + MessageData.error);
 								}
 							} else {
-								sender.sendMessage(Messages.pluginName + Messages.noPermission);
+								sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
 							}
 						} else {
-							sender.sendMessage(Messages.pluginName + Messages.playerOnly);
+							sender.sendMessage(MessageData.pluginName + MessageData.playerOnly);
 						}
 						break;
 					} case "forcebackup": {						
 						if (sender.hasPermission("inventoryrollback.forcebackup")) {
 							if (args.length == 1 || args.length > 2) {
-								sender.sendMessage(Messages.pluginName + Messages.error);
+								sender.sendMessage(MessageData.pluginName + MessageData.error);
 								break;
 							}
 							
 							@SuppressWarnings("deprecation")
 							OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
 							if (!player.hasPlayedBefore()) {
-								sender.sendMessage(Messages.pluginName + messages.neverOnServer(player.getName()));
+								sender.sendMessage(MessageData.pluginName + messages.neverOnServer(player.getName()));
 								break;
 							} else if (!player.isOnline()) {
-								sender.sendMessage(Messages.pluginName + messages.notOnline(player.getName()));
+								sender.sendMessage(MessageData.pluginName + messages.notOnline(player.getName()));
 								break;
 							}
 								
 							Player onlinePlayer = (Player) player;
-							new SaveInventory(onlinePlayer, "FORCE", null, onlinePlayer.getInventory(), onlinePlayer.getEnderChest()).createSave();
-							sender.sendMessage(Messages.pluginName + messages.forceSaved(player.getName()));
+							new SaveInventory(onlinePlayer, LogType.FORCE, null, onlinePlayer.getInventory(), onlinePlayer.getEnderChest()).createSave();
+							sender.sendMessage(MessageData.pluginName + messages.forceSaved(player.getName()));
 
 							break;
 						} else {
-							sender.sendMessage(Messages.pluginName + Messages.noPermission);
+							sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
 						}
 						break;
 					} case "enable": {
 						if (sender.hasPermission("InventoryRollback.enable")) {
-							config.setEnabled(true);
-							config.saveConfig();
+							setEnabled(true);
+							saveConfig();
 	
-							sender.sendMessage(Messages.pluginName + Messages.enabledMessage);
+							sender.sendMessage(MessageData.pluginName + MessageData.enabledMessage);
 						} else {
-							sender.sendMessage(Messages.pluginName + Messages.noPermission);
+							sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
 						}
 						break;
 					} case "disable": { 
 						if (sender.hasPermission("InventoryRollback.disable")) {
-							config.setEnabled(false);
-							config.saveConfig();
+							setEnabled(false);
+							saveConfig();
 	
-							sender.sendMessage(Messages.pluginName + Messages.disabledMessage);
+							sender.sendMessage(MessageData.pluginName + MessageData.disabledMessage);
 						} else {
-							sender.sendMessage(Messages.pluginName + Messages.noPermission);
+							sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
 						}
 						break;
 					} case "reload": { 
 						if (sender.hasPermission("InventoryRollback.reload")) {										
-							new InventoryRollback().startupTasks();
+							InventoryRollback.startupTasks();
 	
-							sender.sendMessage(Messages.pluginName + Messages.reloadMessage);
+							sender.sendMessage(MessageData.pluginName + MessageData.reloadMessage);
 						} else {
-							sender.sendMessage(Messages.pluginName + Messages.noPermission);
+							sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
 						}
 						break;
 					}
