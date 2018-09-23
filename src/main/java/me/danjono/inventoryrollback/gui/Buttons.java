@@ -31,7 +31,7 @@ public class Buttons {
     private static final Material pageSelector = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "WHITE_BANNER" : "BANNER");
     private static final Material teleport = Material.ENDER_PEARL;
     private static final Material enderChest = Material.ENDER_CHEST;
-    private static final Material health = Material.MELON;
+    private static final Material health = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "MELON_SLICE" : "MELON");
     private static final Material hunger = Material.ROTTEN_FLESH;
     private static final Material experience = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE");
 
