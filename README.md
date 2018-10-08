@@ -1,9 +1,9 @@
 ![](https://i.imgur.com/KmwQQoi.png)
-# InventoryRollback
+# Inventory Rollback
 
 ### Minecraft Spigot Plugin - Compatible with versions 1.8.8 - 1.13.1
 
-This plugin will log a players' inventory, health, hunger, experience, and enderchest during certain events. Perfect if someone loses their gear because of an admin mishap or if a bad plugin accidentally wipes a players data for example! These logged events include:-  
+This plugin will log a players' inventory, health, hunger, experience, and ender chest during certain events. Perfect if someone loses their gear because of an admin mishap or if a bad plugin accidentally wipes a players data for example! These logged events include:-  
 
 -   Player death
 -   Player joining the server
@@ -17,8 +17,8 @@ By default, it will log 50 deaths and 10 joins, disconnects, world changes and f
 **If upgrading a current server from before 1.13 you will need to delete all your backup data due to the changes with materials in the newest versions.**
 
 ## Commands
-/ir restore <**PLAYER**> - Opens a GUI to select the backup you require.  
-/ir forcebackup <**PLAYER**> - Forces a backup for an online player.  
+/ir restore %**PLAYERNAME**% - Opens a GUI to select the backup you require.  
+/ir forcebackup %**PLAYERNAME**% - Forces a backup for an online player.  
 
 ## Permissions
 
