@@ -22,9 +22,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBT;
-import me.inventoryrollback.danjono.data.LogType;
 
 public class Buttons {
     

@@ -1,4 +1,4 @@
-package me.inventoryrollback.danjono.data;
+package me.danjono.inventoryrollback.data;
 
 public enum LogType {
     

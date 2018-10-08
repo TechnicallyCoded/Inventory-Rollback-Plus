@@ -18,8 +18,8 @@ import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.config.MessageData;
-import me.inventoryrollback.danjono.data.LogType;
-import me.inventoryrollback.danjono.data.PlayerData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 
 public class RollbackListMenu {
 	

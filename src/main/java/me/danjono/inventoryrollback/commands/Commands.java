@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.gui.MainMenu;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
-import me.inventoryrollback.danjono.data.LogType;
 
 public class Commands extends ConfigFile implements CommandExecutor {
 
@@ -39,17 +39,16 @@ public class Commands extends ConfigFile implements CommandExecutor {
 								Player staff = (Player) sender;
 	
 								if(args.length == 1) {
-									staff.openInventory(new MainMenu(staff, staff).getMenu());
+									try {
+									    staff.openInventory(new MainMenu(staff, staff).getMenu());
+									} catch (NullPointerException e) {}
 								} else if(args.length == 2) {
 									@SuppressWarnings("deprecation")
 									OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
-	
-									if (!rollbackPlayer.hasPlayedBefore()) {
-										sender.sendMessage(MessageData.pluginName + messages.neverOnServer(rollbackPlayer.getName()));
-										break;
-									}
-	
-									staff.openInventory(new MainMenu(staff, rollbackPlayer).getMenu());
+									
+									try {
+									    staff.openInventory(new MainMenu(staff, rollbackPlayer).getMenu());
+								    } catch (NullPointerException e) {}
 								} else {
 									sender.sendMessage(MessageData.pluginName + MessageData.error);
 								}
@@ -68,18 +67,16 @@ public class Commands extends ConfigFile implements CommandExecutor {
 							}
 							
 							@SuppressWarnings("deprecation")
-							OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
-							if (!player.hasPlayedBefore()) {
-								sender.sendMessage(MessageData.pluginName + messages.neverOnServer(player.getName()));
-								break;
-							} else if (!player.isOnline()) {
-								sender.sendMessage(MessageData.pluginName + messages.notOnline(player.getName()));
+							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+
+							if (!offlinePlayer.isOnline()) {
+								sender.sendMessage(MessageData.pluginName + messages.notOnline(offlinePlayer.getName()));
 								break;
 							}
 								
-							Player onlinePlayer = (Player) player;
-							new SaveInventory(onlinePlayer, LogType.FORCE, null, onlinePlayer.getInventory(), onlinePlayer.getEnderChest()).createSave();
-							sender.sendMessage(MessageData.pluginName + messages.forceSaved(player.getName()));
+							Player player = (Player) offlinePlayer;
+							new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+							sender.sendMessage(MessageData.pluginName + messages.forceSaved(offlinePlayer.getName()));
 
 							break;
 						} else {

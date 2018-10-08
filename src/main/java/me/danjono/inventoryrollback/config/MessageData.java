@@ -16,7 +16,7 @@ public class MessageData extends ConfigFile {
 	public static String reloadMessage;
 	public static String playerOnly;
 	
-	private static String neverOnServer;
+	private static String noBackup;
 	private static String notOnline;
 	private static String forceSaved;
 	private static String notForcedSaved;
@@ -46,6 +46,7 @@ public class MessageData extends ConfigFile {
 	private static String deathLocationY;
 	private static String deathLocationZ;
 	private static String deathLocationTeleport;
+	private static String deathLocationInvalidWorld;
 	public static String deathLocationMessage;
 	private static String deathReason;
 	private static String deathTime;
@@ -74,7 +75,7 @@ public class MessageData extends ConfigFile {
 		reloadMessage = convertColourCodes((String) getDefaultValue("messages.reload", "&2The plugin has been reloaded successfully"));
 		playerOnly = convertColourCodes((String) getDefaultValue("messages.playerOnly", "&cCommand can only be run by a player"));
 		
-		neverOnServer = convertColourCodes((String) getDefaultValue("messages.neverOnServer", "%NAME% has never played on this server"));
+		noBackup = convertColourCodes((String) getDefaultValue("messages.noBackup", "There is currently no backup for %NAME%"));
 		notOnline = convertColourCodes((String) getDefaultValue("messages.notOnline", "%NAME% is not currently online"));
 		forceSaved = convertColourCodes((String) getDefaultValue("messages.forceSaved", "%NAME%'s inventory has been force saved"));
 		notForcedSaved = convertColourCodes((String) getDefaultValue("messages.notForcedSaved", "There was an issue with saving %NAME%'s inventory"));
@@ -104,6 +105,7 @@ public class MessageData extends ConfigFile {
 		deathLocationY = convertColourCodes((String) getDefaultValue("messages.deathLocationY", "&6Y: &f%Y%"));
 		deathLocationZ = convertColourCodes((String) getDefaultValue("messages.deathLocationZ", "&6Z: &f%Z%"));
 		deathLocationTeleport = convertColourCodes((String) getDefaultValue("messages.deathLocationTeleport", "You have been teleported to %LOCATION%"));
+		deathLocationInvalidWorld = convertColourCodes((String) getDefaultValue("messages.deathLocationInvalidWorld", "The world %WORLD% is not currently loaded on the server."));
 		deathLocationMessage = convertColourCodes((String) getDefaultValue("messages.deathLocationMessage", "&3Teleport to where this entry was logged."));
 		deathReason = convertColourCodes((String) getDefaultValue("messages.deathReason", "&6Death reason: &f%REASON%"));
 		deathTime = convertColourCodes((String) getDefaultValue("messages.deathTime", "&6Time: &f%TIME%"));
@@ -124,8 +126,8 @@ public class MessageData extends ConfigFile {
     	return ChatColor.translateAlternateColorCodes('&', text);
     }
     
-    public String neverOnServer(String name) {
-    	return neverOnServer.replaceAll("%NAME%", name);
+    public String noBackup(String name) {
+    	return noBackup.replaceAll("%NAME%", name);
     }
     
     public String notOnline(String name) {
@@ -210,6 +212,10 @@ public class MessageData extends ConfigFile {
     
     public String deathLocationTeleport(Location location) {
     	return deathLocationTeleport.replaceAll("%LOCATION%", "X:" + location.getX() + " Y:" + location.getY() + " Z:" + location.getZ());
+    }
+    
+    public String deathLocationInvalidWorld(String world) {
+        return deathLocationInvalidWorld.replaceAll("%WORLD%", world);
     }
     
     public String deathReason(String reason) {

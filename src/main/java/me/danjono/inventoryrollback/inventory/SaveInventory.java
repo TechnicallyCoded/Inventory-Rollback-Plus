@@ -17,8 +17,8 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.InventoryRollback.VersionName;
-import me.inventoryrollback.danjono.data.LogType;
-import me.inventoryrollback.danjono.data.PlayerData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 
 public class SaveInventory {
 	

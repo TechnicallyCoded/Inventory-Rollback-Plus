@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.gui.BackupMenu;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
@@ -25,8 +27,6 @@ import me.danjono.inventoryrollback.gui.MainMenu;
 import me.danjono.inventoryrollback.gui.RollbackListMenu;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBT;
-import me.inventoryrollback.danjono.data.LogType;
-import me.inventoryrollback.danjono.data.PlayerData;
 
 public class ClickGUI extends Buttons implements Listener {
 
@@ -182,17 +182,16 @@ public class ClickGUI extends Buttons implements Listener {
 				staff.openInventory(new RollbackListMenu(staff, offlinePlayer, logType, 1).showBackups());
 			} else if (currentItem.getType().equals(getEnderPearlIcon().getType())) {
 				//Clicked Ender Pearl
-				String[] location = nbt.getString("location").split(",");
+				String[] location = nbt.getString("location").split(",");			
+				World world = Bukkit.getWorld(location[0]);
 				
-				World world = null;
-				try {
-					world = Bukkit.getWorld(location[0]);
-				} catch (NullPointerException e1) {
+				if (world == null) {
 					//World is not available
+				    staff.sendMessage(MessageData.pluginName + new MessageData().deathLocationInvalidWorld(location[0]));
+				    return;
 				}
 				
-				Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3])).add(0.5, 0, 0.5);
-				
+				Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3])).add(0.5, 0, 0.5);				
 				staff.teleport(loc);
 
 				if (SoundData.enderPearlEnabled)
@@ -277,7 +276,7 @@ public class ClickGUI extends Buttons implements Listener {
 					staff.sendMessage(MessageData.pluginName + messages.experienceRestored(player.getName(), (int) RestoreInventory.getLevel(xp)));
 					if (!staff.getUniqueId().equals(player.getUniqueId()))
 						player.sendMessage(MessageData.pluginName + messages.experienceRestoredPlayer(staff.getName(), xp.intValue()));
-				} else {
+				} else {				    
 					staff.sendMessage(MessageData.pluginName + messages.experienceNotOnline(offlinePlayer.getName()));
 				}
 			}

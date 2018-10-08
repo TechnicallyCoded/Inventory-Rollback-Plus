@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.config.MessageData;
-import me.inventoryrollback.danjono.data.LogType;
+import me.danjono.inventoryrollback.data.LogType;
 
 public class BackupMenu {
 	

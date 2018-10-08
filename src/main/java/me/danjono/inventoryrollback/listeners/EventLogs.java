@@ -9,8 +9,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.danjono.inventoryrollback.config.ConfigFile;
+import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
-import me.inventoryrollback.danjono.data.LogType;
 
 public class EventLogs implements Listener {
 

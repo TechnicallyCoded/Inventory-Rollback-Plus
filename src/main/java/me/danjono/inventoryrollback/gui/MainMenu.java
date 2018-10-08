@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.config.MessageData;
-import me.inventoryrollback.danjono.data.LogType;
-import me.inventoryrollback.danjono.data.PlayerData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 
 public class MainMenu {
 	
@@ -35,6 +35,15 @@ public class MainMenu {
 		File deathsFile = new PlayerData(player, LogType.DEATH).getFile();
 		File worldChangeFile = new PlayerData(player, LogType.WORLD_CHANGE).getFile();
 		File forceSaveFile = new PlayerData(player, LogType.FORCE).getFile();
+		
+		if (!joinsFile.exists() 
+		        && !quitsFile.exists()
+		        && !deathsFile.exists()
+		        && !worldChangeFile.exists()
+		        && !forceSaveFile.exists()) {
+		    staff.sendMessage(MessageData.pluginName + new MessageData().noBackup(player.getName()));
+		    return null;
+		}
 
 		mainMenu.setItem(0, buttons.playerHead(player, null));
 
