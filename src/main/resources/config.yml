@@ -68,13 +68,12 @@ bStats: true
 
 ## You can change the text that is displayed in chat and the GUI here.
 messages:
-  reload: '&2Plugin has been reloaded!'
+  reload: '&2The plugin has been reloaded successfully'.
   noPermission: '&cYou do not have permission!'
   error: '&cInvalid command.'
   errorInventory: '&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.'
   enable: '&2The plugin has been enabled.'
   disable: '&2The plugin has been disabled.'
-  reload: '&2The plugin has been reloaded successfully'.
   playerOnly: '&cCommand can only be run by a player.'
   noBackup: 'There is currently no backup for %NAME%.'
   notOnline: '%NAME% is not currently online.'
