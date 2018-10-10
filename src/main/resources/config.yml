@@ -68,7 +68,7 @@ bStats: true
 
 ## You can change the text that is displayed in chat and the GUI here.
 messages:
-  reload: '&2The plugin has been reloaded successfully'.
+  reload: '&2The plugin has been reloaded successfully.'
   noPermission: '&cYou do not have permission!'
   error: '&cInvalid command.'
   errorInventory: '&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.'
@@ -97,7 +97,7 @@ messages:
   deathLocationY: '&6Y: &f%Y%'
   deathLocationZ: '&6Z: &f%Z%'
   deathLocationTeleport: 'You have been teleported to %LOCATION%'
-  deathLocationInvalidWorld: 'The world %WORLD% is not currently loaded on the server."
+  deathLocationInvalidWorld: 'The world %WORLD% is not currently loaded on the server.'
   deathLocationMessage: '&3Teleport to where this entry was logged.'
   deathReason: '&6Death reason: &f%REASON%'
   deathTime: '&6Time: &f%TIME%'
