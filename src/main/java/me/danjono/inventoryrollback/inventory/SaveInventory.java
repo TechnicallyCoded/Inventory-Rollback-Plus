@@ -84,9 +84,9 @@ public class SaveInventory {
 		inventoryData.set("data." + time + ".hunger", player.getFoodLevel());
 		inventoryData.set("data." + time + ".saturation", player.getSaturation());
 		inventoryData.set("data." + time + ".location.world", player.getWorld().getName());
-		inventoryData.set("data." + time + ".location.x", (int) player.getLocation().getX());
-		inventoryData.set("data." + time + ".location.y", (int) player.getLocation().getY());
-		inventoryData.set("data." + time + ".location.z", (int) player.getLocation().getZ());
+		inventoryData.set("data." + time + ".location.x", Math.floor(player.getLocation().getX()) + 0.5);
+		inventoryData.set("data." + time + ".location.y", Math.floor(player.getLocation().getY()));
+		inventoryData.set("data." + time + ".location.z", Math.floor(player.getLocation().getZ()) + 0.5);
 		inventoryData.set("data." + time + ".logType", logType.name());
 		inventoryData.set("data." + time + ".version", InventoryRollback.getPackageVersion());
 
