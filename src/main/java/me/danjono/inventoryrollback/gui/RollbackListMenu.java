@@ -86,9 +86,9 @@ public class RollbackListMenu {
 					lore.add(deathReason);
 				
 				String world = playerData.getString("data." + time + ".location.world");
-				String x = playerData.getString("data." + time + ".location.x");
-				String y = playerData.getString("data." + time + ".location.y");
-				String z = playerData.getString("data." + time + ".location.z");
+				String x = playerData.getInt("data." + time + ".location.x") + "";
+				String y = playerData.getInt("data." + time + ".location.y") + "";
+				String z = playerData.getInt("data." + time + ".location.z") + "";
 				String location = world + "," + x + "," + y + "," + z;
 				
 				lore.add(messages.deathLocationWorld(world));

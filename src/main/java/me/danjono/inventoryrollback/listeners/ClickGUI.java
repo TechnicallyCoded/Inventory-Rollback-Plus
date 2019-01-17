@@ -41,7 +41,7 @@ public class ClickGUI extends Buttons implements Listener {
 		if (!staff.hasPermission("inventoryrollback.restore"))
 			return;
 
-		if (e.getClickedInventory() == null) {
+		if (e.getInventory() == null) {
 			e.setCancelled(false);
 			return;
 		}
@@ -49,7 +49,7 @@ public class ClickGUI extends Buttons implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		ItemStack cursorItem = e.getCursor();
 
-		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9) && e.getClickedInventory().getName().equals(InventoryName.MAIN_MENU.getName())) {				
+		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9) && e.getInventory().getName().equals(InventoryName.MAIN_MENU.getName())) {				
 			//Clicked in menu area	
 			if (currentItem.getType() == Material.AIR && cursorItem.getType() == Material.AIR) {
 				return;
@@ -79,7 +79,7 @@ public class ClickGUI extends Buttons implements Listener {
 		if (!staff.hasPermission("inventoryrollback.restore"))
 			return;
 
-		if (e.getClickedInventory() == null) {
+		if (e.getInventory() == null) {
 			e.setCancelled(false);
 			return;
 		}
@@ -87,7 +87,7 @@ public class ClickGUI extends Buttons implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		ItemStack cursorItem = e.getCursor();
 
-		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 45) && e.getClickedInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName())) {
+		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 45) && e.getInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName())) {
 			//Clicked in menu area	
 			if (currentItem.getType() == Material.AIR && cursorItem.getType() == Material.AIR)
 				return;
@@ -155,7 +155,7 @@ public class ClickGUI extends Buttons implements Listener {
 		if (!staff.hasPermission("inventoryrollback.restore"))
 			return;
 
-		if (e.getClickedInventory() == null) {
+		if (e.getInventory() == null) {
 			e.setCancelled(false);
 			return;
 		}
@@ -163,7 +163,7 @@ public class ClickGUI extends Buttons implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		MessageData messages = new MessageData();
 
-		if ((e.getRawSlot() >= 45 && e.getRawSlot() < 54) && e.getClickedInventory().getName().equals(InventoryName.BACKUP.getName())) {
+		if ((e.getRawSlot() >= 45 && e.getRawSlot() < 54) && e.getInventory().getName().equals(InventoryName.BACKUP.getName())) {
 			NBT nbt = new NBT(currentItem);
 			if (!nbt.hasUUID())
 				return;
@@ -180,8 +180,8 @@ public class ClickGUI extends Buttons implements Listener {
 			if (currentItem.getType().equals(getPageSelectorIcon().getType())) {
 				//Click on back button
 				staff.openInventory(new RollbackListMenu(staff, offlinePlayer, logType, 1).showBackups());
-			} else if (currentItem.getType().equals(getEnderPearlIcon().getType())) {
-				//Clicked Ender Pearl
+			} else if (currentItem.getType().equals(getEnderPearlIcon().getType())) {			    
+			    //Clicked Ender Pearl
 				String[] location = nbt.getString("location").split(",");			
 				World world = Bukkit.getWorld(location[0]);
 				
@@ -198,6 +198,10 @@ public class ClickGUI extends Buttons implements Listener {
 					staff.playSound(loc, SoundData.enderPearl, SoundData.enderPearlVolume, 1);
 
 				staff.sendMessage(MessageData.pluginName + messages.deathLocationTeleport(loc));
+				
+                //Stop the function working on shift click as cancelling the event seems to not stop the item being moved to player inventory
+                if (e.isShiftClick())
+                    return;
 			} else if (currentItem.getType().equals(getEnderChestIcon().getType())) {
 				//Clicked Ender Chest
 

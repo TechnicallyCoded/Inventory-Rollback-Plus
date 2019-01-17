@@ -13,7 +13,7 @@ maxSaves:
 folderLocation: 'DEFAULT'  
 
 ## Set the sounds to play to the player when you restore parts of their inventory.
-## For 1.8 sounds, the legacy name for the sound will need to be used - https://www.spigotmc.org/wiki/cc-sounds-list/
+## For 1.8 - 1.12 sounds, the legacy name for the sound will need to be used - https://www.spigotmc.org/wiki/cc-sounds-list/
 sounds:
   enderPearl:
     enabled: true
