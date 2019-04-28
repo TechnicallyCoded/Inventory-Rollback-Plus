@@ -28,12 +28,12 @@ import me.danjono.inventoryrollback.reflections.NBT;
 
 public class Buttons {
     
-    private static final Material pageSelector = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "WHITE_BANNER" : "BANNER");
+    private static final Material pageSelector = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "WHITE_BANNER" : "BANNER");
     private static final Material enderPearl = Material.ENDER_PEARL;
     private static final Material enderChest = Material.ENDER_CHEST;
-    private static final Material health = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "MELON_SLICE" : "MELON");
+    private static final Material health = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "MELON_SLICE" : "MELON");
     private static final Material hunger = Material.ROTTEN_FLESH;
-    private static final Material experience = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE");
+    private static final Material experience = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE");
 
     public static ItemStack getPageSelectorIcon() {
         return new ItemStack(pageSelector);
@@ -231,7 +231,7 @@ public class Buttons {
 	public ItemStack playerHead(OfflinePlayer player, List<String> lore) {    	
     	ItemStack skull = null;
     	
-    	if (InventoryRollback.getVersion().equals(VersionName.v1_13)) {
+    	if (InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS)) {
     	    skull = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
     	} else {
     	    skull = new ItemStack(Material.getMaterial("SKULL_ITEM"), 1, (short) SkullType.PLAYER.ordinal());
@@ -240,7 +240,7 @@ public class Buttons {
     	SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
     	
         try {
-            if (InventoryRollback.getVersion().equals(VersionName.v1_13)) {              
+            if (InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS)) {              
                 Method method = skullMeta.getClass().getMethod("setOwningPlayer", OfflinePlayer.class);
                 method.setAccessible(true);
                 method.invoke(skullMeta, player);

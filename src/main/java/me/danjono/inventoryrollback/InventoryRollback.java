@@ -79,16 +79,17 @@ public class InventoryRollback extends JavaPlugin {
         v1_11_R1,
         v1_12_R1,
         v1_13_R1,
-        v1_13_R2
+        v1_13_R2,
+        v1_14_R1
     }
 
     public enum VersionName {
         v1_8,
         v1_9_v1_12,
-        v1_13
+        v1_13_PLUS
     }
     
-    private static VersionName version = VersionName.v1_13;
+    private static VersionName version = VersionName.v1_13_PLUS;
     
     public static VersionName getVersion() {
         return version;

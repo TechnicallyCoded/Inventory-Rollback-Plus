@@ -107,13 +107,13 @@ public class ConfigFile {
         try {
             joinIcon = Material.valueOf((String) getDefaultValue("icons.mainMenu.joinIcon.item", "SAPLING"));
         } catch (IllegalArgumentException e) {
-            joinIcon = Material.valueOf(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "OAK_SAPLING" : "SAPLING");
+            joinIcon = Material.valueOf(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "OAK_SAPLING" : "SAPLING");
         }
 
         try {
             quitIcon = Material.valueOf((String) getDefaultValue("icons.mainMenu.quitIcon.item", "BED"));
         } catch (IllegalArgumentException e) {
-            quitIcon = Material.valueOf(InventoryRollback.getVersion().equals(VersionName.v1_13) ? "RED_BED" : "BED");
+            quitIcon = Material.valueOf(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "RED_BED" : "BED");
         }
 
         try {

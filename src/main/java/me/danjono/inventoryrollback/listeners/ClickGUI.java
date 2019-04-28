@@ -32,7 +32,7 @@ public class ClickGUI extends Buttons implements Listener {
 
 	@EventHandler
 	private void onMainMenuClick(InventoryClickEvent e) {
-		if (!e.getView().getTopInventory().getName().equals(InventoryName.MAIN_MENU.getName()))
+		if (!e.getView().getTitle().equals(InventoryName.MAIN_MENU.getName()))
 			return;
 
 		e.setCancelled(true);
@@ -49,7 +49,7 @@ public class ClickGUI extends Buttons implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		ItemStack cursorItem = e.getCursor();
 
-		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9) && e.getInventory().getName().equals(InventoryName.MAIN_MENU.getName())) {				
+		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9) && e.getView().getTitle().equals(InventoryName.MAIN_MENU.getName())) {				
 			//Clicked in menu area	
 			if (currentItem.getType() == Material.AIR && cursorItem.getType() == Material.AIR) {
 				return;
@@ -70,7 +70,7 @@ public class ClickGUI extends Buttons implements Listener {
 
 	@EventHandler
 	private void onRollbackListMenuClick(InventoryClickEvent e) {
-		if (!e.getView().getTopInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName()))
+		if (!e.getView().getTitle().equals(InventoryName.ROLLBACK_LIST.getName()))
 			return;
 
 		e.setCancelled(true);
@@ -87,7 +87,7 @@ public class ClickGUI extends Buttons implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		ItemStack cursorItem = e.getCursor();
 
-		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 45) && e.getInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName())) {
+		if ((e.getRawSlot() >= 0 && e.getRawSlot() < 45) && e.getView().getTitle().equals(InventoryName.ROLLBACK_LIST.getName())) {
 			//Clicked in menu area	
 			if (currentItem.getType() == Material.AIR && cursorItem.getType() == Material.AIR)
 				return;
@@ -146,7 +146,7 @@ public class ClickGUI extends Buttons implements Listener {
 
 	@EventHandler
 	private void onBackupMenuClick(InventoryClickEvent e) {
-		if (!e.getView().getTopInventory().getName().equals(InventoryName.BACKUP.getName()))
+		if (!e.getView().getTitle().equals(InventoryName.BACKUP.getName()))
 			return;
 
 		e.setCancelled(true);
@@ -163,7 +163,7 @@ public class ClickGUI extends Buttons implements Listener {
 		ItemStack currentItem = e.getCurrentItem();
 		MessageData messages = new MessageData();
 
-		if ((e.getRawSlot() >= 45 && e.getRawSlot() < 54) && e.getInventory().getName().equals(InventoryName.BACKUP.getName())) {
+		if ((e.getRawSlot() >= 45 && e.getRawSlot() < 54) && e.getView().getTitle().equals(InventoryName.BACKUP.getName())) {
 			NBT nbt = new NBT(currentItem);
 			if (!nbt.hasUUID())
 				return;
@@ -291,7 +291,7 @@ public class ClickGUI extends Buttons implements Listener {
 
 	@EventHandler
 	private void blockMenuDrags(InventoryDragEvent e) {
-		if (!e.getInventory().getName().equals(InventoryName.MAIN_MENU.getName()) && !e.getInventory().getName().equals(InventoryName.ROLLBACK_LIST.getName()))
+		if (!e.getView().getTitle().equals(InventoryName.MAIN_MENU.getName()) && !e.getView().getTitle().equals(InventoryName.ROLLBACK_LIST.getName()))
 			return;
 
 		e.setCancelled(true);
