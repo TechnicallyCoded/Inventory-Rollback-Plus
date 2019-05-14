@@ -141,7 +141,6 @@ public class ClickGUI extends Buttons implements Listener {
 
                 RestoreInventory restore = new RestoreInventory(playerData, timestamp);
 
-
                 ItemStack[] inventory = restore.retrieveMainInventory();
                 ItemStack[] armour = restore.retrieveArmour();
 
@@ -210,8 +209,7 @@ public class ClickGUI extends Buttons implements Listener {
             } 
 
             //Clicked icon to teleport player to backup coordinates
-            else if (icon.getType().equals(getEnderPearlIcon().getType())) {			    
-
+            else if (icon.getType().equals(getEnderPearlIcon().getType())) {
                 String[] location = nbt.getString("location").split(",");			
                 World world = Bukkit.getWorld(location[0]);
 
@@ -221,16 +219,18 @@ public class ClickGUI extends Buttons implements Listener {
                     return;
                 }
 
-                //Sometimes the icon can glitch and be retrieved if in creative. Set the icon to air to be safe
-                icon.setType(Material.AIR);
-
                 Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3])).add(0.5, 0, 0.5);				
-                staff.teleport(loc);
+                
+                //Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
+                Bukkit.getScheduler().runTaskLater(InventoryRollback.getInstance(), () -> {
+                    e.getWhoClicked().closeInventory();
+                    staff.teleport(loc);
+                    
+                    if (SoundData.enderPearlEnabled)
+                        staff.playSound(loc, SoundData.enderPearl, SoundData.enderPearlVolume, 1);
 
-                if (SoundData.enderPearlEnabled)
-                    staff.playSound(loc, SoundData.enderPearl, SoundData.enderPearlVolume, 1);
-
-                staff.sendMessage(MessageData.pluginName + messages.deathLocationTeleport(loc));
+                    staff.sendMessage(MessageData.pluginName + messages.deathLocationTeleport(loc));
+                }, 1L);
             } 
 
             //Clicked icon to restore backup players ender chest
