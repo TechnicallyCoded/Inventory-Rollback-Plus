@@ -65,7 +65,7 @@ public class UpdateChecker {
 			return;
 		}
         
-        if (availableVersion.isEmpty() || availableVersion == null) {
+        if (availableVersion.isEmpty()) {
         	result = UpdateResult.FAIL_SPIGOT;
         	return;
         } else if (availableVersion.equalsIgnoreCase(currentVersion)) {
