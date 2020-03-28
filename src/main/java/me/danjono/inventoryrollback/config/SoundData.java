@@ -5,101 +5,170 @@ import org.bukkit.Sound;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 
-public class SoundData extends ConfigFile {
+public class SoundData extends ConfigData {
 	
-	public static Sound enderPearl;
-	public static boolean enderPearlEnabled;
-	public static float enderPearlVolume;
+	private static Sound teleport;
+	private static boolean teleportEnabled;
 
-	public static Sound enderChest;
-	public static boolean enderChestEnabled;
-	public static float enderChestVolume;
+	private static Sound inventoryRestored;
+	private static boolean inventoryRestoreEnabled;
 
-	public static Sound food;
-	public static boolean foodEnabled;
-	public static float foodVolume;
+	private static Sound foodRestored;
+	private static boolean foodRestoredEnabled;
 
-	public static Sound hunger;
-	public static boolean hungerEnabled;
-	public static float hungerVolume;
+	private static Sound hungerRestored;
+	private static boolean hungerRestoredEnabled;
 
-	public static Sound experience;
-	public static boolean experienceEnabled;
-	public static float experienceVolume;
+	private static Sound experienceRestored;
+	private static boolean experienceRestoredEnabled;
 
-	public void setSounds() {
-		
-		//If sounds are invalid they will be disabled.
+	public void setSounds() {	    
+	    //If sounds are invalid they will be disabled.
 		try {
-			enderPearl = Sound.valueOf((String) getDefaultValue("sounds.enderPearl.sound", "ENTITY_ENDERMEN_TELEPORT"));
-		} catch (IllegalArgumentException e) {
-            if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
-                enderPearl = Sound.valueOf("ENDERMAN_TELEPORT");
-            } else if (InventoryRollback.getVersion().equals(VersionName.v1_9_v1_12)) {
-                enderPearl = Sound.valueOf("ENTITY_ENDERMEN_TELEPORT");
-            } else {
-                enderPearl = Sound.valueOf("ENTITY_ENDERMAN_TELEPORT");
+			setTeleport(Sound.ENTITY_ENDERMAN_TELEPORT);
+		} catch (NoSuchFieldError e) {
+            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+                setTeleport(Sound.valueOf("ENDERMAN_TELEPORT"));
+            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+                setTeleport(Sound.valueOf("ENTITY_ENDERMEN_TELEPORT"));
             }
-		}	
-        enderPearlEnabled = (boolean) getDefaultValue("sounds.enderPearl.enabled", true);
-        enderPearlVolume = ((Double) getDefaultValue("sounds.enderPearl.volume", 0.5)).floatValue();
+		}
+		
+		if (teleport != null)
+		    setTeleportEnabled((boolean) getDefaultValue("sounds.teleport.enabled", true));
 		
 		try {
-			enderChest = Sound.valueOf((String) getDefaultValue("sounds.enderChest.sound", "ENTITY_ENDERDRAGON_FLAP"));
-		} catch (IllegalArgumentException e) {
-            if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
-                enderChest = Sound.valueOf("ENDERDRAGON_WINGS");
-            } else if (InventoryRollback.getVersion().equals(VersionName.v1_9_v1_12)) {
-                enderChest = Sound.valueOf("ENTITY_ENDERDRAGON_FLAP");
-            } else {
-                enderChest = Sound.valueOf("ENTITY_ENDER_DRAGON_FLAP");
+			setInvetoryRestored(Sound.ENTITY_ENDER_DRAGON_FLAP);
+		} catch (NoSuchFieldError e) {
+            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+                setInvetoryRestored(Sound.valueOf("ENDERDRAGON_WINGS"));
+            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+                setInvetoryRestored(Sound.valueOf("ENTITY_ENDERDRAGON_FLAP"));
             }
 		}
-        enderChestEnabled = (boolean) getDefaultValue("sounds.enderChest.enabled", true);
-        enderChestVolume = ((Double) getDefaultValue("sounds.enderChest.volume", 0.5)).floatValue();
+		
+		if (inventoryRestored != null)
+		    setInventoryRestoredEnabled((boolean) getDefaultValue("sounds.inventory.enabled", true));
 
 		try {
-			food = Sound.valueOf((String) getDefaultValue("sounds.food.sound", "ENTITY_GENERIC_EAT"));
-		} catch (IllegalArgumentException e) {
-            if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
-                food = Sound.valueOf("EAT");
-            } else if (InventoryRollback.getVersion().equals(VersionName.v1_9_v1_12)) {
-                food = Sound.valueOf("ENTITY_GENERIC_EAT");
-            } else {
-                food = Sound.valueOf("ENTITY_GENERIC_EAT");
+			setFoodRestored(Sound.ENTITY_GENERIC_EAT);
+		} catch (NoSuchFieldError e) {
+            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+                setFoodRestored(Sound.valueOf("EAT"));
+            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+                setFoodRestored(Sound.valueOf("ENTITY_GENERIC_EAT"));
             }
 		}
-        foodEnabled = (boolean) getDefaultValue("sounds.food.enabled", true);
-        foodVolume = ((Double) getDefaultValue("sounds.food.volume", 0.5)).floatValue();
+		
+		if (foodRestored != null)
+		    setFoodRestoredEnabled((boolean) getDefaultValue("sounds.food.enabled", true));
 
 		try {
-			hunger = Sound.valueOf((String) getDefaultValue("sounds.hunger.sound", "ENTITY_HORSE_EAT"));
-		} catch (IllegalArgumentException e) {
-            if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
-                hunger = Sound.valueOf("HORSE_IDLE");
-            } else if (InventoryRollback.getVersion().equals(VersionName.v1_9_v1_12)) {
-                hunger = Sound.valueOf("ENTITY_HORSE_EAT");
-            } else {
-                hunger = Sound.valueOf("ENTITY_HORSE_EAT");
+			setHungerRestored(Sound.ENTITY_HORSE_EAT);
+		} catch (NoSuchFieldError e) {
+            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+                setHungerRestored(Sound.valueOf("HORSE_IDLE"));
+            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+                setHungerRestored(Sound.valueOf("ENTITY_HORSE_EAT"));
             }
 		}
-        hungerEnabled = (boolean) getDefaultValue("sounds.hunger.enabled", true);
-        hungerVolume = ((Double) getDefaultValue("sounds.hunger.volume", 0.5)).floatValue();
+		
+		if (hungerRestored != null)
+		    setHungerRestoredEnabled((boolean) getDefaultValue("sounds.hunger.enabled", true));
 
 		try {
-			experience = Sound.valueOf((String) getDefaultValue("sounds.xp.sound", "ENTITY_PLAYER_LEVELUP"));
-		} catch (IllegalArgumentException e) {
-            if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
-                experience = Sound.valueOf("LEVEL_UP");
-            } else if (InventoryRollback.getVersion().equals(VersionName.v1_9_v1_12)) {
-                experience = Sound.valueOf("ENTITY_PLAYER_LEVELUP");
-            } else {
-                experience = Sound.valueOf("ENTITY_PLAYER_LEVELUP");
+			setExperienceSound(Sound.ENTITY_PLAYER_LEVELUP);
+		} catch (NoSuchFieldError e) {
+            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+                setExperienceSound(Sound.valueOf("LEVEL_UP"));
+            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+                setExperienceSound(Sound.valueOf("ENTITY_PLAYER_LEVELUP"));
             }
 		}
-        experienceEnabled = (boolean) getDefaultValue("sounds.xp.enabled", true);
-        experienceVolume = ((Double) getDefaultValue("sounds.xp.volume", 0.5)).floatValue();
+		
+		if (experienceRestored != null)
+		    setExperienceRestoredEnabled((boolean) getDefaultValue("sounds.xp.enabled", true));
 		
 	}
+	
+	public static void setTeleport(Sound value) {
+        teleport = value;
+    }
+    
+    public static void setTeleportEnabled(boolean value) {
+        teleportEnabled = value;
+    }
+    
+    public static void setInvetoryRestored(Sound value) {
+        inventoryRestored = value;
+    }
+    
+    public static void setInventoryRestoredEnabled(boolean value) {
+        inventoryRestoreEnabled = value;
+    }
+    
+    public static void setFoodRestored(Sound value) {
+        foodRestored = value;
+    }
+    
+    public static void setFoodRestoredEnabled(boolean value) {
+        foodRestoredEnabled = value;
+    }
+    
+    public static void setHungerRestored(Sound value) {
+        hungerRestored = value;
+    }
+    
+    public static void setHungerRestoredEnabled(boolean value) {
+        hungerRestoredEnabled = value;
+    }
+    
+    public static void setExperienceSound(Sound value) {
+        experienceRestored = value;
+    }
+    
+    public static void setExperienceRestoredEnabled(boolean value) {
+        experienceRestoredEnabled = value;
+    }
+	
+	public static Sound getTeleport() {
+	    return teleport;
+	}
+	
+	public static boolean isTeleportEnabled() {
+	    return teleportEnabled;
+	}
+	
+	public static Sound getInventoryRestored() {
+	    return inventoryRestored;
+	}
+	
+	public static boolean isInventoryRestoreEnabled() {
+	    return inventoryRestoreEnabled;
+	}
+	
+	public static Sound getFoodRestored() {
+	    return foodRestored;
+	}
+	
+	public static boolean isFoodRestoredEnabled() {
+        return foodRestoredEnabled;
+    }
+	
+	public static Sound getHungerRestored() {
+	    return hungerRestored;
+	}
+	
+	public static boolean isHungerRestoredEnabled() {
+        return hungerRestoredEnabled;
+    }
+	
+	public static Sound getExperienceSound() {
+	    return experienceRestored;
+	}
+	
+	public static boolean isExperienceRestoredEnabled() {
+        return experienceRestoredEnabled;
+    }
 
 }

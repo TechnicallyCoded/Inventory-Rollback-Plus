@@ -1,6 +1,5 @@
 package me.danjono.inventoryrollback.listeners;
 
-import java.util.ListIterator;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -8,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,70 +20,84 @@ import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
-import me.danjono.inventoryrollback.gui.BackupMenu;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
-import me.danjono.inventoryrollback.gui.MainMenu;
-import me.danjono.inventoryrollback.gui.RollbackListMenu;
+import me.danjono.inventoryrollback.gui.menu.EnderChestBackupMenu;
+import me.danjono.inventoryrollback.gui.menu.MainInventoryBackupMenu;
+import me.danjono.inventoryrollback.gui.menu.MainMenu;
+import me.danjono.inventoryrollback.gui.menu.PlayerMenu;
+import me.danjono.inventoryrollback.gui.menu.RollbackListMenu;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBT;
 
-public class ClickGUI extends Buttons implements Listener {
+public class ClickGUI implements Listener {
 
     private Player staff;
     private ItemStack icon;
+
+    private static boolean isLocationAvailable(Location location) {
+        return location != null;
+    }
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent e) {
         //Cancel listener if the event is not for an EpicFishing GUI menu
         String title = e.getView().getTitle();
         if (!title.equals(InventoryName.MAIN_MENU.getName()) 
+                && !title.equals(InventoryName.PLAYER_MENU.getName()) 
                 && !title.equalsIgnoreCase(InventoryName.ROLLBACK_LIST.getName())
-                && !title.equalsIgnoreCase(InventoryName.BACKUP.getName()))
+                && !title.equalsIgnoreCase(InventoryName.MAIN_BACKUP.getName())
+                && !title.equalsIgnoreCase(InventoryName.ENDER_CHEST_BACKUP.getName()))
             return;
 
         e.setCancelled(true);
 
         //Check if inventory is a virtual one and not one that has the same name on a player chest
-        if (InventoryRollback.getVersion() != VersionName.v1_8) {
-            if (e.getInventory().getLocation() != null) {
-                e.setCancelled(false);
+        if (InventoryRollback.getVersion() != VersionName.V1_8 && isLocationAvailable(e.getInventory().getLocation())) {
+            e.setCancelled(false);
+            return;
+        }
+
+        for (Integer slot : e.getRawSlots()) {            
+            if (slot < e.getInventory().getSize()) {
                 return;
             }
         }
 
-        for (Integer slot : e.getRawSlots()) {            
-            if (slot >= e.getInventory().getSize()) {
-                e.setCancelled(false);
-                return;
-            }
-        }
+        e.setCancelled(false);
     }
+
+
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         String title = e.getView().getTitle();
         if (!title.equals(InventoryName.MAIN_MENU.getName()) 
+                && !title.equals(InventoryName.PLAYER_MENU.getName()) 
                 && !title.equalsIgnoreCase(InventoryName.ROLLBACK_LIST.getName())
-                && !title.equalsIgnoreCase(InventoryName.BACKUP.getName()))
+                && !title.equalsIgnoreCase(InventoryName.MAIN_BACKUP.getName())
+                && !title.equalsIgnoreCase(InventoryName.ENDER_CHEST_BACKUP.getName()))
             return;
 
         e.setCancelled(true);
 
         //Check if inventory is a virtual one and not one that has the same name on a player chest
-        if (InventoryRollback.getVersion() != VersionName.v1_8) {
-            if (e.getInventory().getLocation() != null) {
-                e.setCancelled(false);
-                return;
-            }
+        if (InventoryRollback.getVersion() != VersionName.V1_8 && isLocationAvailable(e.getInventory().getLocation())) {
+            e.setCancelled(false);
+            return;
         }
 
         staff = (Player) e.getWhoClicked();
         icon = e.getCurrentItem();
 
-        //Listener for main menu
+        //Listener for player menu
         if (title.equals(InventoryName.MAIN_MENU.getName())) {
             mainMenu(e);
+        }
+
+        //Listener for player menu
+        else if (title.equals(InventoryName.PLAYER_MENU.getName())) {
+            playerMenu(e);
         }
 
         //Listener for rollback list menu
@@ -93,30 +105,78 @@ public class ClickGUI extends Buttons implements Listener {
             rollbackMenu(e);
         }
 
-        //Listener for backup menu
-        else if (title.equals(InventoryName.BACKUP.getName())) {
-            backupMenu(e);
-        } 
+        //Listener for main inventory backup menu
+        else if (title.equals(InventoryName.MAIN_BACKUP.getName())) {
+            mainBackupMenu(e);
+        }
+
+        //Listener for enderchest backup menu
+        else if (title.equals(InventoryName.ENDER_CHEST_BACKUP.getName())) {
+            enderChestBackupMenu(e);
+        }
 
         else {
             e.setCancelled(true);
         }
     }
 
-    private void mainMenu(InventoryClickEvent e) {		
-        //Return if a blank slot is selected
-        if (icon == null)
-            return;
-
-        if ((e.getRawSlot() >= 0 && e.getRawSlot() < 9)) {				
+    private void mainMenu(InventoryClickEvent e) {        
+        if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.MAIN_MENU.getSize())) {                
             NBT nbt = new NBT(icon);
             if (!nbt.hasUUID())
                 return;
 
-            LogType logType = LogType.valueOf(nbt.getString("logType"));
+            //Clicked a page button
+            if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
+                int page = nbt.getInt("page");
+
+                //Selected to go back to main menu
+                MainMenu menu = new MainMenu(staff, page);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getInventory);
+            } 
+            //Clicked a player head
+            else {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
+                PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+            }
+        } else {
+            if (e.getRawSlot() >= e.getInventory().getSize() && !e.isShiftClick()) {
+                e.setCancelled(false);
+            }
+        }
+    }
+
+    private void playerMenu(InventoryClickEvent e) {		
+        //Return if a blank slot is selected
+        if (icon == null)
+            return;
+
+        if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.PLAYER_MENU.getSize())) {				
+            NBT nbt = new NBT(icon);
+            if (!nbt.hasUUID())
+                return;
+
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
 
-            staff.openInventory(new RollbackListMenu(staff, offlinePlayer, logType, 1).showBackups());
+            //Clicked player head
+            if (e.getRawSlot() == 0) {
+                MainMenu menu = new MainMenu(staff, 1);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+            } else {
+                LogType logType = LogType.valueOf(nbt.getString("logType"));
+                RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+            }
+
         } else {
             if (e.getRawSlot() >= e.getInventory().getSize() && !e.isShiftClick()) {
                 e.setCancelled(false);
@@ -125,7 +185,7 @@ public class ClickGUI extends Buttons implements Listener {
     }
 
     private void rollbackMenu(InventoryClickEvent e) {
-        if (e.getRawSlot() >= 0 && e.getRawSlot() < 45) {
+        if (e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.ROLLBACK_LIST.getSize()) {
             NBT nbt = new NBT(icon);
             if (!nbt.hasUUID())
                 return;
@@ -137,43 +197,36 @@ public class ClickGUI extends Buttons implements Listener {
                 LogType logType = LogType.valueOf(nbt.getString("logType"));
                 String location = nbt.getString("location");
 
-                FileConfiguration playerData = new PlayerData(uuid, logType).getData();
-
-                RestoreInventory restore = new RestoreInventory(playerData, timestamp);
-
-                ItemStack[] inventory = restore.retrieveMainInventory();
-                ItemStack[] armour = restore.retrieveArmour();
-
-                boolean enderchest = false;				
-                for (ItemStack item : restore.retrieveEnderChestInventory()) {
-                    if (item != null)
-                        enderchest = true;
-                }
-
-                Float xp = restore.getXP();
-                Double health = restore.getHealth();
-                int hunger = restore.getHunger();
-                float saturation = restore.getSaturation();
+                PlayerData data = new PlayerData(uuid, logType, timestamp);
+                data.getAllBackupData();
 
                 //If the backup file is invalid it will return null, we want to catch it here
                 try {
-                    staff.openInventory(new BackupMenu(staff, uuid, logType, timestamp, inventory, armour, location, enderchest, health, hunger, saturation, xp).showItems());
+                    MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                    
+                    staff.openInventory(menu.getInventory());
+                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackupItems);
                 } catch (NullPointerException e1) {}
             } 
 
             //Player has selected a page icon
-            else if (icon.getType().equals(getPageSelectorIcon().getType())) {
+            else if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
                 int page = nbt.getInt("page");
 
+                //Selected to go back to main menu
                 if (page == 0) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
-
-                    staff.openInventory(new MainMenu(staff, player).getMenu());
+                    PlayerMenu menu = new PlayerMenu(staff, player);
+                    
+                    staff.openInventory(menu.getInventory());
+                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
                 } else {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
                     LogType logType = LogType.valueOf(nbt.getString("logType"));
-
-                    staff.openInventory(new RollbackListMenu(staff, player, logType, page).showBackups());
+                    RollbackListMenu menu = new RollbackListMenu(staff, player, logType, page);
+                    
+                    staff.openInventory(menu.getInventory());
+                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
                 }
             }	
         } else {
@@ -183,84 +236,95 @@ public class ClickGUI extends Buttons implements Listener {
         }
     }
 
-    private void backupMenu(InventoryClickEvent e) {
-        if (!e.getView().getTitle().equals(InventoryName.BACKUP.getName()))
+    private void mainBackupMenu(InventoryClickEvent e) {
+        if (!e.getView().getTitle().equals(InventoryName.MAIN_BACKUP.getName()))
             return;
 
-        MessageData messages = new MessageData();
-
-        if (e.getRawSlot() >= 45 && e.getRawSlot() < 54) {
-            NBT nbt = new NBT(icon);
+        if (e.getRawSlot() >= (InventoryName.MAIN_BACKUP.getSize() - 9) && e.getRawSlot() < InventoryName.MAIN_BACKUP.getSize()) {
+            NBT nbt = new NBT(icon);            
             if (!nbt.hasUUID())
                 return;
 
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));            
             LogType logType = LogType.valueOf(nbt.getString("logType"));
             Long timestamp = nbt.getLong("timestamp");
 
-            PlayerData data = new PlayerData(offlinePlayer, logType);		
-            FileConfiguration playerData = data.getData();
-
-            RestoreInventory restore = new RestoreInventory(playerData, timestamp);
+            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);		
 
             //Click on page selector button to go back to rollback menu
-            if (icon.getType().equals(getPageSelectorIcon().getType())) {
-                staff.openInventory(new RollbackListMenu(staff, offlinePlayer, logType, 1).showBackups());
-            } 
+            if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
+                RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+            }
+
+            //Clicked icon to overwrite player inventory with backup data
+            else if (icon.getType().equals(Buttons.getRestoreAllInventoryIcon())) {
+                if (offlinePlayer.isOnline()) {
+                    Player player = (Player) offlinePlayer;
+
+                    data.getAllBackupData();
+
+                    ItemStack[] inventory = data.getMainInventory();
+                    ItemStack[] armour = data.getArmour();
+
+                    player.getInventory().setContents(inventory);
+                    if (InventoryRollback.getVersion() == VersionName.V1_8)
+                        player.getInventory().setArmorContents(armour);
+
+                    if (SoundData.isInventoryRestoreEnabled())
+                        player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1);
+
+                    player.sendMessage(MessageData.getPluginName() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
+                    if (!staff.getUniqueId().equals(player.getUniqueId()))
+                        staff.sendMessage(MessageData.getPluginName() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));           
+                } else {
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getMainInventoryNotOnline(offlinePlayer.getName()));
+                }
+            }
 
             //Clicked icon to teleport player to backup coordinates
-            else if (icon.getType().equals(getEnderPearlIcon().getType())) {
+            else if (icon.getType().equals(Buttons.getTeleportLocationIcon())) {
                 String[] location = nbt.getString("location").split(",");			
                 World world = Bukkit.getWorld(location[0]);
 
                 if (world == null) {
                     //World is not available
-                    staff.sendMessage(MessageData.pluginName + new MessageData().deathLocationInvalidWorld(location[0]));
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getDeathLocationInvalidWorldError(location[0]));
                     return;
                 }
 
-                Location loc = new Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3])).add(0.5, 0, 0.5);				
-                
+                Location loc = new Location(world, 
+                        Math.floor(Double.parseDouble(location[1])), 
+                        Math.floor(Double.parseDouble(location[2])), 
+                        Math.floor(Double.parseDouble(location[3])))
+                        .add(0.5, 0.5, 0.5);				
+
                 //Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
                 Bukkit.getScheduler().runTaskLater(InventoryRollback.getInstance(), () -> {
                     e.getWhoClicked().closeInventory();
                     staff.teleport(loc);
-                    
-                    if (SoundData.enderPearlEnabled)
-                        staff.playSound(loc, SoundData.enderPearl, SoundData.enderPearlVolume, 1);
 
-                    staff.sendMessage(MessageData.pluginName + messages.deathLocationTeleport(loc));
+                    if (SoundData.isTeleportEnabled())
+                        staff.playSound(loc, SoundData.getTeleport(), 1, 1);
+
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getDeathLocationTeleport(loc));
                 }, 1L);
             } 
 
             //Clicked icon to restore backup players ender chest
-            else if (icon.getType().equals(getEnderChestIcon().getType())) {
-                if (offlinePlayer.isOnline()) {
-                    Player player = (Player) offlinePlayer;	
-
-                    ItemStack[] enderchest = restore.retrieveEnderChestInventory();
-
-                    if (emptyEnderChest(player)) {
-                        player.getEnderChest().setContents(enderchest);
-
-                        if (SoundData.enderChestEnabled)
-                            player.playSound(player.getLocation(), SoundData.enderChest, SoundData.enderChestVolume, 1);
-                    } else {
-                        staff.sendMessage(MessageData.pluginName + messages.enderChestNotEmpty(player.getName()));
-                        e.setCancelled(true);
-                        return;
-                    }
-
-                    staff.sendMessage(MessageData.pluginName + messages.enderChestRestored(player.getName()));
-                    if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        player.sendMessage(MessageData.pluginName + messages.enderChestRestoredPlayer(staff.getName()));
-                } else {
-                    staff.sendMessage(MessageData.pluginName + messages.enderChestNotOnline(offlinePlayer.getName()));
-                }
+            else if (icon.getType().equals(Buttons.getEnderChestIcon())) {
+                data.getAllBackupData();
+                
+                EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showEnderChestItems);
             } 
 
             //Clicked icon to restore backup players health
-            else if (icon.getType().equals(getHealthIcon().getType())) {
+            else if (icon.getType().equals(Buttons.getHealthIcon())) {
 
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;	
@@ -268,19 +332,19 @@ public class ClickGUI extends Buttons implements Listener {
 
                     player.setHealth(health);
 
-                    if (SoundData.foodEnabled)
-                        player.playSound(player.getLocation(), SoundData.food, SoundData.foodVolume, 1);
+                    if (SoundData.isFoodRestoredEnabled())
+                        player.playSound(player.getLocation(), SoundData.getFoodRestored(), 1, 1);
 
-                    staff.sendMessage(MessageData.pluginName + messages.healthRestored(player.getName()));
+                    player.sendMessage(MessageData.getPluginName() + MessageData.getHealthRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        player.sendMessage(MessageData.pluginName + messages.healthRestoredPlayer(staff.getName()));
+                        staff.sendMessage(MessageData.getPluginName() + MessageData.getHealthRestored(player.getName()));
                 } else {
-                    staff.sendMessage(MessageData.pluginName + messages.healthNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getHealthNotOnline(offlinePlayer.getName()));
                 }
             } 
 
             //Clicked icon to restore backup players hunger
-            else if (icon.getType().equals(getHungerIcon().getType())) {
+            else if (icon.getType().equals(Buttons.getHungerIcon())) {
 
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;	
@@ -290,33 +354,88 @@ public class ClickGUI extends Buttons implements Listener {
                     player.setFoodLevel(hunger);
                     player.setSaturation(saturation);
 
-                    if (SoundData.hungerEnabled)
-                        player.playSound(player.getLocation(), SoundData.hunger, SoundData.hungerVolume, 1);
+                    if (SoundData.isHungerRestoredEnabled())
+                        player.playSound(player.getLocation(), SoundData.getHungerRestored(), 1, 1);
 
-                    staff.sendMessage(MessageData.pluginName + messages.hungerRestored(player.getName()));
+                    player.sendMessage(MessageData.getPluginName() + MessageData.getHungerRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        player.sendMessage(MessageData.pluginName + messages.hungerRestoredPlayer(staff.getName()));
+                        staff.sendMessage(MessageData.getPluginName() + MessageData.getHungerRestored(player.getName()));
                 } else {
-                    staff.sendMessage(MessageData.pluginName + messages.hungerNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getHungerNotOnline(offlinePlayer.getName()));
                 }
             } 
 
             //Clicked icon to restore backup players experience
-            else if (icon.getType().equals(getExperienceIcon().getType())) {
+            else if (icon.getType().equals(Buttons.getExperienceIcon())) {
                 if (offlinePlayer.isOnline()) {				
                     Player player = (Player) offlinePlayer;	
                     Float xp = nbt.getFloat("xp");
 
                     RestoreInventory.setTotalExperience(player, xp);
 
-                    if (SoundData.experienceEnabled)
-                        player.playSound(player.getLocation(), SoundData.experience, SoundData.experienceVolume, 1);
+                    if (SoundData.isExperienceRestoredEnabled())
+                        player.playSound(player.getLocation(), SoundData.getExperienceSound(), 1, 1);
 
-                    staff.sendMessage(MessageData.pluginName + messages.experienceRestored(player.getName(), (int) RestoreInventory.getLevel(xp)));
+                    player.sendMessage(MessageData.getPluginName() + MessageData.getExperienceRestoredPlayer(staff.getName(), xp.intValue()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        player.sendMessage(MessageData.pluginName + messages.experienceRestoredPlayer(staff.getName(), xp.intValue()));
+                        staff.sendMessage(MessageData.getPluginName() + MessageData.getExperienceRestored(player.getName(), (int) RestoreInventory.getLevel(xp))); 
                 } else {				    
-                    staff.sendMessage(MessageData.pluginName + messages.experienceNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getExperienceNotOnlinePlayer(offlinePlayer.getName()));
+                }
+            }
+        } else {             
+            if (
+                    //Allow items to be grabbed in the top inventory except the bottom line AND NOT player inventory items to be shift clicked to top inventory
+                    ((e.getRawSlot() < (e.getInventory().getSize() - 18) || (e.getRawSlot() < (e.getInventory().getSize() - 9) && e.getRawSlot() > (e.getInventory().getSize() - 15)))
+                            || e.getRawSlot() >= e.getInventory().getSize() && !e.isShiftClick())
+
+                    //Allow items to be grabbed in the top inventory except the bottom line AND allow them to be shift clicked to player inventory
+                    || ((e.getRawSlot() < (e.getInventory().getSize() - 18) || (e.getRawSlot() < (e.getInventory().getSize() - 9) && e.getRawSlot() > (e.getInventory().getSize() - 15)))
+                            && e.isShiftClick())) {
+                e.setCancelled(false);
+            }
+        }
+    }
+
+    private void enderChestBackupMenu(InventoryClickEvent e) {
+        if (!e.getView().getTitle().equals(InventoryName.ENDER_CHEST_BACKUP.getName()))
+            return;
+
+        if (e.getRawSlot() >= (InventoryName.ENDER_CHEST_BACKUP.getSize() - 9) && e.getRawSlot() < InventoryName.ENDER_CHEST_BACKUP.getSize()) {
+            NBT nbt = new NBT(icon);
+            if (!nbt.hasUUID())
+                return;
+
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
+            LogType logType = LogType.valueOf(nbt.getString("logType"));
+            Long timestamp = nbt.getLong("timestamp");
+
+            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp); 
+            data.getAllBackupData();
+
+            //Click on page selector button to go back to backup menu
+            if (icon.getType().equals(Buttons.getPageSelectorIcon())) {           
+                String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
+                MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                
+                staff.openInventory(menu.getInventory());
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackupItems);
+            }
+
+            //Clicked icon to overwrite player ender chest with backup data
+            else if (icon.getType().equals(Buttons.getRestoreAllInventoryIcon())) {
+                if (offlinePlayer.isOnline()) {
+                    Player player = (Player) offlinePlayer;
+                    player.getEnderChest().setContents(data.getEnderChest());
+
+                    if (SoundData.isInventoryRestoreEnabled())
+                        player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); 
+
+                    player.sendMessage(MessageData.getPluginName() + MessageData.getEnderChestRestoredPlayer(staff.getName()));
+                    if (!staff.getUniqueId().equals(player.getUniqueId()))
+                        staff.sendMessage(MessageData.getPluginName() + MessageData.getEnderChestRestored(offlinePlayer.getName()));
+                } else {
+                    staff.sendMessage(MessageData.getPluginName() + MessageData.getEnderChestNotOnline(offlinePlayer.getName()));
                 }
             }
         } else {             
@@ -325,20 +444,6 @@ public class ClickGUI extends Buttons implements Listener {
                 e.setCancelled(false);
             }
         }
-    }
-
-    private boolean emptyEnderChest(Player player) {
-        boolean empty = true;
-        ListIterator<ItemStack> ec = player.getEnderChest().iterator();
-
-        while (ec.hasNext()) {
-            if (ec.next() != null) {							
-                empty = false;
-                break;
-            }
-        }
-
-        return empty;
     }
 
 }

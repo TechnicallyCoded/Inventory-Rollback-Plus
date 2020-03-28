@@ -1,112 +1,57 @@
 ## Disable if you do not wish the plugin to run at all.
 enabled: true
 
-## Maximum saves a config file will hold per type per user.
-maxSaves:
+## Maximum saves a backup will hold per type per user.
+max-saves:
   join: 10
   quit: 10
   death: 50
-  worldChange: 10
+  world-change: 10
   force: 10
+  
+## Number of lines shown with backups on (Max: 5)
+backup-lines-visible: 4
 
 ## Set folder path where the data is saved to. Set as "DEFAULT" to keep it in the plugin folder.
-folderLocation: 'DEFAULT'  
+folder-location: 'DEFAULT'
 
-## Set the sounds to play to the player when you restore parts of their inventory.
-## For 1.8 - 1.12 sounds, the legacy name for the sound will need to be used - https://www.spigotmc.org/wiki/cc-sounds-list/
+## If enabled, this will disable YAML file backups in favour of MySQL storage.
+## Requires a MySQL server.
+mysql:
+  enabled: false
+  details:
+    host: 'localhost'
+    port: 3306
+    database: 'inventory_rollback'
+    username: 'username'
+    password: 'password'
+    use-SSL: false
+
+## Sounds will play to the player when parts of their player is restored.
 sounds:
-  enderPearl:
+  teleport:
     enabled: true
-    sound: 'ENTITY_ENDERMEN_TELEPORT'
-    volume: 0.5
-  enderChest:
+  inventory:
     enabled: true
-    sound: 'ENTITY_ENDER_DRAGON_FLAP'
-    volume: 0.5
   food:
     enabled: true
-    sound: 'ENTITY_GENERIC_EAT'
-    volume: 0.5
   hunger:
     enabled: true
-    sound: 'ENTITY_HORSE_EAT'
-    volume: 0.5
   xp:
     enabled: true
-    sound: 'ENTITY_PLAYER_LEVELUP'
-    volume: 0.5
     
-## Set icon and text for menu buttons.
-icons:
-  mainMenu:
-    deathIcon:
-      item: 'BONE'
-      name: '&cDeaths'
-    joinIcon:
-      item: 'OAK_SAPLING'
-      name: '&aJoins'
-    quitIcon:
-      item: 'RED_BED'
-      name: '&6Quits'
-    worldChangeIcon:
-      item: 'COMPASS'
-      name: '&eWorld Changes'
-    forceSaveIcon:
-      item: 'DIAMOND'
-      name: '&bForce Saves'
-  rollbackMenu:
-    time:
-      timeZone: 'GMT'
-      timeFormat: 'dd/MM/yyyy hh:mm:ss a z'
+## Set how the time is displayed on the backups.
+time-zone: 'GMT'
+time-format: 'dd/MM/yyyy hh:mm:ss a z'
+
+## CAUTION - USE AT OWN RISK
+## Enabling this option will show a button to restore a player's backup fully to their character when online.
+## This will overwrite their current inventory completely and wipe what they currently have without backing it up first.
+restore-to-player-button: false
       
-## Check for updates on Spigot when the server is started
-updateChecker: true
+## Check for updates on Spigot when the server is started.
+update-checker: true
 
-## Allow bStats to collect anonymous server data. Please leave enabled
-## as it allows me to see which versions people are running and where.
+## Allow bStats to collect anonymous server data.
+## Please leave enabled as it allows the plugin developer to see statistics about the plugin.
 bStats: true
-
-## You can change the text that is displayed in chat and the GUI here.
-messages:
-  reload: '&2The plugin has been reloaded successfully.'
-  noPermission: '&cYou do not have permission!'
-  error: '&cInvalid command.'
-  errorInventory: '&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.'
-  enable: '&2The plugin has been enabled.'
-  disable: '&2The plugin has been disabled.'
-  playerOnly: '&cCommand can only be run by a player.'
-  noBackup: 'There is currently no backup for %NAME%.'
-  notOnline: '%NAME% is not currently online.'
-  forceSaved: '%NAME%''s inventory has been force saved.'
-  notForcedSaved: 'There was an issue with saving %NAME%''s inventory.'
-  enderChestNotEmpty: 'Cannot rollback %NAME%''s ender chest yet as they have items in it that would be lost. Get the player to remove the items first from their Ender Chest.'
-  enderChestRestored: '%NAME%''s ender chest has been restored.'
-  enderChestRestoredPlayer: 'Your ender chest has been restored by %NAME%.'
-  enderChestNotOnline: '%NAME% is not online to have their ender chest set.'
-  healthRestored: '%NAME%''s health has been restored.'
-  healthRestoredPlayer: 'Your health has been restored by %NAME%.'
-  healthNotOnline: '%NAME% is not online to have their health set.'
-  hungerRestored: '%NAME%''s hunger has been restored.'
-  hungerRestoredPlayer: 'Your hunger has been restored by %NAME%.'
-  hungerNotOnline: '%NAME% is not online to have their hunger set.'
-  experienceRestored: '%NAME%''s XP has been set to level %XP%.'
-  experienceRestoredPlayer: 'Your XP has been restored to level %XP% by %NAME%.'
-  experienceNotOnline: '%NAME% is not online to have their XP set.'
-  deathLocationWorld: '&6World: &f%WORLD%'
-  deathLocationX: '&6X: &f%X%'
-  deathLocationY: '&6Y: &f%Y%'
-  deathLocationZ: '&6Z: &f%Z%'
-  deathLocationTeleport: 'You have been teleported to %LOCATION%'
-  deathLocationInvalidWorld: 'The world %WORLD% is not currently loaded on the server.'
-  deathLocationMessage: '&3Teleport to where this entry was logged.'
-  deathReason: '&6Death reason: &f%REASON%'
-  deathTime: '&6Time: &f%TIME%'
-  mainMenuButton: '&fMain Menu'
-  nextPageButton: '&fNext Page'
-  previousPageButton: '&fPrevious Page'
-  backButton: '&fBack'
-  restoreEnderChest: '&dRestore Ender Chest'
-  restoreFood: '&aRestore Health'
-  restoreHunger: '&cRestore Food'
-  restoreExperience: '&2Restore Player XP'
-  restoreExperienceLevel: '&rLevel %XP%'

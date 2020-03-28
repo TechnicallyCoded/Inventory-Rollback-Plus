@@ -4,11 +4,10 @@
 		<modelVersion>4.0.0</modelVersion>
 		<groupId>InventoryRollback</groupId>
 		<artifactId>InventoryRollback</artifactId>
-		<version>1.3.7</version>
+		<version>2.0-beta</version>
 		<name>InventoryRollback</name>
 
 		<organization>
-				<url>http://twitter.com/danjono</url>
 				<name>danjono</name>
 		</organization>
 
@@ -19,11 +18,11 @@
 		<repositories>
 				<repository>
 						<id>spigot-repo</id>
-						<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+						<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 				</repository>
 				<repository>
-					<id>CodeMC</id>
-					<url>https://repo.codemc.org/repository/maven-public</url>
+						<id>CodeMC</id>
+						<url>https://repo.codemc.org/repository/maven-public</url>
 				</repository>
 		</repositories>
 
@@ -32,7 +31,7 @@
 				<dependency>
 						<groupId>org.spigotmc</groupId>
 						<artifactId>spigot-api</artifactId>
-						<version>1.9-R0.1-SNAPSHOT</version>
+						<version>1.15.2-R0.1-SNAPSHOT</version>
 						<scope>provided</scope>
 				</dependency>
 
@@ -40,7 +39,7 @@
 				<dependency>
 						<groupId>org.bstats</groupId>
 						<artifactId>bstats-bukkit</artifactId>
-						<version>1.4</version>
+						<version>1.5</version>
 				</dependency>
 		</dependencies>
 
@@ -70,13 +69,8 @@
 						<plugin>
 								<groupId>org.apache.maven.plugins</groupId>
 								<artifactId>maven-shade-plugin</artifactId>
-								<version>2.4</version>
+								<version>3.1.0</version>
 								<configuration>
-										<artifactSet>
-												<includes>
-														<include>org.bstats:*</include>
-												</includes>
-										</artifactSet>
 										<relocations>
 												<relocation>
 														<pattern>org.bstats</pattern>

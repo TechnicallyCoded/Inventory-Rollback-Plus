@@ -21,24 +21,18 @@ public class UpdateChecker {
     private String currentVersion;
     private String availableVersion;
    
-    private UpdateResult result = UpdateResult.DISABLED;
+    private UpdateResult result = UpdateResult.FAIL_SPIGOT;
    
     public enum UpdateResult {
         NO_UPDATE,
-        DISABLED,
         FAIL_SPIGOT,
         UPDATE_AVAILABLE
     }
    
-    public UpdateChecker(JavaPlugin plugin, Integer resourceId, boolean enabled) {
+    public UpdateChecker(JavaPlugin plugin, Integer resourceId) {
         this.plugin = plugin;      
         this.currentVersion = regex(this.plugin.getDescription().getVersion());
        
-        if (!enabled) {
-            result = UpdateResult.DISABLED;
-            return;
-        }
-
         try {
             this.checkURL = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + resourceId);
         } catch (MalformedURLException e) {

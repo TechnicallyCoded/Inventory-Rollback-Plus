@@ -13,8 +13,6 @@ This plugin will log a players' inventory, health, hunger, experience, and ender
 Staff with the required permission can open a GUI and select the required backup for the player. They can then click and drag the items the player requires off the GUI so they can pick them up. Clicking on the other icons enables you to restore the other attributes if required directly to the player.  
   
 By default, it will log 50 deaths and 10 joins, disconnects, world changes and force saves each per player before the old data is purged to save space. These values can be changed in the config.  
-  
-**If upgrading a current server from before 1.13 you will need to delete all your backup data due to the changes with materials in the newest versions.**
 
 ## Commands
 /ir restore %**PLAYERNAME**% - Opens a GUI to select the backup you require.  

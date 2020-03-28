@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.danjono.inventoryrollback.config.ConfigFile;
+import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
 
@@ -16,7 +16,7 @@ public class EventLogs implements Listener {
 
 	@EventHandler
 	private void playerJoin(PlayerJoinEvent e) {
-		if (!ConfigFile.enabled) return;
+		if (!ConfigData.isEnabled()) return;
 
 		Player player = e.getPlayer();
 		if (player.hasPermission("inventoryrollback.joinsave")) {			
@@ -26,7 +26,7 @@ public class EventLogs implements Listener {
 
 	@EventHandler
 	private void playerQuit(PlayerQuitEvent e) {
-		if (!ConfigFile.enabled) return;
+		if (!ConfigData.isEnabled()) return;
 
 		Player player = e.getPlayer();
 
@@ -37,7 +37,7 @@ public class EventLogs implements Listener {
 
 	@EventHandler
 	private void playerDeath(EntityDamageEvent e) {
-		if (!ConfigFile.enabled) return;
+		if (!ConfigData.isEnabled()) return;
 		if (!(e.getEntity() instanceof Player)) return;
 
 		Player player = (Player) e.getEntity();
@@ -49,7 +49,7 @@ public class EventLogs implements Listener {
 
 	@EventHandler
 	private void playerChangeWorld(PlayerChangedWorldEvent e) {
-		if (!ConfigFile.enabled) return;
+		if (!ConfigData.isEnabled()) return;
 
 		Player player = e.getPlayer();
 
