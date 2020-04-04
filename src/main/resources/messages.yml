@@ -9,7 +9,8 @@ commands:
 backup:
   no-backup: 'There is currently no backups for %NAME%.'
   not-online: '%NAME% is not currently online.'
-  force-saved: '%NAME%''s inventory has been force saved.'
+  force-saved-player: '%NAME%''s inventory has been force saved.'
+  force-saved-all: 'All online player inventories have been force saved.'
   not-forced-saved: 'There was an issue with saving %NAME%''s inventory.'
 
 attribute-restore:

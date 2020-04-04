@@ -63,7 +63,8 @@ public class MessageData {
 
     private static String noBackup;
     private static String notOnline;
-    private static String forceSaved;
+    private static String forceSavedPlayer;
+    private static String forceSavedAll;
     private static String notForcedSaved;
 
     private static String mainInventoryRestored;
@@ -105,16 +106,17 @@ public class MessageData {
 
     public void setMessages() {
         setNoPermission(convertColourCodes((String) getDefaultValue("commands.no-permission", "&cYou do not have permission!")));
-        setError(convertColourCodes((String) getDefaultValue("commands.error", "&cInvalid command")));
-        setPluginEnabled(convertColourCodes((String) getDefaultValue("commands.enable", "&2The plugin has been enabled")));
-        setPluginDisabled(convertColourCodes((String) getDefaultValue("commands.disable", "&2The plugin has been disabled")));
-        setPluginReload(convertColourCodes((String) getDefaultValue("commands.reload", "&2The plugin has been reloaded successfully")));
-        setPlayerOnlyError(convertColourCodes((String) getDefaultValue("commands.player-only", "&cCommand can only be run by a player")));
+        setError(convertColourCodes((String) getDefaultValue("commands.error", "&cInvalid command.")));
+        setPluginEnabled(convertColourCodes((String) getDefaultValue("commands.enable", "&2The plugin has been enabled.")));
+        setPluginDisabled(convertColourCodes((String) getDefaultValue("commands.disable", "&2The plugin has been disabled.")));
+        setPluginReload(convertColourCodes((String) getDefaultValue("commands.reload", "&2The plugin has been reloaded successfully.")));
+        setPlayerOnlyError(convertColourCodes((String) getDefaultValue("commands.player-only", "&cCommand can only be run by a player.")));
 
-        setNoBackupError(convertColourCodes((String) getDefaultValue("backup.no-backup", "There is currently no backups for %NAME%")));
-        setNotOnlineError(convertColourCodes((String) getDefaultValue("backup.not-online", "%NAME% is not currently online")));
-        setForceBackup(convertColourCodes((String) getDefaultValue("backup.force-saved", "%NAME%'s inventory has been force saved")));
-        setForceBackupError(convertColourCodes((String) getDefaultValue("backup.not-forced-saved", "There was an issue with saving %NAME%'s inventory")));
+        setNoBackupError(convertColourCodes((String) getDefaultValue("backup.no-backup", "There is currently no backups for %NAME%.")));
+        setNotOnlineError(convertColourCodes((String) getDefaultValue("backup.not-online", "%NAME% is not currently online.")));
+        setForceBackupPlayer(convertColourCodes((String) getDefaultValue("backup.force-saved-player", "%NAME%'s inventory has been force saved.")));
+        setForceBackupAll(convertColourCodes((String) getDefaultValue("backup.force-saved-all", "All online player inventories have been force saved.")));
+        setForceBackupError(convertColourCodes((String) getDefaultValue("backup.not-forced-saved", "There was an issue with saving %NAME%'s inventory.")));
 
         setMainInventoryRestored(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.restored", "%NAME%''s main inventory has been restored.")));
         setMainInventoryRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.restored-player", "Your inventory has been restored by %NAME%.")));
@@ -200,9 +202,14 @@ public class MessageData {
         notOnline = message;
     }
 
-    public static void setForceBackup(String message) {
-        forceSaved = message;
+    public static void setForceBackupPlayer(String message) {
+        forceSavedPlayer = message;
     }
+    
+    public static void setForceBackupAll(String message) {
+        forceSavedAll = message;
+    }
+
 
     public static void setForceBackupError(String message) {
         notForcedSaved = message;
@@ -385,8 +392,12 @@ public class MessageData {
         return notOnline.replaceAll(nameVariable, name);
     }
 
-    public static String getForceBackup(String name) {
-        return forceSaved.replaceAll(nameVariable, name);
+    public static String getForceBackupPlayer(String name) {
+        return forceSavedPlayer.replaceAll(nameVariable, name);
+    }
+    
+    public static String getForceBackupAll() {
+        return forceSavedAll;
     }
 
     public static String getForceBackupError(String name) {

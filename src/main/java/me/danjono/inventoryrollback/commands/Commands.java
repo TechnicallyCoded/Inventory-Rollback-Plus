@@ -58,11 +58,11 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             case "reload": 
                 reloadCommand(sender);
                 break;
-                
+
             case "help":
                 helpCommand();
                 break;
-                
+
             case "version":
                 versionCommand(sender);
                 break;
@@ -73,7 +73,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
             case "convertyaml":
                 convertYAML(sender);
-                break; 
+                break;
 
             default:
                 sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
@@ -93,7 +93,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
                 }
 
                 openBackupMenu(sender, (Player) sender, args);
-                
+
             } else {
                 sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
             }
@@ -101,7 +101,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             sender.sendMessage(MessageData.getPluginName() + MessageData.getPlayerOnlyError());
         }
     }
-    
+
     private void openBackupMenu(CommandSender sender, Player staff, String[] args) {
         if (args.length <= 0 || args.length == 1) {
             try {
@@ -121,36 +121,46 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void openMainMenu(Player staff) {
         MainMenu menu = new MainMenu(staff, 1);
-        
+
         staff.openInventory(menu.getInventory());
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
     }
-    
+
     private void openPlayerMenu(Player staff, OfflinePlayer offlinePlayer) {
         PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
-        
+
         staff.openInventory(menu.getInventory());
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
     }
 
     private void forceBackupCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("inventoryrollback.forcebackup")) {
-            if (args.length == 1 || args.length > 2) {
+            if (args.length == 1 || args.length > 3) {
                 sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
                 return;
             }
 
-            OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[1]);
+            if (args[1].equalsIgnoreCase("all")) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+                }
 
-            if (!offlinePlayer.isOnline()) {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
-                return;
+                sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
+            } else if (args[1].equalsIgnoreCase("player")) {
+                OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
+
+                if (!offlinePlayer.isOnline()) {
+                    sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
+                    return;
+                }
+
+                Player player = (Player) offlinePlayer;
+                new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+
+                sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
+            } else {
+                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
             }
-
-            Player player = (Player) offlinePlayer;
-            new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
-
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackup(offlinePlayer.getName()));
         } else {
             sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
         }
@@ -187,22 +197,22 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
         }
     }
-    
+
     private void helpCommand() {
         //TODO Write up a help command
     }
-    
+
     private void versionCommand(CommandSender sender) {
         if (sender.hasPermission("inventoryrollback.version"))
             sender.sendMessage(MessageData.getPluginName() + "Server is running v" + InventoryRollback.getPluginVersion() + " - Created by danjono");
     }
-    
+
     private void convertMySQL(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender && sender.isOp()) {
             Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), MySQL::convertYAMLToMySQL);
         }
     }
-    
+
     private void convertYAML(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender && sender.isOp()) {
             Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), YAML::convertOldBackupData);
@@ -212,95 +222,95 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> commands = new ArrayList<>();
-        
+
         if (cmd.getName().equalsIgnoreCase("ir") || cmd.getName().equalsIgnoreCase("inventoryrollback")) {
             switch (args[0]) {
             case "restore":
                 if (sender.hasPermission("inventoryrollback.restore"))
                     return restoreAutoComplete(args);
                 break;
-                
+
             case "forcebackup":
             case "forcesave":
                 if (sender.hasPermission("inventoryrollback.forcebackup"))    
                     return forceBackupAutoComplete(args);
                 break;
-            
+
             default:
                 return defaultCommandsAutoComplete(sender, args);
             }
         }
-        
+
         return commands;
     }
-    
+
     private List<String> defaultCommandsAutoComplete(CommandSender sender, String[] args) {
         List<String> completions = new ArrayList<>();
         Set<String> commands = new HashSet<>();
-        
+
         if (args.length > 1)
             return completions;
-        
+
         if (sender.hasPermission("inventoryrollback.disable"))
             commands.add("disable"); 
-        
+
         if (sender.hasPermission("inventoryrollback.enable"))
             commands.add("enable");
-        
+
         if (sender.hasPermission("inventoryrollback.forcebackup"))
             commands.add("forcebackup");
-        
+
         if (sender.hasPermission("inventoryrollback.reload"))
             commands.add("reload");
-        
+
         if (sender.hasPermission("inventoryrollback.restore"))
             commands.add("restore");
-        
+
         if (sender.hasPermission("inventoryrollback.version"))
             commands.add("version");
-        
+
         if (!commands.isEmpty())
             StringUtil.copyPartialMatches(args[0], commands, completions);
-        
+
         Collections.sort(completions);
         return completions;
     }
-    
+
     private List<String> restoreAutoComplete(String[] args) {
         List<String> commands = new ArrayList<>();
-        
+
         if (args.length == 2)
             commands = playerListAutoComplete();
-        
+
         return commands;
     }
-    
+
     private List<String> forceBackupAutoComplete(String[] args) {
         List<String> completions = new ArrayList<>();
         Set<String> commands = new HashSet<>();
-        
+
         if (args.length == 3 && args[1].equalsIgnoreCase("player"))
             return playerListAutoComplete();
-        
+
         if (args.length == 2) {
             commands.add("all");
             commands.add("player");
         }
-        
+
         if (!commands.isEmpty())
             StringUtil.copyPartialMatches(args[1], commands, completions);
-        
+
         Collections.sort(completions);
         return completions;
     }
-    
+
     private List<String> playerListAutoComplete() {
         List<String> players = new ArrayList<>();
-        
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(player.getName());
         }
-        
+
         Collections.sort(players);
         return players;
     }
