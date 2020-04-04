@@ -141,29 +141,47 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             }
 
             if (args[1].equalsIgnoreCase("all")) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
-                }
-
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
+                forceBackupAll(sender);
             } else if (args[1].equalsIgnoreCase("player")) {
-                OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
-
-                if (!offlinePlayer.isOnline()) {
-                    sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
-                    return;
-                }
-
-                Player player = (Player) offlinePlayer;
-                new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
-
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
+                forceBackupPlayer(sender, args);
             } else {
                 sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
             }
         } else {
             sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
         }
+    }
+    
+    private void forceBackupAll(CommandSender sender) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+        }
+
+        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
+    }
+    
+    private void forceBackupPlayer(CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            return;
+        }
+
+        OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
+        
+        if (offlinePlayer == null) {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(args[2]));
+            return;
+        }
+
+        if (!offlinePlayer.isOnline()) {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
+            return;
+        }
+
+        Player player = (Player) offlinePlayer;
+        new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+
+        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }
 
     private void enableCommand(CommandSender sender) {
