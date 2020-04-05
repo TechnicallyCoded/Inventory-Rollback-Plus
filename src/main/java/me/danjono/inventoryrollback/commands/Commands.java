@@ -151,7 +151,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
         }
     }
-    
+
     private void forceBackupAll(CommandSender sender) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
@@ -159,7 +159,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
         sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
     }
-    
+
     private void forceBackupPlayer(CommandSender sender, String[] args) {
         if (args.length == 2) {
             sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
@@ -167,7 +167,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
-        
+
         if (offlinePlayer == null) {
             sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(args[2]));
             return;

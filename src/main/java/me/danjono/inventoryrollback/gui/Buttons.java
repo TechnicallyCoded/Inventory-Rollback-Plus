@@ -1,5 +1,6 @@
 package me.danjono.inventoryrollback.gui;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.SkullType;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemFlag;
@@ -366,7 +366,15 @@ public class Buttons {
         if (InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS)) {
             skull = new ItemStack(Material.PLAYER_HEAD);
         } else {
-            skull = new ItemStack(Material.getMaterial("SKULL_ITEM"), 1, (short) SkullType.PLAYER.ordinal());
+            Constructor<?> itemStackConstructor = null;
+            
+            try {
+                itemStackConstructor = Class.forName("org.bukkit.inventory.ItemStack").getConstructor(Material.class, int.class, short.class);
+                skull = (ItemStack) itemStackConstructor.newInstance(Material.getMaterial("SKULL_ITEM"), 1, (short) 3);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
         }
 
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
