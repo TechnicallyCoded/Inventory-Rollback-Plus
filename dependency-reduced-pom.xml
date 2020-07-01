@@ -8,7 +8,6 @@
   <description>Allows server moderators to restore player items and data from backups.</description>
   <organization>
     <name>danjono</name>
-    <url>http://twitter.com/danjono</url>
   </organization>
   <build>
     <resources>
