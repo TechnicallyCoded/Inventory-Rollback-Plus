@@ -24,6 +24,7 @@ public class MainMenu {
     private int startSelection;
     private int playerHeadLoops;
 
+    private List<Player> onlinePlayers;
     private Inventory inventory;
 
     public MainMenu(Player staff, int pageNumber) {
@@ -55,9 +56,9 @@ public class MainMenu {
     public void getMainMenu() {        
         int selection = startSelection;
         for (int i = 0; i < playerHeadLoops; i++) {
-            Player player = ((Player) Bukkit.getOnlinePlayers().toArray()[selection]);
+            Player player = onlinePlayers.get(selection);
             Buttons playerButton = new Buttons(player);
-            
+
             inventory.setItem(i, playerButton.playerHead(null, true));
             selection++;
         }
@@ -72,9 +73,12 @@ public class MainMenu {
         }
     }
 
-    public void getPlayerHeadData() {        
+    public void getPlayerHeadData() {
+        //Get current online players
+        onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
+
         //Check how many online players there are in total
-        int playersOnline = Bukkit.getOnlinePlayers().size();
+        int playersOnline = onlinePlayers.size();
 
         //How many rows are required
         int spaceRequired = InventoryName.MAIN_MENU.getSize() - 9;
@@ -91,7 +95,7 @@ public class MainMenu {
 
         //Get the amount of players that will show on this page
         startSelection = (((InventoryName.MAIN_MENU.getSize() - 9) * pageNumber) - (InventoryName.MAIN_MENU.getSize() - 9));
-        
+
         int variance = playersOnline - (spaceRequired + startSelection);
 
         if (variance > 0) {
