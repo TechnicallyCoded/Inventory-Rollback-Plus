@@ -42,7 +42,7 @@ public class EventLogs implements Listener {
 
 		Player player = (Player) e.getEntity();
 
-		if (player.getHealth() - e.getDamage() <= 0 && player.hasPermission("inventoryrollback.deathsave")) {											
+		if (player.getHealth() - e.getFinalDamage() <= 0 && player.hasPermission("inventoryrollback.deathsave")) {											
 			new SaveInventory(player, LogType.DEATH, e.getCause(), player.getInventory(), player.getEnderChest()).createSave();
 		}
 	}
