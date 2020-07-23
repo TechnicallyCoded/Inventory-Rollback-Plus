@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -431,8 +430,8 @@ public class PlayerData {
     }
     
     public static String getTime(Long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat(ConfigData.getTimeFormat());
-        sdf.setTimeZone(TimeZone.getTimeZone(ConfigData.getTimeZone()));
+        SimpleDateFormat sdf = ConfigData.getTimeFormat();
+        sdf.setTimeZone(ConfigData.getTimeZone());
         return sdf.format(new Date(time));
     }  
 

@@ -2,6 +2,10 @@ package me.danjono.inventoryrollback.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.zone.ZoneRulesException;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -86,8 +90,8 @@ public class ConfigData {
     private static int maxSavesWorldChange;
     private static int maxSavesForce;
 
-    private static String timeZone;
-    private static String timeFormat;
+    private static TimeZone timeZone;
+    private static SimpleDateFormat timeFormat;
 
     private static boolean updateChecker;
 
@@ -214,11 +218,21 @@ public class ConfigData {
     }
 
     public static void setTimeZone(String zone) {
-        timeZone = zone;
+        try {
+            timeZone = TimeZone.getTimeZone(ZoneId.of(zone));
+        } catch (ZoneRulesException e) {
+            timeZone = TimeZone.getTimeZone("GMT");
+            InventoryRollback.getInstance().getLogger().log(Level.WARNING, ("Time zone ID \"" + zone + "\" in config.yml is not valid. Defaulting to \"GMT\""));
+        }
     }
 
     public static void setTimeFormat(String format) {
-        timeFormat = format;
+        try {
+            timeFormat = new SimpleDateFormat(format);
+        } catch (IllegalArgumentException e) {
+            timeFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a z");
+            InventoryRollback.getInstance().getLogger().log(Level.WARNING, ("Time zone format \"" + format + "\" in config.yml is not valid. Defaulting to \"dd/MM/yyyy hh:mm:ss a z\""));
+        }
     }
 
     public static void setUpdateChecker(boolean enabled) {
@@ -297,11 +311,11 @@ public class ConfigData {
         return maxSavesForce;
     }
 
-    public static String getTimeZone() {
+    public static TimeZone getTimeZone() {
         return timeZone;
     }
 
-    public static String getTimeFormat() {
+    public static SimpleDateFormat getTimeFormat() {
         return timeFormat;
     }
 
