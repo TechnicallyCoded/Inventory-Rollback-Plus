@@ -4,7 +4,7 @@
 		<modelVersion>4.0.0</modelVersion>
 		<groupId>InventoryRollback</groupId>
 		<artifactId>InventoryRollback</artifactId>
-		<version>2.0-beta</version>
+		<version>2.0-b.2</version>
 		<name>InventoryRollback</name>
 
 		<organization>
@@ -31,7 +31,7 @@
 				<dependency>
 						<groupId>org.spigotmc</groupId>
 						<artifactId>spigot-api</artifactId>
-						<version>1.16.1-R0.1-SNAPSHOT</version>
+						<version>1.16.3-R0.1-SNAPSHOT</version>
 						<scope>provided</scope>
 				</dependency>
 
