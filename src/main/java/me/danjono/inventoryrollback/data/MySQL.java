@@ -3,9 +3,9 @@ package me.danjono.inventoryrollback.data;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,7 +46,6 @@ public class MySQL {
     }
 
     private Connection connection;
-    private Statement statement;
 
     private String mainInventory;
     private String armour;
@@ -76,10 +75,6 @@ public class MySQL {
         }
 
         synchronized (this) {
-            if (connection != null && !connection.isClosed()) {
-                return;
-            }
-
             connection = DriverManager.getConnection("jdbc:mysql://" + 
                     ConfigData.getMySQLHost() + ":" + 
                     ConfigData.getMySQLPort() + "/" + 
@@ -97,33 +92,12 @@ public class MySQL {
         connection.close();
     }
 
-    public void createStatement() throws SQLException {
-        if (statement != null) {
-            return;
-        }
-
-        openConnection();
-
-        synchronized (this) {
-            if (statement != null) {
-                return;
-            }
-
-            statement = connection.createStatement();
-        }
-    }
-
-    public void closeStatement() throws SQLException {
-        statement.close();
-        statement = null;
-    }
-
     public void createTables() throws SQLException {
-        createStatement();
-
+        openConnection();
+        
         try {
             for (BackupTable table : BackupTable.values()) {
-                String tableQuery = "CREATE TABLE IF NOT EXISTS `" + table.getTableName() + "` (" +
+                String tableQuery = "CREATE TABLE IF NOT EXISTS " + table.getTableName() + " (" +
                         "`id` INT NOT NULL AUTO_INCREMENT," +
                         "`uuid` VARCHAR(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL," +
                         "`timestamp` DOUBLE NOT NULL," +
@@ -141,11 +115,12 @@ public class MySQL {
                         "`armour` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," + 
                         "`ender_chest` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," +
                         "PRIMARY KEY (`id`));";
-
-                statement.execute(tableQuery);
+                
+                try (PreparedStatement statement = connection.prepareStatement(tableQuery)) {
+                    statement.executeUpdate();
+                }
             }
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
@@ -167,72 +142,86 @@ public class MySQL {
     }
 
     public boolean doesBackupTypeExist() throws SQLException {        
-        createStatement();
+        openConnection();
 
         try {
-            String query = "SELECT EXISTS(SELECT 1 FROM " + backupTable.getTableName() + " WHERE uuid ='" + uuid + "')";
-
-            try (ResultSet results = statement.executeQuery(query)) {
-                results.next();
-                return results.getBoolean(1);
+            String query = "SELECT EXISTS(SELECT 1 FROM " + backupTable.getTableName() + " WHERE uuid = ?)";
+            
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, uuid + "");
+                
+                try (ResultSet results = statement.executeQuery()) {
+                    results.next();
+                    return results.getBoolean(1);
+                }
             }
+
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
 
     public int getAmountOfBackups() throws SQLException {
-        createStatement();
+        openConnection();
 
         try {
-            String query = "SELECT COUNT(id) FROM " + backupTable.getTableName() + " WHERE uuid ='" + uuid + "'";
-
-            try (ResultSet results = statement.executeQuery(query)) {
-                results.next();
-                return results.getInt(1);
+            String query = "SELECT COUNT(id) FROM " + backupTable.getTableName() + " WHERE uuid = ?";
+            
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, uuid + "");
+                
+                try (ResultSet results = statement.executeQuery()) {
+                    results.next();
+                    return results.getInt(1);
+                }
             }
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
 
     public List<Long> getSelectedPageTimestamps(int pageNumber) throws SQLException {
+        openConnection();
+        
         List<Long> timeStamps = new ArrayList<>();
-        createStatement();
 
         //Number of backups that will be on the page
         int backups = InventoryName.ROLLBACK_LIST.getSize() - 9;
-
+                
         try {
             int queryRange = ((pageNumber - 1) * backups);
             if (queryRange < 0)
                 queryRange = 0;
 
-            String query = "SELECT timestamp FROM " + backupTable.getTableName() + " WHERE uuid ='" + uuid + "' ORDER BY timestamp DESC LIMIT " + queryRange + ", " + backups;
-
-            try (ResultSet results = statement.executeQuery(query)) {                
-                while (results.next()) {
-                    timeStamps.add(results.getLong(1));
+            String query = "SELECT timestamp FROM " + backupTable.getTableName() + " WHERE uuid = ? ORDER BY timestamp DESC LIMIT " + queryRange + ", " + backups + "";
+            
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, uuid + "");
+                
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        timeStamps.add(results.getLong(1));
+                    }
                 }
             }
 
             return timeStamps;
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
 
     public void purgeExcessSaves(int deleteAmount) throws SQLException {
-        createStatement();
+        openConnection();
 
         try {
-            String delete = "DELETE FROM " + backupTable.getTableName() + " WHERE uuid ='" + uuid + "' ORDER BY timestamp ASC LIMIT " + deleteAmount;
-            statement.executeUpdate(delete);
+            String delete = "DELETE FROM " + backupTable.getTableName() + " WHERE uuid = ? ORDER BY timestamp ASC LIMIT " + deleteAmount;
+            
+            try (PreparedStatement statement = connection.prepareStatement(delete)) {
+                statement.setString(1, uuid + "");
+                statement.executeUpdate();
+            }
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
@@ -290,64 +279,64 @@ public class MySQL {
     }
 
     public void getRollbackMenuData() throws SQLException {
-        createStatement();
+        openConnection();
 
         try {
             String query = "SELECT timestamp,death_reason,location_world,location_x,location_y,location_z " + 
                     "FROM " + backupTable.getTableName() + " WHERE " +
-                    "uuid ='" + uuid + "' AND timestamp = '" + timestamp + "'";
-
-            try (ResultSet resultSet = statement.executeQuery(query)) {
-                resultSet.next();
-    
-                world = resultSet.getString("location_world");
-                x = resultSet.getDouble("location_x");
-                y = resultSet.getDouble("location_y");
-                z = resultSet.getDouble("location_z");
-    
-                if (!resultSet.getString("death_reason").equalsIgnoreCase("null"))
-                    deathReason = resultSet.getString("death_reason");
+                    "uuid = ? AND timestamp = ?";
+            
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, uuid + "");
+                statement.setLong(2, timestamp);
+                
+                try (ResultSet results = statement.executeQuery()) {
+                    results.next();
+                    
+                    world = results.getString("location_world");
+                    x = results.getDouble("location_x");
+                    y = results.getDouble("location_y");
+                    z = results.getDouble("location_z");
+                    deathReason = results.getString("death_reason");
+                }
             }
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
 
     public void getAllBackupData() throws SQLException {
-        createStatement();
+        openConnection();
 
         try {
             String query = "SELECT * FROM " + backupTable.getTableName() + " WHERE " +
-                    "uuid ='" + uuid + "' AND timestamp = '" + timestamp + "'";
+                    "uuid = ? AND timestamp = ?";
 
-            try (ResultSet resultSet = statement.executeQuery(query)) {
-                resultSet.next();
-    
-                if (!resultSet.getString("main_inventory").equalsIgnoreCase("null"))
-                    mainInventory = resultSet.getString("main_inventory");
-    
-                if (!resultSet.getString("armour").equalsIgnoreCase("null"))
-                    armour = resultSet.getString("armour");
-    
-                if (!resultSet.getString("ender_chest").equalsIgnoreCase("null"))
-                    enderChest = resultSet.getString("ender_chest");
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, uuid + "");
+                statement.setLong(2, timestamp);
                 
-                xp = resultSet.getFloat("xp");
-                health = resultSet.getDouble("health");
-                hunger = resultSet.getInt("hunger");
-                saturation = resultSet.getFloat("saturation");
-                world = resultSet.getString("location_world");
-                x = resultSet.getDouble("location_x");
-                y = resultSet.getDouble("location_y");
-                z = resultSet.getDouble("location_z");
-                packageVersion = resultSet.getString("version");
-    
-                if (!resultSet.getString("death_reason").equalsIgnoreCase("null"))
-                    deathReason = resultSet.getString("death_reason");
+                try (ResultSet results = statement.executeQuery()) {
+                    results.next();
+        
+                    mainInventory = results.getString("main_inventory");
+                    armour = results.getString("armour");
+                    enderChest = results.getString("ender_chest");
+                    
+                    xp = results.getFloat("xp");
+                    health = results.getDouble("health");
+                    hunger = results.getInt("hunger");
+                    saturation = results.getFloat("saturation");
+                    world = results.getString("location_world");
+                    x = results.getDouble("location_x");
+                    y = results.getDouble("location_y");
+                    z = results.getDouble("location_z");
+                    
+                    packageVersion = results.getString("version");
+                    deathReason = results.getString("death_reason");
+                }
             }
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
@@ -405,31 +394,32 @@ public class MySQL {
     }
 
     public void saveData() throws SQLException {
-        createStatement();
+        openConnection();
 
         try {
             String update = "INSERT INTO " + backupTable.getTableName() + " " +
                     "(uuid, timestamp, xp, health, hunger, saturation, location_world, location_x, location_y, location_z, version, death_reason, main_inventory, armour, ender_chest)" + " " +
-                    "VALUES (" +
-                    "'" + uuid + "', " +
-                    "'" + timestamp + "', " +
-                    "'" + xp + "', " +
-                    "'" + health + "', " +
-                    "'" + hunger + "', " +
-                    "'" + saturation + "', " +
-                    "'" + world + "', " +
-                    "'" + x + "', " +
-                    "'" + y + "', " +
-                    "'" + z + "', " +
-                    "'" + packageVersion + "', " +
-                    "'" + deathReason + "', " +
-                    "'" + mainInventory + "', " +
-                    "'" + armour + "', " +
-                    "'" + enderChest + "')";
-
-            statement.executeUpdate(update);
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            try (PreparedStatement statement = connection.prepareStatement(update)) {
+                statement.setString(1, uuid + "");
+                statement.setLong(2, timestamp);
+                statement.setFloat(3, xp);
+                statement.setDouble(4, health);
+                statement.setInt(5, hunger);
+                statement.setFloat(6, saturation);
+                statement.setString(7, world);
+                statement.setDouble(8, x);
+                statement.setDouble(9, y);
+                statement.setDouble(10, z);
+                statement.setString(11, packageVersion);
+                statement.setString(12, deathReason);
+                statement.setString(13, mainInventory);
+                statement.setString(14, armour);
+                statement.setString(15, enderChest);
+                statement.executeUpdate();
+            }
         } finally {
-            closeStatement();
             closeConnection();
         }
     }
