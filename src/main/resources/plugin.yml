@@ -42,5 +42,5 @@ permissions:
     description: Grants access to perform player roll backs.
     default: op
   inventoryrollback.forcebackup:
-    description: Forces a backup for an online player. 
+    description: Forces a backup for an online player.
     default: op

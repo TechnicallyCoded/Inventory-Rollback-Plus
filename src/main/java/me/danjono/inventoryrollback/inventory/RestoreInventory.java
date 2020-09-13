@@ -1,10 +1,7 @@
 package me.danjono.inventoryrollback.inventory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.logging.Level;
-
+import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.config.MessageData;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -12,13 +9,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.config.MessageData;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.logging.Level;
 
 public class RestoreInventory {
 
-    private FileConfiguration playerData;
-    private Long timestamp;
+    private final FileConfiguration playerData;
+    private final Long timestamp;
 
     public RestoreInventory(FileConfiguration playerData, Long timestamp) {
         this.playerData = playerData;
@@ -65,7 +64,7 @@ public class RestoreInventory {
     }
 
     private ItemStack[] stacksFromBase64(String data) {
-        if (data == null || Base64Coder.decodeLines(data) == null) 
+        if (data == null || Base64Coder.decodeLines(data).equals(null))
             return new ItemStack[]{};
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
@@ -88,22 +87,28 @@ public class RestoreInventory {
                 //Backup generated before InventoryRollback 1.3
                 if (packageVersion == null) {
                     InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. This is likely caused by a now incompatible material ID if the backup was originally generated on a different Minecraft server version.");
-                } 
+                }
                 //Backup was not generated on the same server version
                 else if (!packageVersion.equalsIgnoreCase(InventoryRollback.getPackageVersion())) {
-                    InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");   
-                } 
+                    InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");
+                }
                 //Unknown error
                 else if (packageVersion.equalsIgnoreCase(InventoryRollback.getPackageVersion())) {
                     InventoryRollback.logger.log(Level.SEVERE, ChatColor.stripColor(MessageData.pluginName) + "There was an error deserializing the material data. Please upload the affected players backup file to Pastebin and send a link to it in the discussion page on Spigot for InventoryRollback detailing the problem as accurately as you can.");
                 }
 
-                try { dataInput.close(); } catch (IOException e1) {}
+                try {
+                    dataInput.close();
+                } catch (IOException ignored) {
+                }
                 return null;
             }
         }
 
-        try { dataInput.close(); } catch (IOException e1) {}
+        try {
+            dataInput.close();
+        } catch (IOException ignored) {
+        }
 
         return stacks;
     }
@@ -132,7 +137,9 @@ public class RestoreInventory {
         //Levels 0 through 15
         if (xp >= 0 && xp < 351) {
             //Calculate Everything
-            int a = 1; int b = 6; int c = -xp;
+            int a = 1;
+            int b = 6;
+            int c = -xp;
             int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int xpForLevel = (int) (Math.pow(level, 2) + (6 * level));
             int remainder = xp - xpForLevel;
@@ -146,7 +153,9 @@ public class RestoreInventory {
             //Levels 16 through 30
         } else if (xp >= 352 && xp < 1507) {
             //Calculate Everything
-            double a = 2.5; double b = -40.5; int c = -xp + 360;
+            double a = 2.5;
+            double b = -40.5;
+            int c = -xp + 360;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
             int xpForLevel = (int) (2.5 * Math.pow(level, 2) - (40.5 * level) + 360);
@@ -161,7 +170,9 @@ public class RestoreInventory {
             //Level 31 and greater
         } else {
             //Calculate Everything
-            double a = 4.5; double b = -162.5; int c = -xp + 2220;
+            double a = 4.5;
+            double b = -162.5;
+            int c = -xp + 2220;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
             int xpForLevel = (int) (4.5 * Math.pow(level, 2) - (162.5 * level) + 2220);
@@ -182,7 +193,9 @@ public class RestoreInventory {
         //Levels 0 through 15
         if (xp >= 0 && xp < 351) {
             //Calculate Everything
-            int a = 1; int b = 6; int c = -xp;
+            int a = 1;
+            int b = 6;
+            int c = -xp;
             int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int xpForLevel = (int) (Math.pow(level, 2) + (6 * level));
             int remainder = xp - xpForLevel;
@@ -194,7 +207,9 @@ public class RestoreInventory {
             //Levels 16 through 30
         } else if (xp >= 352 && xp < 1507) {
             //Calculate Everything
-            double a = 2.5; double b = -40.5; int c = -xp + 360;
+            double a = 2.5;
+            double b = -40.5;
+            int c = -xp + 360;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
             int xpForLevel = (int) (2.5 * Math.pow(level, 2) - (40.5 * level) + 360);
@@ -208,7 +223,9 @@ public class RestoreInventory {
             //Level 31 and greater
         } else {
             //Calculate Everything
-            double a = 4.5; double b = -162.5; int c = -xp + 2220;
+            double a = 4.5;
+            double b = -162.5;
+            int c = -xp + 2220;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
             int xpForLevel = (int) (4.5 * Math.pow(level, 2) - (162.5 * level) + 2220);
@@ -223,7 +240,7 @@ public class RestoreInventory {
     }
 
     private static float round(float d, int decimalPlace) {
-        BigDecimal bd = new BigDecimal((double) d);
+        BigDecimal bd = BigDecimal.valueOf(d);
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_DOWN);
         return bd.floatValue();
     }

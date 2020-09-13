@@ -1,23 +1,22 @@
 package me.danjono.inventoryrollback.config;
 
-import java.io.File;
-import java.io.IOException;
-
+import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
+import java.io.File;
+import java.io.IOException;
 
 public class ConfigFile {
 
     private File configFile;
-    private FileConfiguration config;
+    private final FileConfiguration config;
 
     public ConfigFile() {
         this.configFile = new File(folderLocation, "config.yml");
-        if(!configFile.exists())
+        if (!configFile.exists())
             InventoryRollback.getInstance().saveDefaultConfig();
 
         this.configFile = new File(folderLocation, "config.yml");
@@ -50,7 +49,7 @@ public class ConfigFile {
 
     public static boolean enabled;
 
-    public void setEnabled(boolean enabled) {		
+    public void setEnabled(boolean enabled) {
         ConfigFile.enabled = enabled;
         config.set("enabled", enabled);
         saveConfig();
@@ -77,7 +76,7 @@ public class ConfigFile {
 
     public static boolean bStatsEnabled;
 
-    public void setVariables() {		
+    public void setVariables() {
         String folder = (String) getDefaultValue("folderLocation", "DEFAULT");
 
         if (folder.equalsIgnoreCase("DEFAULT") || folder.isEmpty() || folder == null) {
@@ -93,15 +92,15 @@ public class ConfigFile {
         enabled = (boolean) getDefaultValue("enabled", true);
 
         maxSavesJoin = (int) getDefaultValue("maxSaves.join", 10);
-        maxSavesQuit = (int) getDefaultValue("maxSaves.quit", 10);	
+        maxSavesQuit = (int) getDefaultValue("maxSaves.quit", 10);
         maxSavesDeath = (int) getDefaultValue("maxSaves.death", 50);
-        maxSavesWorldChange = (int) getDefaultValue("maxSaves.worldChange", 10);	
+        maxSavesWorldChange = (int) getDefaultValue("maxSaves.worldChange", 10);
         maxSavesForce = (int) getDefaultValue("maxSaves.force", 10);
 
         try {
             deathIcon = Material.valueOf((String) getDefaultValue("icons.mainMenu.deathIcon.item", "BONE"));
         } catch (IllegalArgumentException e) {
-            deathIcon =  Material.valueOf("BONE");
+            deathIcon = Material.valueOf("BONE");
         }
 
         try {
@@ -127,7 +126,7 @@ public class ConfigFile {
         } catch (IllegalArgumentException e) {
             forceSaveIcon = Material.valueOf("DIAMOND");
         }
-        
+
         timeZone = (String) getDefaultValue("icons.rollbackMenu.time.timeZone", "UTC");
         timeFormat = (String) getDefaultValue("icons.rollbackMenu.time.timeFormat", "dd/MM/yyyy HH:mm:ss a");
 
@@ -135,7 +134,7 @@ public class ConfigFile {
 
         bStatsEnabled = (boolean) getDefaultValue("bStats", true);
 
-        new MessageData().setMessages(); 	
+        new MessageData().setMessages();
         new SoundData().setSounds();
 
         if (saveChanges) {
@@ -144,39 +143,40 @@ public class ConfigFile {
         }
     }
 
-    public void createStorageFolders() {		
+    public void createStorageFolders() {
         //Create folder for where player inventories will be saved
         File savesFolder = new File(folderLocation, "saves");
-        if(!savesFolder.exists())
+        if (!savesFolder.exists())
             savesFolder.mkdir();
 
         //Create folder for joins
         File joinsFolder = new File(folderLocation, "saves/joins");
-        if(!joinsFolder.exists())
+        if (!joinsFolder.exists())
             joinsFolder.mkdir();
 
         //Create folder for quits
         File quitsFolder = new File(folderLocation, "saves/quits");
-        if(!quitsFolder.exists())
+        if (!quitsFolder.exists())
             quitsFolder.mkdir();
 
         //Create folder for deaths
         File deathsFolder = new File(folderLocation, "saves/deaths");
-        if(!deathsFolder.exists())
+        if (!deathsFolder.exists())
             deathsFolder.mkdir();
 
         //Create folder for world changes
         File worldChangesFolder = new File(folderLocation, "saves/worldChanges");
-        if(!worldChangesFolder.exists())
+        if (!worldChangesFolder.exists())
             worldChangesFolder.mkdir();
 
         //Create folder for force saves
         File forceSavesFolder = new File(folderLocation, "saves/force");
-        if(!forceSavesFolder.exists())
+        if (!forceSavesFolder.exists())
             forceSavesFolder.mkdir();
     }
 
     private boolean saveChanges = false;
+
     public Object getDefaultValue(String path, Object defaultValue) {
         Object obj = config.get(path);
 
