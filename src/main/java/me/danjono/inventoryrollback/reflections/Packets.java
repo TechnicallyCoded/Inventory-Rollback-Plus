@@ -4,27 +4,12 @@ import me.danjono.inventoryrollback.InventoryRollback;
 
 public class Packets {
 
-    public Class<?> getNMSClass(String name) {
-        Class<?> c = null;
-
-        try {
-            c = Class.forName("net.minecraft.server." + InventoryRollback.getPackageVersion() + "." + name);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return c;
+    public static Class<?> getNMSClass(String name) throws ClassNotFoundException {
+        return Class.forName("net.minecraft.server." + InventoryRollback.getPackageVersion() + "." + name);
     }
 
-    public Class<?> getCraftBukkitClass(String name) {
-        Class<?> c = null;
-
-        try {
-            c = Class.forName("org.bukkit.craftbukkit." + InventoryRollback.getPackageVersion() + "." + name);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return c;
+    public static Class<?> getCraftBukkitClass(String name) throws ClassNotFoundException {
+        return Class.forName("org.bukkit.craftbukkit." + InventoryRollback.getPackageVersion() + "." + name);
     }
+
 }

@@ -2,13 +2,36 @@ package me.danjono.inventoryrollback.reflections;
 
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
 public class NBT {
 
+    private static final Method BUKKIT_AS_NMS_ITEM;
+    private static final Method NMS_AS_BUKKIT_ITEM;
+    private static final Method ITEM_GET_TAG;
+    private static final Method ITEM_SET_TAG;
+    private static final Constructor<?> NBT_TAG_CONSTRUCTOR;
+
+    static {
+        try {
+            Class<?> nmsItemStackClass = Packets.getNMSClass("ItemStack");
+            Class<?> craftItemStackClass = Packets.getCraftBukkitClass("inventory.CraftItemStack");
+            Class<?> nbtClass = Packets.getCraftBukkitClass("NBTTagCompound");
+            BUKKIT_AS_NMS_ITEM = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class);
+            NMS_AS_BUKKIT_ITEM = craftItemStackClass.getMethod("asBukkitCopy", nmsItemStackClass);
+            NBT_TAG_CONSTRUCTOR = nbtClass.getConstructor();
+            ITEM_GET_TAG = nmsItemStackClass.getMethod("getTag");
+            ITEM_SET_TAG = nmsItemStackClass.getMethod("setTag", nbtClass);
+
+        } catch (ReflectiveOperationException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     private ItemStack item;
-    private final Packets packets;
 
     public NBT(ItemStack item) {
-        packets = new Packets();
         this.item = item;
     }
 
@@ -24,17 +47,17 @@ public class NBT {
 
     public ItemStack setString(String key, String data) {
         try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
+            Object itemstack = BUKKIT_AS_NMS_ITEM.invoke(null, item);
+            Object comp = ITEM_GET_TAG.invoke(itemstack);
 
             if (comp == null) {
-                comp = packets.getCraftBukkitClass("NBTTagCompound").newInstance();
+                comp = NBT_TAG_CONSTRUCTOR.newInstance();
             }
 
             comp.getClass().getMethod("setString", String.class, String.class).invoke(comp, key, data);
 
-            itemstack.getClass().getMethod("setTag", comp.getClass()).invoke(itemstack, comp);
-            item = (ItemStack) packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
+            ITEM_SET_TAG.invoke(itemstack, comp);
+            item = (ItemStack) NMS_AS_BUKKIT_ITEM.invoke(null, itemstack);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,17 +67,17 @@ public class NBT {
 
     public ItemStack setInt(String key, int data) {
         try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
+            Object itemstack = BUKKIT_AS_NMS_ITEM.invoke(null, item);
+            Object comp = ITEM_GET_TAG.invoke(itemstack);
 
             if (comp == null) {
-                comp = packets.getCraftBukkitClass("NBTTagCompound").newInstance();
+                comp = NBT_TAG_CONSTRUCTOR.newInstance();
             }
 
             comp.getClass().getMethod("setInt", String.class, int.class).invoke(comp, key, data);
 
-            itemstack.getClass().getMethod("setTag", comp.getClass()).invoke(itemstack, comp);
-            item = (ItemStack) packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
+            ITEM_SET_TAG.invoke(itemstack, comp);
+            item = (ItemStack) NMS_AS_BUKKIT_ITEM.invoke(null, itemstack);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,19 +85,19 @@ public class NBT {
         return item;
     }
 
-    public ItemStack setLong(String key, Long data) {
+    public ItemStack setLong(String key, long data) {
         try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
+            Object itemstack = NMS_AS_BUKKIT_ITEM.invoke(null, item);
+            Object comp = ITEM_GET_TAG.invoke(itemstack);
 
             if (comp == null) {
-                comp = packets.getCraftBukkitClass("NBTTagCompound").newInstance();
+                comp = NBT_TAG_CONSTRUCTOR.newInstance();
             }
 
             comp.getClass().getMethod("setLong", String.class, long.class).invoke(comp, key, data);
 
-            itemstack.getClass().getMethod("setTag", comp.getClass()).invoke(itemstack, comp);
-            item = (ItemStack) packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
+            ITEM_SET_TAG.invoke(itemstack, comp);
+            item = (ItemStack) NMS_AS_BUKKIT_ITEM.invoke(null, itemstack);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,19 +105,19 @@ public class NBT {
         return item;
     }
 
-    public ItemStack setDouble(String key, Double data) {
+    public ItemStack setDouble(String key, double data) {
         try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
+            Object itemstack = BUKKIT_AS_NMS_ITEM.invoke(null, item);
+            Object comp = ITEM_GET_TAG.invoke(itemstack);
 
             if (comp == null) {
-                comp = packets.getCraftBukkitClass("NBTTagCompound").newInstance();
+                comp = NBT_TAG_CONSTRUCTOR.newInstance();
             }
 
             comp.getClass().getMethod("setDouble", String.class, double.class).invoke(comp, key, data);
 
-            itemstack.getClass().getMethod("setTag", comp.getClass()).invoke(itemstack, comp);
-            item = (ItemStack) packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
+            ITEM_SET_TAG.invoke(itemstack, comp);
+            item = (ItemStack) NMS_AS_BUKKIT_ITEM.invoke(null, itemstack);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,19 +125,19 @@ public class NBT {
         return item;
     }
 
-    public ItemStack setFloat(String key, Float data) {
+    public ItemStack setFloat(String key, float data) {
         try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
+            Object itemstack =BUKKIT_AS_NMS_ITEM.invoke(null, item);
+            Object comp = ITEM_GET_TAG.invoke(itemstack);
 
             if (comp == null) {
-                comp = packets.getCraftBukkitClass("NBTTagCompound").newInstance();
+                comp = NBT_TAG_CONSTRUCTOR.newInstance();
             }
 
             comp.getClass().getMethod("setFloat", String.class, float.class).invoke(comp, key, data);
 
-            itemstack.getClass().getMethod("setTag", comp.getClass()).invoke(itemstack, comp);
-            item = (ItemStack) packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
+            ITEM_SET_TAG.invoke(itemstack, comp);
+            item = (ItemStack) NMS_AS_BUKKIT_ITEM.invoke(null, itemstack);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,99 +146,99 @@ public class NBT {
     }
 
     public String getString(String key) {
-        Object result = null;
-        Object comp = null;
-
-        try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            try {
-                comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
-            } catch (NullPointerException e) {
-                return null;
-            }
-
-            try {
-                result = comp.getClass().getMethod("getString", String.class).invoke(comp, key);
-            } catch (NullPointerException e) {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (item == null || key == null) {
+            return null;
         }
 
-        return (String) result;
+        try {
+            Object comp = getNBTCompound();
+
+            if (comp == null) {
+                return null;
+            }
+            return (String) comp.getClass().getMethod("getString", String.class).invoke(comp, key);
+
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     public int getInt(String key) {
-        Object result = null;
 
-        try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
-
-            try {
-                result = comp.getClass().getMethod("getInt", String.class).invoke(comp, key);
-            } catch (NullPointerException ignored) {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (item == null || key == null) {
+            return 0;
         }
 
-        return (int) result;
+        try {
+            Object comp = getNBTCompound();
+
+            return (int) comp.getClass().getMethod("getInt", String.class).invoke(comp, key);
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public Long getLong(String key) {
-        Object result = null;
 
-        try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
-
-            try {
-                result = comp.getClass().getMethod("getLong", String.class).invoke(comp, key);
-            } catch (NullPointerException ignored) {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (item == null || key == null) {
+            return null;
         }
 
-        return (long) result;
+        try {
+            Object comp = getNBTCompound();
+            if (comp == null) {
+                return null;
+            }
+            return (Long) comp.getClass().getMethod("getLong", String.class).invoke(comp, key);
+        } catch (ReflectiveOperationException  e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public double getDouble(String key) {
-        Object result = null;
+    public Double getDouble(String key) {
 
-        try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
-
-            try {
-                result = comp.getClass().getMethod("getDouble", String.class).invoke(comp, key);
-            } catch (NullPointerException ignored) {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (item == null || key == null) {
+            return null;
         }
 
-        return (double) result;
+        try {
+            Object comp = getNBTCompound();
+            if (comp == null) {
+                return null;
+            }
+
+            return (Double) comp.getClass().getMethod("getDouble", String.class).invoke(comp, key);
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Float getFloat(String key) {
-        Object result = null;
 
-        try {
-            Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-            Object comp = itemstack.getClass().getMethod("getTag").invoke(itemstack);
-
-            try {
-                result = comp.getClass().getMethod("getFloat", String.class).invoke(comp, key);
-            } catch (NullPointerException ignored) {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (item == null || key == null) {
+            return null;
         }
 
-        return (float) result;
+        try {
+            Object comp = getNBTCompound();
+            if (comp == null)  {
+                return null;
+            }
+            return (Float) comp.getClass().getMethod("getFloat", String.class).invoke(comp, key);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private Object getNBTCompound() throws ReflectiveOperationException {
+        Object itemstack = BUKKIT_AS_NMS_ITEM.invoke(null, item);
+        return ITEM_GET_TAG.invoke(itemstack);
     }
 
 }
