@@ -47,19 +47,19 @@ public class BackupMenu {
         int position = 0;
 
         //If the backup file is invalid it will return null, we want to catch it here
-        try {
-            //Add items
-            for (int i = 0; i < mainInventory.length - 5; i++) {
-                if (mainInventory[item] != null) {
-                    inv.setItem(position, mainInventory[item]);
-                    position++;
-                }
-
-                item++;
-            }
-        } catch (NullPointerException e) {
+        if (mainInventory == null) {
             staff.sendMessage(MessageData.pluginName + MessageData.errorInventory);
             return null;
+        }
+        //Add items
+        for (int i = 0; i < mainInventory.length - 5; i++) {
+            final ItemStack itemStack = mainInventory[item];
+            if (itemStack != null) {
+                inv.setItem(position, itemStack);
+                position++;
+            }
+
+            item++;
         }
 
         item = 36;

@@ -15,6 +15,7 @@ public class NBT {
 
     static {
         try {
+            // Init and cache the commonly used reflection accessor objects
             Class<?> nmsItemStackClass = Packets.getNMSClass("ItemStack");
             Class<?> craftItemStackClass = Packets.getCraftBukkitClass("inventory.CraftItemStack");
             Class<?> nbtClass = Packets.getCraftBukkitClass("NBTTagCompound");
@@ -181,59 +182,59 @@ public class NBT {
         }
     }
 
-    public Long getLong(String key) {
+    public long getLong(String key) {
 
         if (item == null || key == null) {
-            return null;
+            return 0;
         }
 
         try {
             Object comp = getNBTCompound();
             if (comp == null) {
-                return null;
+                return 0;
             }
             return (Long) comp.getClass().getMethod("getLong", String.class).invoke(comp, key);
         } catch (ReflectiveOperationException  e) {
             e.printStackTrace();
         }
-        return null;
+        return 0;
     }
 
-    public Double getDouble(String key) {
+    public double getDouble(String key) {
 
         if (item == null || key == null) {
-            return null;
+            return 0;
         }
 
         try {
             Object comp = getNBTCompound();
             if (comp == null) {
-                return null;
+                return 0;
             }
 
             return (Double) comp.getClass().getMethod("getDouble", String.class).invoke(comp, key);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
-            return null;
+            return 0;
         }
     }
 
-    public Float getFloat(String key) {
+    public float getFloat(String key) {
 
         if (item == null || key == null) {
-            return null;
+            return 0;
         }
 
         try {
             Object comp = getNBTCompound();
             if (comp == null)  {
-                return null;
+                return 0;
             }
             return (Float) comp.getClass().getMethod("getFloat", String.class).invoke(comp, key);
         } catch (ReflectiveOperationException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return 0;
     }
 
     private Object getNBTCompound() throws ReflectiveOperationException {

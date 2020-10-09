@@ -12,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public class Commands extends ConfigFile implements CommandExecutor {
 
@@ -28,36 +29,35 @@ public class Commands extends ConfigFile implements CommandExecutor {
             } else {
                 switch (args[0]) {
                     case "restore": {
-                        if (sender instanceof Player) {
-                            if (sender.hasPermission("inventoryrollback.restore")) {
-                                if (!ConfigFile.enabled) {
-                                    sender.sendMessage(MessageData.pluginName + MessageData.disabledMessage);
-                                    break;
-                                }
-
-                                Player staff = (Player) sender;
-
-                                if (args.length == 1) {
-                                    try {
-                                        staff.openInventory(new MainMenu(staff, staff).getMenu());
-                                    } catch (NullPointerException ignored) {
-                                    }
-                                } else if (args.length == 2) {
-                                    @SuppressWarnings("deprecation")
-                                    OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
-
-                                    try {
-                                        staff.openInventory(new MainMenu(staff, rollbackPlayer).getMenu());
-                                    } catch (NullPointerException ignored) {
-                                    }
-                                } else {
-                                    sender.sendMessage(MessageData.pluginName + MessageData.error);
-                                }
-                            } else {
-                                sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
-                            }
-                        } else {
+                        if ( !(sender instanceof Player)) {
                             sender.sendMessage(MessageData.pluginName + MessageData.playerOnly);
+                            break;
+                        }
+                        if (!sender.hasPermission("inventoryrollback.restore")) {
+                            sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
+                            break;
+                        }
+                        if (!ConfigFile.enabled) {
+                            sender.sendMessage(MessageData.pluginName + MessageData.disabledMessage);
+                            break;
+                        }
+
+                        Player staff = (Player) sender;
+
+                        if (args.length == 1) {
+                            final Inventory inventory = new MainMenu(staff, staff).getMenu();
+                            if (inventory != null) {
+                                staff.openInventory(inventory);
+                            }
+                        } else if (args.length == 2) {
+                            @SuppressWarnings("deprecation")
+                            OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
+
+                            final Inventory inventory =  new MainMenu(staff, rollbackPlayer).getMenu();
+                            staff.openInventory(inventory);
+
+                        } else {
+                            sender.sendMessage(MessageData.pluginName + MessageData.error);
                         }
                         break;
                     }
@@ -77,8 +77,8 @@ public class Commands extends ConfigFile implements CommandExecutor {
                             }
 
                             Player player = (Player) offlinePlayer;
-                            new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
-                            sender.sendMessage(MessageData.pluginName + messages.forceSaved(offlinePlayer.getName()));
+                            new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest())
+                                .saveToDiskAsync().thenAccept(unused -> sender.sendMessage(MessageData.pluginName + messages.forceSaved(offlinePlayer.getName())));
 
                             break;
                         } else {

@@ -33,7 +33,6 @@ public class UpdateChecker {
         this.currentVersion = regex(plugin.getDescription().getVersion());
 
         if (!enabled) {
-            result = UpdateResult.DISABLED;
             return;
         }
 
@@ -48,7 +47,7 @@ public class UpdateChecker {
     }
 
     private void run() {
-        URLConnection con = null;
+        URLConnection con;
         try {
             con = checkURL.openConnection();
         } catch (IOException e1) {
@@ -65,16 +64,13 @@ public class UpdateChecker {
 
         if (availableVersion.isEmpty()) {
             result = UpdateResult.FAIL_SPIGOT;
-            return;
         } else if (availableVersion.equalsIgnoreCase(currentVersion)) {
             result = UpdateResult.NO_UPDATE;
-            return;
         } else if (!availableVersion.equalsIgnoreCase(currentVersion)) {
             result = UpdateResult.UPDATE_AVAILABLE;
-            return;
+        } else {
+            result = UpdateResult.FAIL_SPIGOT;
         }
-
-        result = UpdateResult.FAIL_SPIGOT;
 
     }
 

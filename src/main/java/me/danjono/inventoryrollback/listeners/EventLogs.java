@@ -19,7 +19,7 @@ public class EventLogs implements Listener {
 
         Player player = e.getPlayer();
         if (player.hasPermission("inventoryrollback.joinsave")) {
-            new SaveInventory(e.getPlayer(), LogType.JOIN, null, player.getInventory(), player.getEnderChest()).createSave();
+            new SaveInventory(e.getPlayer(), LogType.JOIN, null, player.getInventory(), player.getEnderChest()).saveToDiskAsync();
         }
     }
 
@@ -30,7 +30,7 @@ public class EventLogs implements Listener {
         Player player = e.getPlayer();
 
         if (player.hasPermission("inventoryrollback.leavesave")) {
-            new SaveInventory(e.getPlayer(), LogType.QUIT, null, player.getInventory(), player.getEnderChest()).createSave();
+            new SaveInventory(e.getPlayer(), LogType.QUIT, null, player.getInventory(), player.getEnderChest()).saveToDiskAsync();
         }
     }
 
@@ -42,7 +42,7 @@ public class EventLogs implements Listener {
         Player player = (Player) e.getEntity();
 
         if (player.getHealth() - e.getDamage() <= 0 && player.hasPermission("inventoryrollback.deathsave")) {
-            new SaveInventory(player, LogType.DEATH, e.getCause(), player.getInventory(), player.getEnderChest()).createSave();
+            new SaveInventory(player, LogType.DEATH, e.getCause(), player.getInventory(), player.getEnderChest()).saveToDiskAsync();
         }
     }
 
@@ -53,7 +53,7 @@ public class EventLogs implements Listener {
         Player player = e.getPlayer();
 
         if (player.hasPermission("inventoryrollback.worldchangesave")) {
-            new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, player.getInventory(), player.getEnderChest()).createSave();
+            new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, player.getInventory(), player.getEnderChest()).saveToDiskAsync();
         }
     }
 

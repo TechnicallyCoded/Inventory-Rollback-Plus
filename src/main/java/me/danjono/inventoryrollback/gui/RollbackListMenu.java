@@ -1,5 +1,6 @@
 package me.danjono.inventoryrollback.gui;
 
+import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class RollbackListMenu {
 
@@ -22,15 +24,23 @@ public class RollbackListMenu {
     private final LogType logType;
     private int pageNumber;
 
-    private final FileConfiguration playerData;
+    private FileConfiguration playerData;
 
     public RollbackListMenu(Player staff, OfflinePlayer player, LogType logType, int pageNumber) {
+        this(staff, player, logType, pageNumber, true);
+    }
+
+    public RollbackListMenu(Player staff, OfflinePlayer player, LogType logType, int pageNumber, boolean load) {
         this.staff = staff;
         this.playerUUID = player.getUniqueId();
         this.logType = logType;
         this.pageNumber = pageNumber;
 
-        this.playerData = new PlayerData(this.playerUUID, this.logType).getData();
+        this.playerData = new PlayerData(this.playerUUID, this.logType, load).getData();
+    }
+
+    public void loadData() {
+        this.playerData = new PlayerData(this.playerUUID, this.logType, true).getData();
     }
 
     public Inventory showBackups() {

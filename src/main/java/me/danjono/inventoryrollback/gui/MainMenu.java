@@ -70,7 +70,6 @@ public class MainMenu {
 
         if (forceSaveFile.exists()) {
             mainMenu.setItem(position, buttons.createLogTypeButton(new ItemStack(ConfigFile.forceSaveIcon), uuid, MessageData.forceSaveIconName, LogType.FORCE, null));
-            position++;
         }
 
         return mainMenu;
