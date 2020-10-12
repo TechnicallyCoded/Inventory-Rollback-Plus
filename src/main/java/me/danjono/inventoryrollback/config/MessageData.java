@@ -10,6 +10,7 @@ public class MessageData extends ConfigFile {
     public static String noPermission;
     public static String error;
     public static String errorInventory;
+    public static String inventoryLoadFailKickMessage;
 
     public static String enabledMessage;
     public static String disabledMessage;
@@ -69,6 +70,7 @@ public class MessageData extends ConfigFile {
         noPermission = convertColourCodes((String) getDefaultValue("messages.noPermission", "&cYou do not have permission!"));
         error = convertColourCodes((String) getDefaultValue("messages.error", "&cInvalid command"));
         errorInventory = convertColourCodes((String) getDefaultValue("messages.errorInventory", "&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed."));
+        inventoryLoadFailKickMessage = convertColourCodes((String) getDefaultValue("messages.inventoryLoadFailKickMessage", "Failed to load your inventory! Please try again by rejoining the server."));
 
         enabledMessage = convertColourCodes((String) getDefaultValue("messages.enable", "&2The plugin has been enabled"));
         disabledMessage = convertColourCodes((String) getDefaultValue("messages.disable", "&2The plugin has been disabled"));

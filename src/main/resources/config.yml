@@ -9,6 +9,10 @@ maxSaves:
   worldChange: 10
   force: 10
 
+## Maximum time a player's inventory can take to load from the disk asynchronously on join. If this time is
+## exceeded, the player will be kicked. This is by default 1000 milliseconds (1 second, 20 ticks).
+joinMaxAsyncDelayMillis: 1000
+
 ## Set folder path where the data is saved to. Set as "DEFAULT" to keep it in the plugin folder.
 folderLocation: 'DEFAULT'
 
@@ -72,6 +76,7 @@ messages:
   noPermission: '&cYou do not have permission!'
   error: '&cInvalid command.'
   errorInventory: '&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.'
+  inventoryLoadFailKickMessage: 'Failed to load your inventory! Please try again by rejoining the server.'
   enable: '&2The plugin has been enabled.'
   disable: '&2The plugin has been disabled.'
   playerOnly: '&cCommand can only be run by a player.'

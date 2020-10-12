@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
@@ -64,7 +63,6 @@ public class SaveInventory {
     }
 
     public CompletableFuture<?> saveToDiskAsync() {
-
         final Location location = player.getLocation();
         final double health = player.getHealth();
         final int foodLevel = player.getFoodLevel();
