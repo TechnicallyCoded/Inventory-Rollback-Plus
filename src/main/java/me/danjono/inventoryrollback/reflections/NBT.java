@@ -18,7 +18,7 @@ public class NBT {
             // Init and cache the commonly used reflection accessor objects
             Class<?> nmsItemStackClass = Packets.getNMSClass("ItemStack");
             Class<?> craftItemStackClass = Packets.getCraftBukkitClass("inventory.CraftItemStack");
-            Class<?> nbtClass = Packets.getCraftBukkitClass("NBTTagCompound");
+            Class<?> nbtClass = Packets.getNMSClass("NBTTagCompound");
             BUKKIT_AS_NMS_ITEM = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class);
             NMS_AS_BUKKIT_ITEM = craftItemStackClass.getMethod("asBukkitCopy", nmsItemStackClass);
             NBT_TAG_CONSTRUCTOR = nbtClass.getConstructor();
@@ -88,7 +88,7 @@ public class NBT {
 
     public ItemStack setLong(String key, long data) {
         try {
-            Object itemstack = NMS_AS_BUKKIT_ITEM.invoke(null, item);
+            Object itemstack = BUKKIT_AS_NMS_ITEM.invoke(null, item);
             Object comp = ITEM_GET_TAG.invoke(itemstack);
 
             if (comp == null) {

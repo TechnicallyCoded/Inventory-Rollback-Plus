@@ -38,7 +38,7 @@ public class PlayerData {
         this.logType = logType;
         this.uuid = uuid;
         this.folderLocation = new File(ConfigFile.folderLocation, "saves/");
-
+        this.playerFile = determinePlayerFile();
         if (load) {
             loadData();
         }

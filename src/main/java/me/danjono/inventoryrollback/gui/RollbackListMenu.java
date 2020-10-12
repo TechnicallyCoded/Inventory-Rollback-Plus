@@ -1,6 +1,5 @@
 package me.danjono.inventoryrollback.gui;
 
-import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -8,6 +7,7 @@ import me.danjono.inventoryrollback.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class RollbackListMenu {
 
@@ -74,10 +73,16 @@ public class RollbackListMenu {
         }
 
         int position = 0;
+
+        final ConfigurationSection dataSection = playerData.getConfigurationSection("data");
+        if (dataSection == null) {
+            return null;
+        }
+
         for (int i = 0; i < spaceRequired; i++) {
             try {
                 Long time = timeStamps.get(((pageNumber - 1) * spaceRequired) + i);
-
+                final ConfigurationSection section = dataSection.getConfigurationSection(String.valueOf(time));
                 String deathReason = null;
                 try {
                     deathReason = messages.deathReason(playerData.getString("data." + time + ".deathReason"));
@@ -89,11 +94,10 @@ public class RollbackListMenu {
                 List<String> lore = new ArrayList<>();
                 if (deathReason != null)
                     lore.add(deathReason);
-
-                String world = playerData.getString("data." + time + ".location.world");
-                String x = playerData.getInt("data." + time + ".location.x") + "";
-                String y = playerData.getInt("data." + time + ".location.y") + "";
-                String z = playerData.getInt("data." + time + ".location.z") + "";
+                String world = section.getString("location.world");
+                String x = section.getString("location.x");
+                String y = section.getString("location.y");
+                String z = section.getString("location.z");
                 String location = world + "," + x + "," + y + "," + z;
 
                 lore.add(messages.deathLocationWorld(world));

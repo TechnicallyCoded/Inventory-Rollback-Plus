@@ -189,7 +189,7 @@ public class RestoreInventory {
         ItemStack[] stacks;
 
         try (BukkitObjectInputStream dataInput = new BukkitObjectInputStream(new ByteArrayInputStream(Base64Coder
-            .decode(data)))) {
+            .decodeLines(data)))) {
             stacks = new ItemStack[dataInput.readInt()];
 
             for (int i = 0; i < stacks.length; i++) {

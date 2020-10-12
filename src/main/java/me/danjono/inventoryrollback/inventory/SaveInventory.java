@@ -132,8 +132,8 @@ public class SaveInventory {
             timeSection.set("health", health);
             timeSection.set("hunger", foodLevel);
             timeSection.set("saturation", saturation);
-            timeSection.set("world", world);
             final ConfigurationSection locSection = timeSection.createSection("location");
+            locSection.set("world", world);
             locSection.set("x", location.getBlockX());
             locSection.set("y", location.getBlockY());
             locSection.set("z", location.getBlockZ());

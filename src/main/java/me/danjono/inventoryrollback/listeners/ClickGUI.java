@@ -42,8 +42,9 @@ public class ClickGUI extends Buttons implements Listener {
         String title = e.getView().getTitle();
         if (!title.equals(InventoryName.MAIN_MENU.getName())
                 && !title.equalsIgnoreCase(InventoryName.ROLLBACK_LIST.getName())
-                && !title.equalsIgnoreCase(InventoryName.BACKUP.getName()))
+                && !title.equalsIgnoreCase(InventoryName.BACKUP.getName())) {
             return;
+        }
 
         e.setCancelled(true);
 
@@ -266,7 +267,6 @@ public class ClickGUI extends Buttons implements Listener {
 
         final boolean emptyEnderchest =
             offlinePlayer.hasPlayedBefore() && emptyEnderChest(offlinePlayer.getPlayer());
-        event.setCancelled(!emptyEnderchest);
 
         future.thenAccept(data -> {
 

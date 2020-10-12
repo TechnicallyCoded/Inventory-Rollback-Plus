@@ -8,7 +8,7 @@ api-version: 1.13
 commands:
   inventoryrollback:
     description: ${project.description}
-    usage: /<command>
+    usage: /<command> [subcommand]
     permission: inventoryrollback.cmd
     aliases: ir
 permissions:
