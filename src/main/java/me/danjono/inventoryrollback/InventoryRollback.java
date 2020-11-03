@@ -46,8 +46,7 @@ public class InventoryRollback extends JavaPlugin {
         startupTasks();
 
         if (ConfigFile.bStatsEnabled) {
-            // Disable bstats since this is a fork.
-            //bStats();
+            bStats();
         }
         this.getCommand("inventoryrollback").setExecutor(new Commands());
 
