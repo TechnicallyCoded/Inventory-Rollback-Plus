@@ -39,7 +39,7 @@ public class InventoryRollback extends JavaPlugin {
 
         if (!isCompatible()) {
             logger.log(Level.WARNING, ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **");
-            logger.log(Level.WARNING, ChatColor.RED + " ** Tested versions: 1.8.8 to 1.16.3 **");
+            logger.log(Level.WARNING, ChatColor.RED + " ** Tested versions: 1.8.8 to 1.16.4 **");
             logger.log(Level.WARNING, ChatColor.RED + " ** Please fully test the plugin before using on your server as features may be broken. **");
         }
 
@@ -82,7 +82,8 @@ public class InventoryRollback extends JavaPlugin {
         v1_14_R1,
         v1_15_R1,
         V1_16_R1,
-        V1_16_R2
+        V1_16_R2,
+        v1_16_R3
     }
 
     public enum VersionName {
