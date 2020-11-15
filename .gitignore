@@ -1,2 +1,6 @@
-/target/
-/dependency-reduced-pom.xml
+.idea/
+.settings/
+out/
+target/
+dependency-reduced-pom.xml
+InventoryRollbackPlus.iml
