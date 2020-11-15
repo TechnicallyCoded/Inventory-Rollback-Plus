@@ -19,6 +19,10 @@ sounds:
     enabled: true
     sound: 'ENTITY_ENDERMEN_TELEPORT'
     volume: 0.5
+  inventory:
+    enabled: true
+    sound: 'BLOCK_CHEST_CLOSE'
+    volume: 0.5
   enderChest:
     enabled: true
     sound: 'ENTITY_ENDER_DRAGON_FLAP'
@@ -79,10 +83,14 @@ messages:
   notOnline: '%NAME% is not currently online.'
   forceSaved: '%NAME%''s inventory has been force saved.'
   notForcedSaved: 'There was an issue with saving %NAME%''s inventory.'
-  enderChestNotEmpty: 'Cannot rollback %NAME%''s ender chest yet as they have items in it that would be lost. Get the player to remove the items first from their Ender Chest.'
+  inventoryNotEmpty: 'Cannot rollback %NAME%''s inventory yet as they have items that would be lost. Get the player to remove the items from their inventory.'
+  inventoryRestored: '%NAME%''s inventory has been restored.'
+  inventoryRestoredPlayer: 'Your inventory has been restored by %NAME%.'
+  inventoryNotOnline: 'Cannot restore %NAME%''s inventory while they are offline.'
+  enderChestNotEmpty: 'Cannot rollback %NAME%''s ender chest yet as they have items that would be lost. Get the player to remove the items first from their Ender Chest.'
   enderChestRestored: '%NAME%''s ender chest has been restored.'
   enderChestRestoredPlayer: 'Your ender chest has been restored by %NAME%.'
-  enderChestNotOnline: '%NAME% is not online to have their ender chest set.'
+  enderChestNotOnline: 'Cannot restore %NAME%''s ender chest while they are offline.'
   healthRestored: '%NAME%''s health has been restored.'
   healthRestoredPlayer: 'Your health has been restored by %NAME%.'
   healthNotOnline: '%NAME% is not online to have their health set.'
@@ -105,6 +113,7 @@ messages:
   nextPageButton: '&fNext Page'
   previousPageButton: '&fPrevious Page'
   backButton: '&fBack'
+  restoreInventory: '&6Restore Inventory'
   restoreEnderChest: '&dRestore Ender Chest'
   restoreFood: '&aRestore Health'
   restoreHunger: '&cRestore Food'

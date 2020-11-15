@@ -25,6 +25,7 @@ public class Buttons {
 
     private static final Material pageSelector = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "WHITE_BANNER" : "BANNER");
     private static final Material enderPearl = Material.ENDER_PEARL;
+    private static final Material inventory = Material.CHEST;
     private static final Material enderChest = Material.ENDER_CHEST;
     private static final Material health = Material.getMaterial(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "MELON_SLICE" : "MELON");
     private static final Material hunger = Material.ROTTEN_FLESH;
@@ -36,6 +37,10 @@ public class Buttons {
 
     public static ItemStack getEnderPearlIcon() {
         return new ItemStack(enderPearl);
+    }
+
+    public static ItemStack getInventorytIcon() {
+        return new ItemStack(inventory);
     }
 
     public static ItemStack getEnderChestIcon() {
@@ -220,7 +225,7 @@ public class Buttons {
     }
 
     public ItemStack playerHead(OfflinePlayer player, List<String> lore) {
-        ItemStack skull = null;
+        ItemStack skull;
 
         if (InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS)) {
             skull = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
@@ -270,6 +275,24 @@ public class Buttons {
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
         nbt.setString("location", location);
+        item = nbt.setItemData();
+
+        return item;
+    }
+
+    public ItemStack inventoryButton(UUID uuid, LogType logType, Long timestamp) {
+        ItemStack item = new ItemStack(getInventorytIcon());
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(MessageData.restoreInventory);
+
+        item.setItemMeta(meta);
+
+        NBT nbt = new NBT(item);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        nbt.setLong("timestamp", timestamp);
         item = nbt.setItemData();
 
         return item;
@@ -352,5 +375,4 @@ public class Buttons {
 
         return item;
     }
-
 }

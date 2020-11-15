@@ -10,6 +10,10 @@ public class SoundData extends ConfigFile {
     public static boolean enderPearlEnabled;
     public static float enderPearlVolume;
 
+    public static Sound inventory;
+    public static boolean inventoryEnabled;
+    public static float inventoryVolume;
+
     public static Sound enderChest;
     public static boolean enderChestEnabled;
     public static float enderChestVolume;
@@ -44,7 +48,21 @@ public class SoundData extends ConfigFile {
         enderPearlVolume = ((Double) getDefaultValue("sounds.enderPearl.volume", 0.5)).floatValue();
 
         try {
-            enderChest = Sound.valueOf((String) getDefaultValue("sounds.enderChest.sound", "ENTITY_ENDERDRAGON_FLAP"));
+            inventory = Sound.valueOf((String) getDefaultValue("sounds.inventory.sound", "BLOCK_CHEST_CLOSE"));
+        } catch (IllegalArgumentException e) {
+            if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
+                inventory = Sound.valueOf("CHEST_CLOSE");
+            } else if (InventoryRollback.getVersion().equals(VersionName.v1_9_v1_12)) {
+                inventory = Sound.valueOf("CHEST_CLOSE");
+            } else {
+                inventory = Sound.valueOf("BLOCK_CHEST_CLOSE");
+            }
+        }
+        inventoryEnabled = (boolean) getDefaultValue("sounds.inventory.enabled", true);
+        inventoryVolume = ((Double) getDefaultValue("sounds.inventory.volume", 0.5)).floatValue();
+
+        try {
+            enderChest = Sound.valueOf((String) getDefaultValue("sounds.enderChest.sound", "ENTITY_ENDER_DRAGON_FLAP"));
         } catch (IllegalArgumentException e) {
             if (InventoryRollback.getVersion().equals(VersionName.v1_8)) {
                 enderChest = Sound.valueOf("ENDERDRAGON_WINGS");

@@ -89,6 +89,9 @@ public class BackupMenu {
         if (location != null)
             inv.setItem(48, buttons.enderPearlButton(playerUUID, logType, timestamp, location));
 
+        //Add Inventory icon
+        inv.setItem(49, buttons.inventoryButton(playerUUID, logType, timestamp));
+
         //Add Enderchest icon
         if (enderChestAvailable)
             inv.setItem(50, buttons.enderChestButton(playerUUID, logType, timestamp));

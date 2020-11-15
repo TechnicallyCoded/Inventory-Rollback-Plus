@@ -224,7 +224,33 @@ public class ClickGUI extends Buttons implements Listener {
                 }, 1L);
             }
 
-            //Clicked icon to restore backup players ender chest
+            //Clicked icon to restore player's inventory
+            else if (icon.getType().equals(getInventorytIcon().getType())) {
+                if (offlinePlayer.isOnline()) {
+                    Player player = (Player) offlinePlayer;
+
+                    ItemStack[] inventory = restore.retrieveMainInventory();
+
+                    if (emptyInventory(player)) {
+                        player.getInventory().setContents(inventory);
+
+                        if (SoundData.inventoryEnabled)
+                            player.playSound(player.getLocation(), SoundData.inventory, SoundData.inventoryVolume, 1);
+                    } else {
+                        staff.sendMessage(MessageData.pluginName + messages.inventoryNotEmpty(player.getName()));
+                        e.setCancelled(true);
+                        return;
+                    }
+
+                    staff.sendMessage(MessageData.pluginName + messages.inventoryRestored(player.getName()));
+                    if (!staff.getUniqueId().equals(player.getUniqueId()))
+                        player.sendMessage(MessageData.pluginName + messages.inventoryRestoredPlayer(staff.getName()));
+                } else {
+                    staff.sendMessage(MessageData.pluginName + messages.inventoryNotOnline(offlinePlayer.getName()));
+                }
+            }
+
+            //Clicked icon to restore player's ender chest
             else if (icon.getType().equals(getEnderChestIcon().getType())) {
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
@@ -316,6 +342,19 @@ public class ClickGUI extends Buttons implements Listener {
                 e.setCancelled(false);
             }
         }
+    }
+
+    private boolean emptyInventory(Player player) {
+        boolean empty = true;
+
+        for (ItemStack itemStack : player.getInventory()) {
+            if (itemStack != null) {
+                empty = false;
+                break;
+            }
+        }
+
+        return empty;
     }
 
     private boolean emptyEnderChest(Player player) {

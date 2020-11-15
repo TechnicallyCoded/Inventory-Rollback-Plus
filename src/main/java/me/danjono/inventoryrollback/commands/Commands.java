@@ -7,13 +7,20 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.gui.MainMenu;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public class Commands extends ConfigFile implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Commands extends ConfigFile implements CommandExecutor, TabCompleter {
+
+    private String[] options = new String[] {"restore", "forcebackup", "enable", "disable", "reload"};
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String Label, String[] args) {
@@ -23,7 +30,15 @@ public class Commands extends ConfigFile implements CommandExecutor {
 
             if (args.length == 0) {
                 //Give version information
-                sender.sendMessage(MessageData.pluginName + "Server is running v" + InventoryRollback.getPluginVersion() + " - Created by danjono");
+                sender.sendMessage(
+                        MessageData.pluginName + "Server is running v" + InventoryRollback.getPluginVersion() + " - Maintained by TechnicallyCoded\n" +
+                        MessageData.pluginName + "Available Commands:\n" +
+                        MessageData.pluginName + "/ir restore [player]" + ChatColor.GRAY + " - Open rollback GUI for optional [player]\n" +
+                        MessageData.pluginName + "/ir forcebackup <player>" + ChatColor.GRAY + " - Create a forced save of a player's inventory\n" +
+                        MessageData.pluginName + "/ir enable" + ChatColor.GRAY + " - Enable the plugin\n" +
+                        MessageData.pluginName + "/ir disable" + ChatColor.GRAY + " - Disable the plugin\n" +
+                        MessageData.pluginName + "/ir reload" + ChatColor.GRAY + " - Reload the plugin\n"
+                );
                 return true;
             } else {
                 switch (args[0]) {
@@ -124,5 +139,18 @@ public class Commands extends ConfigFile implements CommandExecutor {
 
         return true;
 
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (strings.length == 1) {
+            ArrayList<String> suggestions = new ArrayList<>();
+            for (String option : options) {
+                if (option.startsWith(strings[0].toLowerCase()))
+                    suggestions.add(option);
+            }
+            return suggestions;
+        }
+        return null;
     }
 }
