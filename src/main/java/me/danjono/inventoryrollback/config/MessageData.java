@@ -153,15 +153,15 @@ public class MessageData extends ConfigFile {
     }
 
     public String inventoryNotEmpty(String name) {
-        return enderChestNotEmpty.replaceAll("%NAME%", name);
+        return inventoryNotEmpty.replaceAll("%NAME%", name);
     }
 
     public String inventoryRestored(String name) {
-        return enderChestRestored.replaceAll("%NAME%", name);
+        return inventoryRestored.replaceAll("%NAME%", name);
     }
 
     public String inventoryRestoredPlayer(String name) {
-        return enderChestRestoredPlayer.replaceAll("%NAME%", name);
+        return inventoryRestoredPlayer.replaceAll("%NAME%", name);
     }
 
     public String inventoryNotOnline(String name) {
