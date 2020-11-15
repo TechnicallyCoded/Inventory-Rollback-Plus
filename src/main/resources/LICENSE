@@ -1,4 +1,17 @@
 Copyright (c) 2020 TechnicallyCoded
 
-This repository is forked from https://github.com/danjono/Inventory-Rollback which is under the MIT LICENSE.
-I reserve all rights to any modifications I have made to this code which are not present in the forked repository's LICENSE.
+Definitions
+1) I & TechnicallyCoded - both refer to the person who rightfully withheld
+ ownership of the premium Mojang account under the Minecraft name
+ "TechnicallyCoded", the 15th of November 2020
+2) Project - refers to the entirety of code files and resources present in
+ the github repository https://github.com/TechnicallyCoded/Inventory-Rollback
+ OR any files and resources packaged into the InventoryRollbackPlus plugin I
+ authored
+
+This project is forked from https://github.com/danjono/Inventory-Rollback
+which is under the MIT LICENSE. I reserve all rights to any modifications I
+have made to this project's code which were not present in the repository
+this project was forked from before forking such repository. Any changes
+from the parent repository which are merged into this project in the future
+are also under the MIT LICENSE.
