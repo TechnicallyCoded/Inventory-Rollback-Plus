@@ -1,11 +1,11 @@
-package me.danjono.inventoryrollback.gui;
+package com.nuclyon.technicallycoded.inventoryrollback.gui;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
-import me.danjono.inventoryrollback.config.MessageData;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import me.danjono.inventoryrollback.reflections.NBT;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback.VersionName;
+import com.nuclyon.technicallycoded.inventoryrollback.config.MessageData;
+import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
+import com.nuclyon.technicallycoded.inventoryrollback.inventory.RestoreInventory;
+import com.nuclyon.technicallycoded.inventoryrollback.reflections.NBT;
 import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;

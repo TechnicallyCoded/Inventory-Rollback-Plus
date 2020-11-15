@@ -1,7 +1,6 @@
-package me.danjono.inventoryrollback.config;
+package com.nuclyon.technicallycoded.inventoryrollback.config;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -79,7 +78,7 @@ public class ConfigFile {
     public void setVariables() {
         String folder = (String) getDefaultValue("folderLocation", "DEFAULT");
 
-        if (folder.equalsIgnoreCase("DEFAULT") || folder.isEmpty() || folder == null) {
+        if (folder == null || folder.equalsIgnoreCase("DEFAULT") || folder.isEmpty()) {
             folderLocation = InventoryRollback.getInstance().getDataFolder();
         } else {
             try {
@@ -106,13 +105,13 @@ public class ConfigFile {
         try {
             joinIcon = Material.valueOf((String) getDefaultValue("icons.mainMenu.joinIcon.item", "SAPLING"));
         } catch (IllegalArgumentException e) {
-            joinIcon = Material.valueOf(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "OAK_SAPLING" : "SAPLING");
+            joinIcon = Material.valueOf(InventoryRollback.getVersion().equals(InventoryRollback.VersionName.v1_13_PLUS) ? "OAK_SAPLING" : "SAPLING");
         }
 
         try {
             quitIcon = Material.valueOf((String) getDefaultValue("icons.mainMenu.quitIcon.item", "BED"));
         } catch (IllegalArgumentException e) {
-            quitIcon = Material.valueOf(InventoryRollback.getVersion().equals(VersionName.v1_13_PLUS) ? "RED_BED" : "BED");
+            quitIcon = Material.valueOf(InventoryRollback.getVersion().equals(InventoryRollback.VersionName.v1_13_PLUS) ? "RED_BED" : "BED");
         }
 
         try {

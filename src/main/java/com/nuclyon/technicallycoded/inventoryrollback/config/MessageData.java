@@ -1,4 +1,4 @@
-package me.danjono.inventoryrollback.config;
+package com.nuclyon.technicallycoded.inventoryrollback.config;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

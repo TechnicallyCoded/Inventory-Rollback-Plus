@@ -1,9 +1,8 @@
-package me.danjono.inventoryrollback.inventory;
+package com.nuclyon.technicallycoded.inventoryrollback.inventory;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.data.PlayerData;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
+import com.nuclyon.technicallycoded.inventoryrollback.data.PlayerData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -42,7 +41,7 @@ public class SaveInventory {
         FileConfiguration inventoryData = data.getData();
 
         ItemStack[] armour = null;
-        if (InventoryRollback.getVersion().equals(VersionName.v1_8))
+        if (InventoryRollback.getVersion().equals(InventoryRollback.VersionName.v1_8))
             armour = mainInventory.getArmorContents();
 
         int maxSaves = data.getMaxSaves();
@@ -74,7 +73,7 @@ public class SaveInventory {
 
         inventoryData.set("data." + time + ".inventory", toBase64(mainInventory));
 
-        if (InventoryRollback.getVersion().equals(VersionName.v1_8) && armour != null)
+        if (InventoryRollback.getVersion().equals(InventoryRollback.VersionName.v1_8) && armour != null)
             inventoryData.set("data." + time + ".armour", toBase64(armour));
 
         inventoryData.set("data." + time + ".enderchest", toBase64(enderChestInventory));

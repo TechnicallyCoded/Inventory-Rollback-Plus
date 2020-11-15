@@ -1,10 +1,9 @@
-package me.danjono.inventoryrollback;
+package com.nuclyon.technicallycoded.inventoryrollback;
 
-import me.danjono.inventoryrollback.UpdateChecker.UpdateResult;
-import me.danjono.inventoryrollback.commands.Commands;
-import me.danjono.inventoryrollback.config.ConfigFile;
-import me.danjono.inventoryrollback.listeners.ClickGUI;
-import me.danjono.inventoryrollback.listeners.EventLogs;
+import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
+import com.nuclyon.technicallycoded.inventoryrollback.config.ConfigFile;
+import com.nuclyon.technicallycoded.inventoryrollback.listeners.ClickGUI;
+import com.nuclyon.technicallycoded.inventoryrollback.listeners.EventLogs;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -141,7 +140,7 @@ public class InventoryRollback extends JavaPlugin {
 
         logger.log(Level.INFO, "Checking for updates...");
 
-        final UpdateResult result = new UpdateChecker(instance, 48074, enabled).getResult();
+        final UpdateChecker.UpdateResult result = new UpdateChecker(instance, 48074, enabled).getResult();
 
         switch (result) {
             case FAIL_SPIGOT: {

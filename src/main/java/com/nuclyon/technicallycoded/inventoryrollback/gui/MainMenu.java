@@ -1,9 +1,9 @@
-package me.danjono.inventoryrollback.gui;
+package com.nuclyon.technicallycoded.inventoryrollback.gui;
 
-import me.danjono.inventoryrollback.config.ConfigFile;
-import me.danjono.inventoryrollback.config.MessageData;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.data.PlayerData;
+import com.nuclyon.technicallycoded.inventoryrollback.config.ConfigFile;
+import com.nuclyon.technicallycoded.inventoryrollback.config.MessageData;
+import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
+import com.nuclyon.technicallycoded.inventoryrollback.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class MainMenu {
 
         if (forceSaveFile.exists()) {
             mainMenu.setItem(position, buttons.createLogTypeButton(new ItemStack(ConfigFile.forceSaveIcon), uuid, MessageData.forceSaveIconName, LogType.FORCE, null));
-            position++;
+            //position++;
         }
 
         return mainMenu;

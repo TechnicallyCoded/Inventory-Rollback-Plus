@@ -1,7 +1,7 @@
-package me.danjono.inventoryrollback.data;
+package com.nuclyon.technicallycoded.inventoryrollback.data;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.config.ConfigFile;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.config.ConfigFile;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

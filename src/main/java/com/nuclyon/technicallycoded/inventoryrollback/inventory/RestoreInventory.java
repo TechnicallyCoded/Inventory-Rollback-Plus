@@ -1,7 +1,7 @@
-package me.danjono.inventoryrollback.inventory;
+package com.nuclyon.technicallycoded.inventoryrollback.inventory;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.config.MessageData;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.config.MessageData;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -41,10 +41,10 @@ public class RestoreInventory {
 
         try {
             inv = stacksFromBase64(playerData.getString("data." + timestamp + ".armour"));
-
+            if (inv == null) throw new NullPointerException("Inventory from base64 is null");
             if (inv.length == 0)
                 inv = null;
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             e.printStackTrace();
         }
 
@@ -197,11 +197,11 @@ public class RestoreInventory {
             int b = 6;
             int c = -xp;
             int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
-            int xpForLevel = (int) (Math.pow(level, 2) + (6 * level));
-            int remainder = xp - xpForLevel;
-            int experienceNeeded = (2 * level) + 7;
-            float experience = (float) remainder / (float) experienceNeeded;
-            experience = round(experience, 2);
+            //int xpForLevel = (int) (Math.pow(level, 2) + (6 * level));
+            //int remainder = xp - xpForLevel;
+            //int experienceNeeded = (2 * level) + 7;
+            //float experience = (float) remainder / (float) experienceNeeded;
+            //experience = round(experience, 2);
 
             return level;
             //Levels 16 through 30
@@ -212,11 +212,11 @@ public class RestoreInventory {
             int c = -xp + 360;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
-            int xpForLevel = (int) (2.5 * Math.pow(level, 2) - (40.5 * level) + 360);
-            int remainder = xp - xpForLevel;
-            int experienceNeeded = (5 * level) - 38;
-            float experience = (float) remainder / (float) experienceNeeded;
-            experience = round(experience, 2);
+            //int xpForLevel = (int) (2.5 * Math.pow(level, 2) - (40.5 * level) + 360);
+            //int remainder = xp - xpForLevel;
+            //int experienceNeeded = (5 * level) - 38;
+            //float experience = (float) remainder / (float) experienceNeeded;
+            //experience = round(experience, 2);
 
             //Set Everything
             return level;
@@ -228,11 +228,11 @@ public class RestoreInventory {
             int c = -xp + 2220;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
-            int xpForLevel = (int) (4.5 * Math.pow(level, 2) - (162.5 * level) + 2220);
-            int remainder = xp - xpForLevel;
-            int experienceNeeded = (9 * level) - 158;
-            float experience = (float) remainder / (float) experienceNeeded;
-            experience = round(experience, 2);
+            //int xpForLevel = (int) (4.5 * Math.pow(level, 2) - (162.5 * level) + 2220);
+            //int remainder = xp - xpForLevel;
+            //int experienceNeeded = (9 * level) - 158;
+            //float experience = (float) remainder / (float) experienceNeeded;
+            //experience = round(experience, 2);
 
             //Set Everything
             return (float) level;

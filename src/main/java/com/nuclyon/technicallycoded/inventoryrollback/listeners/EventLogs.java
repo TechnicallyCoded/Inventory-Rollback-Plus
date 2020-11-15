@@ -1,8 +1,8 @@
-package me.danjono.inventoryrollback.listeners;
+package com.nuclyon.technicallycoded.inventoryrollback.listeners;
 
-import me.danjono.inventoryrollback.config.ConfigFile;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.inventory.SaveInventory;
+import com.nuclyon.technicallycoded.inventoryrollback.config.ConfigFile;
+import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
+import com.nuclyon.technicallycoded.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

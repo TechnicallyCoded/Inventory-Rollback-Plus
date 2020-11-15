@@ -1,5 +1,5 @@
 name: ${project.name}
-main: me.danjono.inventoryrollback.InventoryRollback
+main: ${project.groupId}.InventoryRollback
 version: ${project.version}
 description: ${project.description}
 author: ${project.organization.name}

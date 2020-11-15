@@ -1,4 +1,4 @@
-package me.danjono.inventoryrollback.gui;
+package com.nuclyon.technicallycoded.inventoryrollback.gui;
 
 public enum InventoryName {
 

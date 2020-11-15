@@ -1,4 +1,4 @@
-package me.danjono.inventoryrollback.reflections;
+package com.nuclyon.technicallycoded.inventoryrollback.reflections;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -124,7 +124,7 @@ public class NBT {
 
     public String getString(String key) {
         Object result = null;
-        Object comp = null;
+        Object comp;
 
         try {
             Object itemstack = packets.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);

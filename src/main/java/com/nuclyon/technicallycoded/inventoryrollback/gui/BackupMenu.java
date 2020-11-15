@@ -1,7 +1,7 @@
-package me.danjono.inventoryrollback.gui;
+package com.nuclyon.technicallycoded.inventoryrollback.gui;
 
-import me.danjono.inventoryrollback.config.MessageData;
-import me.danjono.inventoryrollback.data.LogType;
+import com.nuclyon.technicallycoded.inventoryrollback.config.MessageData;
+import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
