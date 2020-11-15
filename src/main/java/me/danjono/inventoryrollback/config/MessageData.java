@@ -85,14 +85,14 @@ public class MessageData extends ConfigFile {
         forceSaved = convertColorCodes((String) getDefaultValue("messages.forceSaved", "%NAME%'s inventory has been force saved"));
         notForcedSaved = convertColorCodes((String) getDefaultValue("messages.notForcedSaved", "There was an issue with saving %NAME%'s inventory"));
 
-        inventoryNotEmpty = convertColorCodes((String) getDefaultValue("messages.enderChestNotEmpty", "Cannot rollback %NAME%'s ender chest yet as they have items in it that would be lost. Get the player to remove the items first from their Ender Chest."));
-        inventoryRestored = convertColorCodes((String) getDefaultValue("messages.enderChestRestored", "%NAME%'s ender chest has been restored."));
-        inventoryRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.enderChestRestoredPlayer", "Your ender chest has been restored by %NAME%"));
-        inventoryNotOnline = convertColorCodes((String) getDefaultValue("messages.enderChestNotOnline", "%NAME% is not online to have their ender chest set."));
-        enderChestNotEmpty = convertColorCodes((String) getDefaultValue("messages.enderChestNotEmpty", "Cannot rollback %NAME%'s ender chest yet as they have items in it that would be lost. Get the player to remove the items first from their Ender Chest."));
+        inventoryNotEmpty = convertColorCodes((String) getDefaultValue("messages.inventoryNotEmpty", "Cannot rollback %NAME%'s inventory yet as they have items that would be lost. Get the player to remove the items from their inventory."));
+        inventoryRestored = convertColorCodes((String) getDefaultValue("messages.inventoryRestored", "%NAME%'s inventory has been restored."));
+        inventoryRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.inventoryRestoredPlayer", "Your inventory has been restored by %NAME%."));
+        inventoryNotOnline = convertColorCodes((String) getDefaultValue("messages.inventoryNotOnline", "Cannot restore %NAME%'s inventory while they are offline."));
+        enderChestNotEmpty = convertColorCodes((String) getDefaultValue("messages.enderChestNotEmpty", "Cannot rollback %NAME%'s ender chest yet as they have items that would be lost. Get the player to remove the items first from their Ender Chest."));
         enderChestRestored = convertColorCodes((String) getDefaultValue("messages.enderChestRestored", "%NAME%'s ender chest has been restored."));
         enderChestRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.enderChestRestoredPlayer", "Your ender chest has been restored by %NAME%"));
-        enderChestNotOnline = convertColorCodes((String) getDefaultValue("messages.enderChestNotOnline", "%NAME% is not online to have their ender chest set."));
+        enderChestNotOnline = convertColorCodes((String) getDefaultValue("messages.enderChestNotOnline", "Cannot restore %NAME%'s ender chest while they are offline."));
         healthRestored = convertColorCodes((String) getDefaultValue("messages.healthRestored", "%NAME%'s health has been restored."));
         healthRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.healthRestoredPlayer", "Your health has been restored by %NAME%"));
         healthNotOnline = convertColorCodes((String) getDefaultValue("messages.healthNotOnline", "%NAME% is not online to have their health set."));
