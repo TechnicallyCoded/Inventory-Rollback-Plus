@@ -102,7 +102,7 @@ public class Commands extends ConfigFile implements CommandExecutor, TabComplete
                         break;
                     }
                     case "enable": {
-                        if (sender.hasPermission("InventoryRollback.enable")) {
+                        if (sender.hasPermission("inventoryrollback.enable")) {
                             setEnabled(true);
                             saveConfig();
 
@@ -113,7 +113,7 @@ public class Commands extends ConfigFile implements CommandExecutor, TabComplete
                         break;
                     }
                     case "disable": {
-                        if (sender.hasPermission("InventoryRollback.disable")) {
+                        if (sender.hasPermission("inventoryrollback.disable")) {
                             setEnabled(false);
                             saveConfig();
 
@@ -124,7 +124,7 @@ public class Commands extends ConfigFile implements CommandExecutor, TabComplete
                         break;
                     }
                     case "reload": {
-                        if (sender.hasPermission("InventoryRollback.reload")) {
+                        if (sender.hasPermission("inventoryrollback.reload")) {
                             InventoryRollback.startupTasks();
 
                             sender.sendMessage(MessageData.pluginName + MessageData.reloadMessage);
