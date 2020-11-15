@@ -140,7 +140,7 @@ public class InventoryRollback extends JavaPlugin {
 
         logger.log(Level.INFO, "Checking for updates...");
 
-        final UpdateChecker.UpdateResult result = new UpdateChecker(instance, 48074, enabled).getResult();
+        final UpdateChecker.UpdateResult result = new UpdateChecker(instance, 85811, enabled).getResult();
 
         switch (result) {
             case FAIL_SPIGOT: {
@@ -148,10 +148,10 @@ public class InventoryRollback extends JavaPlugin {
                 break;
             }
             case UPDATE_AVAILABLE: {
-                logger.log(Level.INFO, ChatColor.AQUA + "===============================================================================");
-                logger.log(Level.INFO, ChatColor.AQUA + "An update to InventoryRollback is available!");
-                logger.log(Level.INFO, ChatColor.AQUA + "Download at https://www.spigotmc.org/resources/inventoryrollback.48074/");
-                logger.log(Level.INFO, ChatColor.AQUA + "===============================================================================");
+                logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
+                logger.log(Level.INFO, ChatColor.AQUA + "An update to InventoryRollbackPlus is available!");
+                logger.log(Level.INFO, ChatColor.AQUA + "Download at https://www.spigotmc.org/resources/inventoryrollbackplus-1-8-1-16-x.85811/");
+                logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
                 break;
             }
             case NO_UPDATE: {
