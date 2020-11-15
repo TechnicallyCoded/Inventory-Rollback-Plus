@@ -8,6 +8,7 @@ import me.danjono.inventoryrollback.listeners.EventLogs;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -48,7 +49,10 @@ public class InventoryRollback extends JavaPlugin {
         if (ConfigFile.bStatsEnabled)
             bStats();
 
-        this.getCommand("inventoryrollback").setExecutor(new Commands());
+        PluginCommand plCmd = this.getCommand("inventoryrollback");
+        Commands cmds = new Commands();
+        plCmd.setExecutor(cmds);
+        plCmd.setTabCompleter(cmds);
 
         this.getServer().getPluginManager().registerEvents(new ClickGUI(), instance);
         this.getServer().getPluginManager().registerEvents(new EventLogs(), instance);
