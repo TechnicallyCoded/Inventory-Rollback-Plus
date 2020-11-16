@@ -64,18 +64,24 @@ public class RestoreInventory {
     }
 
     private ItemStack[] stacksFromBase64(String data) {
-        if (data == null || Base64Coder.decodeLines(data).equals(null))
+        if (data == null) return new ItemStack[]{};
+        byte[] decodedLines;
+        try {
+            decodedLines = Base64Coder.decodeLines(data);
+        } catch(IllegalArgumentException e) {
+            e.printStackTrace();
             return new ItemStack[]{};
-
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
-        BukkitObjectInputStream dataInput = null;
-        ItemStack[] stacks = null;
+        }
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(decodedLines);
+        BukkitObjectInputStream dataInput;
+        ItemStack[] stacks;
 
         try {
             dataInput = new BukkitObjectInputStream(inputStream);
             stacks = new ItemStack[dataInput.readInt()];
         } catch (IOException e1) {
             e1.printStackTrace();
+            return new ItemStack[]{};
         }
 
         for (int i = 0; i < stacks.length; i++) {
