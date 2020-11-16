@@ -1,7 +1,10 @@
 ![](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/master/icons/inventoryrollbackplus_icon_128.png?raw=true)
 # InventoryRollbackPlus
 
-###Introduction
+***WARNING***: This plugin is open source but NOT free to use as you wish. Read the [LICENSE](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/master/LICENSE) before downloading this code.
+*(If I choose to stop maintaining this plugin, the LICENSE may change to allow further development, but that is not a guarantee and will not happen anytime soon since I am still actively developing this plugin)*
+
+### Introduction
 
 **Description**
 
@@ -34,7 +37,7 @@ Players with the required permission can open a rollback menu by running the com
 The plugin saves 50 deaths and 10 joins, leaves and world changes by deafult. New deaths, joins, leaves and world changes will push old backups into deleted space :O
 You can change these values in the configuration file.
 
-###Documentation
+### Documentation
 
 **Commands**
 
