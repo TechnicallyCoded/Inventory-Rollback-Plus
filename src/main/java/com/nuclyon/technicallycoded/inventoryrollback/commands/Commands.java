@@ -16,11 +16,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 public class Commands implements CommandExecutor, TabCompleter {
+
+    private InventoryRollback main;
+
     private String[] options = new String[] { "restore", "forcebackup", "enable", "disable", "reload" };
 
     private HashMap<String, IRPCommand> subCommands = new HashMap<>();
 
     public Commands(InventoryRollback mainIn) {
+        this.main = mainIn;
         this.subCommands.put("restore", new Restore(mainIn));
         this.subCommands.put("enable", new Enable(mainIn));
         this.subCommands.put("disable", new Disable(mainIn));
@@ -35,8 +39,11 @@ public class Commands implements CommandExecutor, TabCompleter {
                 return true;
             }
             IRPCommand irpCmd = this.subCommands.get(args[0]);
-            if (irpCmd != null)
+            if (irpCmd != null) {
                 irpCmd.onCommand(sender, cmd, label, args);
+                return true;
+            }
+            sender.sendMessage(MessageData.pluginName + MessageData.error);
         }
         return true;
     }
