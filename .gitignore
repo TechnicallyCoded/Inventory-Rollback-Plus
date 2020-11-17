@@ -3,4 +3,4 @@
 out/
 target/
 dependency-reduced-pom.xml
-InventoryRollbackPlus.iml
+*.iml
