@@ -1,9 +1,8 @@
 name: ${project.name}
-main: ${project.groupId}.InventoryRollback
+main: me.danjono.inventoryrollback.InventoryRollback
 version: ${project.version}
 description: ${project.description}
 author: ${project.organization.name}
-website: ${project.organization.url}
 api-version: 1.13
 commands:
   inventoryrollback:
@@ -20,8 +19,12 @@ permissions:
       inventoryrollback.joinsave: true
       inventoryrollback.leavesave: true
       inventoryrollback.worldchangesave: true
+      inventoryrollback.enable: true
+      inventoryrollback.disable: true
+      inventoryrollback.reload: true      
       inventoryrollback.restore: true
       inventoryrollback.forcebackup: true
+      inventoryrollback.version: true
     default: op
   inventoryrollback.cmd:
     description: Allows InventoryRollback commands to work.
@@ -38,9 +41,21 @@ permissions:
   inventoryrollback.worldchangesave:
     description: Player inventories will be saved when they change worlds.
     default: true
+  inventoryrollback.enable:
+    description: Grants access to enable the plugin globally.
+    default: op
+  inventoryrollback.disable:
+    description: Grants access to disable the plugin globally. 
+    default: op
+  inventoryrollback.reload:
+    description: Grants access to reload the plugin configuration.
+    default: op
   inventoryrollback.restore:
     description: Grants access to perform player roll backs.
     default: op
   inventoryrollback.forcebackup:
-    description: Forces a backup for an online player.
+    description: Forces a backup for an online player. 
     default: op
+  inventoryrollback.version:
+    description: Allows player to see the version the plugin is running on the server. 
+    default: true

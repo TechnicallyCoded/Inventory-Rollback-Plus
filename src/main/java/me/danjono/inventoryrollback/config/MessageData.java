@@ -1,258 +1,564 @@
 package me.danjono.inventoryrollback.config;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
-public class MessageData extends ConfigFile {
+import me.danjono.inventoryrollback.InventoryRollback;
 
-    public static String pluginName;
-    public static String reload;
-    public static String noPermission;
-    public static String error;
-    public static String errorInventory;
+public class MessageData {
 
-    public static String enabledMessage;
-    public static String disabledMessage;
-    public static String reloadMessage;
-    public static String playerOnly;
+    private File messagesFile;
+    private FileConfiguration messages;
+    private static String configurationFileName = "messages.yml";
+
+    public MessageData() {
+        generateMessagesFile();
+    }
+
+    private void generateMessagesFile() {
+        getMessagesFile();
+        if(!messagesFile.exists()) {
+            InventoryRollback.getInstance().saveResource(configurationFileName, false);
+            getMessagesFile();
+        }
+        getMessagesData();
+    }
+
+    private void getMessagesFile() {
+        messagesFile = new File(InventoryRollback.getInstance().getDataFolder(), configurationFileName);
+    }
+
+    private void getMessagesData() {
+        messages = YamlConfiguration.loadConfiguration(messagesFile);
+    }
+
+    public boolean saveConfig() {
+        try {
+            messages.save(messagesFile);
+        } catch (IOException e) {
+            InventoryRollback.getInstance().getLogger().log(Level.SEVERE, "Could not save data to messages file", e);
+            return false;
+        }
+
+        saveChanges = false;
+
+        return true;
+    }
+
+    private static String pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollback" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
+    private static String noPermission;
+    private static String error;
+    private static String errorInventory = "You cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.";
+
+    private static String enabledMessage;
+    private static String disabledMessage;
+    private static String reloadMessage;
+    private static String playerOnly;
 
     private static String noBackup;
     private static String notOnline;
-    private static String forceSaved;
+    private static String forceSavedPlayer;
+    private static String forceSavedAll;
     private static String notForcedSaved;
 
-    private static String inventoryNotEmpty;
-    private static String inventoryRestored;
-    private static String inventoryRestoredPlayer;
-    private static String inventoryNotOnline;
-    private static String enderChestNotEmpty;
+    private static String mainInventoryRestored;
+    private static String mainInventoryRestoredPlayer;
+    private static String mainInventoryNotOnline;
+    private static String mainInventoryButton;
     private static String enderChestRestored;
     private static String enderChestRestoredPlayer;
     private static String enderChestNotOnline;
+    private static String enderChestButton;
     private static String healthRestored;
     private static String healthRestoredPlayer;
     private static String healthNotOnline;
+    private static String healthButton;
     private static String hungerRestored;
     private static String hungerRestoredPlayer;
     private static String hungerNotOnline;
+    private static String hungerButton;
     private static String experienceRestored;
     private static String experienceRestoredPlayer;
     private static String experienceNotOnline;
-
-    public static String deathIconName;
-    public static String joinIconName;
-    public static String quitIconName;
-    public static String worldChangeIconName;
-    public static String forceSaveIconName;
+    private static String experienceButton;
+    private static String experienceButtonLore;
 
     private static String deathLocationWorld;
     private static String deathLocationX;
     private static String deathLocationY;
     private static String deathLocationZ;
-    private static String deathLocationTeleport;
-    private static String deathLocationInvalidWorld;
-    public static String deathLocationMessage;
     private static String deathReason;
     private static String deathTime;
+    private static String deathLocationTeleportTo;
+    private static String deathLocationTeleport;
+    private static String deathLocationInvalidWorld;
 
-    public static String mainMenuButton;
-    public static String nextPageButton;
-    public static String previousPageButton;
-    public static String backButton;
-
-    public static String restoreInventory;
-    public static String restoreEnderChest;
-    public static String restoreFood;
-    public static String restoreHunger;
-    public static String restoreExperience;
-    private static String restoreExperienceLevel;
+    private static String mainMenuButton;
+    private static String nextPageButton;
+    private static String previousPageButton;
+    private static String backButton;
 
     public void setMessages() {
-        pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollbackPlus" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
+        setNoPermission(convertColourCodes((String) getDefaultValue("commands.no-permission", "&cYou do not have permission!")));
+        setError(convertColourCodes((String) getDefaultValue("commands.error", "&cInvalid command.")));
+        setPluginEnabled(convertColourCodes((String) getDefaultValue("commands.enable", "&2The plugin has been enabled.")));
+        setPluginDisabled(convertColourCodes((String) getDefaultValue("commands.disable", "&2The plugin has been disabled.")));
+        setPluginReload(convertColourCodes((String) getDefaultValue("commands.reload", "&2The plugin has been reloaded successfully.")));
+        setPlayerOnlyError(convertColourCodes((String) getDefaultValue("commands.player-only", "&cCommand can only be run by a player.")));
 
-        reload = convertColorCodes((String) getDefaultValue("messages.reload", "&2The plugin has been reloaded successfully"));
-        noPermission = convertColorCodes((String) getDefaultValue("messages.noPermission", "&cYou do not have permission!"));
-        error = convertColorCodes((String) getDefaultValue("messages.error", "&cInvalid command"));
-        errorInventory = convertColorCodes((String) getDefaultValue("messages.errorInventory", "&cYou cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed."));
+        setNoBackupError(convertColourCodes((String) getDefaultValue("backup.no-backup", "There is currently no backups for %NAME%.")));
+        setNotOnlineError(convertColourCodes((String) getDefaultValue("backup.not-online", "%NAME% is not currently online.")));
+        setForceBackupPlayer(convertColourCodes((String) getDefaultValue("backup.force-saved-player", "%NAME%'s inventory has been force saved.")));
+        setForceBackupAll(convertColourCodes((String) getDefaultValue("backup.force-saved-all", "All online player inventories have been force saved.")));
+        setForceBackupError(convertColourCodes((String) getDefaultValue("backup.not-forced-saved", "There was an issue with saving %NAME%'s inventory.")));
 
-        enabledMessage = convertColorCodes((String) getDefaultValue("messages.enable", "&2The plugin has been enabled"));
-        disabledMessage = convertColorCodes((String) getDefaultValue("messages.disable", "&2The plugin has been disabled"));
-        reloadMessage = convertColorCodes((String) getDefaultValue("messages.reload", "&2The plugin has been reloaded successfully"));
-        playerOnly = convertColorCodes((String) getDefaultValue("messages.playerOnly", "&cCommand can only be run by a player"));
+        setMainInventoryRestored(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.restored", "%NAME%''s main inventory has been restored.")));
+        setMainInventoryRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.restored-player", "Your inventory has been restored by %NAME%.")));
+        setMainInventoryNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.not-online", "%NAME% is not online to have their inventory restored.")));
+        setMainInventoryButton(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.button-name", "&dRestore Main Inventory")));
+        
+        setEnderChestRestored(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.restored", "%NAME%'s ender chest has been restored.")));
+        setEnderChestRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.restored-player", "Your ender chest has been restored by %NAME%.")));
+        setEnderChestNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.not-online", "%NAME% is not online to have their ender chest set.")));
+        setEnderChestButton(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.button-name", "&dRestore Ender Chest")));
+        
+        setHealthRestored(convertColourCodes((String) getDefaultValue("attribute-restore.health.restored", "%NAME%'s health has been restored.")));
+        setHealthRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.health.restored-player", "Your health has been restored by %NAME%.")));
+        setHealthNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.health.not-online", "%NAME% is not online to have their health set.")));
+        setHealthButton(convertColourCodes((String) getDefaultValue("attribute-restore.health.button-name", "&aRestore Health")));
+        
+        setHungerRestored(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.restored", "%NAME%'s hunger has been restored.")));
+        setHungerRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.restored-player", "Your hunger has been restored by %NAME%.")));
+        setHungerNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.not-online", "%NAME% is not online to have their hunger set.")));
+        setHungerButton(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.button-name", "&cRestore Food")));
+        
+        setExperienceRestored(convertColourCodes((String) getDefaultValue("attribute-restore.experience.restored", "%NAME%'s XP has been set to level %XP%.")));
+        setExperienceRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.experience.restored-player", "Your XP has been restored to level %XP% by %NAME%.")));
+        setExperienceNotOnlinePlayer(convertColourCodes((String) getDefaultValue("attribute-restore.experience.not-online", "%NAME% is not online to have their XP set.")));
+        setExperienceButton(convertColourCodes((String) getDefaultValue("attribute-restore.experience.button-name", "&2Restore Player XP")));
+        setExperienceButtonLore(convertColourCodes((String) getDefaultValue("attribute-restore.experience.button-lore", "&rLevel %XP%")));
 
-        noBackup = convertColorCodes((String) getDefaultValue("messages.noBackup", "There is currently no backup for %NAME%"));
-        notOnline = convertColorCodes((String) getDefaultValue("messages.notOnline", "%NAME% is not currently online"));
-        forceSaved = convertColorCodes((String) getDefaultValue("messages.forceSaved", "%NAME%'s inventory has been force saved"));
-        notForcedSaved = convertColorCodes((String) getDefaultValue("messages.notForcedSaved", "There was an issue with saving %NAME%'s inventory"));
+        setDeathLocationWorld(convertColourCodes((String) getDefaultValue("death-location.world", "&6World: &f%WORLD%")));
+        setDeathLocationX(convertColourCodes((String) getDefaultValue("death-location.x", "&6X: &f%X%")));
+        setDeathLocationY(convertColourCodes((String) getDefaultValue("death-location.y", "&6Y: &f%Y%")));
+        setDeathLocationZ(convertColourCodes((String) getDefaultValue("death-location.z", "&6Z: &f%Z%")));
+        setDeathReason(convertColourCodes((String) getDefaultValue("death-location.reason", "&6Death reason: &f%REASON%")));
+        setDeathTime(convertColourCodes((String) getDefaultValue("death-location.time", "&6Time: &f%TIME%")));
+        setDeathLocation(convertColourCodes((String) getDefaultValue("death-location.teleport-to", "&3Teleport to where this entry was logged.")));
+        setDeathLocationTeleport(convertColourCodes((String) getDefaultValue("death-location.teleport", "You have been teleported to %LOCATION%")));
+        setDeathLocationInvalidWorldError(convertColourCodes((String) getDefaultValue("death-location.invalid-world", "The world %WORLD% is not currently loaded on the server.")));
+        
+        setMainMenuButton(convertColourCodes((String) getDefaultValue("menu-buttons.main-menu", "&fMain Menu")));
+        setNextPageButton(convertColourCodes((String) getDefaultValue("menu-buttons.next-page", "&fNext Page")));
+        setPreviousPageButton(convertColourCodes((String) getDefaultValue("menu-buttons.previous-page", "&fPrevious Page")));
+        setBackButton(convertColourCodes((String) getDefaultValue("menu-buttons.back-page", "&fBack")));
 
-        inventoryNotEmpty = convertColorCodes((String) getDefaultValue("messages.inventoryNotEmpty", "Cannot rollback %NAME%'s inventory yet as they have items that would be lost. Get the player to remove the items from their inventory."));
-        inventoryRestored = convertColorCodes((String) getDefaultValue("messages.inventoryRestored", "%NAME%'s inventory has been restored."));
-        inventoryRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.inventoryRestoredPlayer", "Your inventory has been restored by %NAME%."));
-        inventoryNotOnline = convertColorCodes((String) getDefaultValue("messages.inventoryNotOnline", "Cannot restore %NAME%'s inventory while they are offline."));
-        enderChestNotEmpty = convertColorCodes((String) getDefaultValue("messages.enderChestNotEmpty", "Cannot rollback %NAME%'s ender chest yet as they have items that would be lost. Get the player to remove the items first from their Ender Chest."));
-        enderChestRestored = convertColorCodes((String) getDefaultValue("messages.enderChestRestored", "%NAME%'s ender chest has been restored."));
-        enderChestRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.enderChestRestoredPlayer", "Your ender chest has been restored by %NAME%"));
-        enderChestNotOnline = convertColorCodes((String) getDefaultValue("messages.enderChestNotOnline", "Cannot restore %NAME%'s ender chest while they are offline."));
-        healthRestored = convertColorCodes((String) getDefaultValue("messages.healthRestored", "%NAME%'s health has been restored."));
-        healthRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.healthRestoredPlayer", "Your health has been restored by %NAME%"));
-        healthNotOnline = convertColorCodes((String) getDefaultValue("messages.healthNotOnline", "%NAME% is not online to have their health set."));
-        hungerRestored = convertColorCodes((String) getDefaultValue("messages.hungerRestored", "%NAME%'s hunger has been restored."));
-        hungerRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.hungerRestoredPlayer", "Your hunger has been restored by %NAME%"));
-        hungerNotOnline = convertColorCodes((String) getDefaultValue("messages.hungerNotOnline", "%NAME% is not online to have their hunger set."));
-        experienceRestored = convertColorCodes((String) getDefaultValue("messages.experienceRestored", "%NAME%'s XP has been set to level %XP%"));
-        experienceRestoredPlayer = convertColorCodes((String) getDefaultValue("messages.experienceRestoredPlayer", "Your XP has been restored to level %XP% by %NAME%"));
-        experienceNotOnline = convertColorCodes((String) getDefaultValue("messages.experienceNotOnline", "%NAME% is not online to have their XP set."));
-
-        deathIconName = convertColorCodes((String) getDefaultValue("icons.mainMenu.deathIcon.name", "&cDeaths"));
-        joinIconName = convertColorCodes((String) getDefaultValue("icons.mainMenu.joinIcon.name", "&aJoins"));
-        quitIconName = convertColorCodes((String) getDefaultValue("icons.mainMenu.quitIcon.name", "&6Quits"));
-        worldChangeIconName = convertColorCodes((String) getDefaultValue("icons.mainMenu.worldChangeIcon.name", "&eWorld Changes"));
-        forceSaveIconName = convertColorCodes((String) getDefaultValue("icons.mainMenu.forceSaveIcon.name", "&bForce Saves"));
-
-        deathLocationWorld = convertColorCodes((String) getDefaultValue("messages.deathLocationWorld", "&6World: &f%WORLD%"));
-        deathLocationX = convertColorCodes((String) getDefaultValue("messages.deathLocationX", "&6X: &f%X%"));
-        deathLocationY = convertColorCodes((String) getDefaultValue("messages.deathLocationY", "&6Y: &f%Y%"));
-        deathLocationZ = convertColorCodes((String) getDefaultValue("messages.deathLocationZ", "&6Z: &f%Z%"));
-        deathLocationTeleport = convertColorCodes((String) getDefaultValue("messages.deathLocationTeleport", "You have been teleported to %LOCATION%"));
-        deathLocationInvalidWorld = convertColorCodes((String) getDefaultValue("messages.deathLocationInvalidWorld", "The world %WORLD% is not currently loaded on the server."));
-        deathLocationMessage = convertColorCodes((String) getDefaultValue("messages.deathLocationMessage", "&3Teleport to where this entry was logged."));
-        deathReason = convertColorCodes((String) getDefaultValue("messages.deathReason", "&6Death reason: &f%REASON%"));
-        deathTime = convertColorCodes((String) getDefaultValue("messages.deathTime", "&6Time: &f%TIME%"));
-
-        mainMenuButton = convertColorCodes((String) getDefaultValue("messages.mainMenuButton", "&fMain Menu"));
-        nextPageButton = convertColorCodes((String) getDefaultValue("messages.nextPageButton", "&fNext Page"));
-        previousPageButton = convertColorCodes((String) getDefaultValue("messages.previousPageButton", "&fPrevious Page"));
-        backButton = convertColorCodes((String) getDefaultValue("messages.backButton", "&fBack"));
-
-        restoreInventory = convertColorCodes((String) getDefaultValue("messages.restoreInventory", "&6Restore Inventory"));
-        restoreEnderChest = convertColorCodes((String) getDefaultValue("messages.restoreEnderChest", "&dRestore Ender Chest"));
-        restoreFood = convertColorCodes((String) getDefaultValue("messages.restoreFood", "&aRestore Health"));
-        restoreHunger = convertColorCodes((String) getDefaultValue("messages.restoreHunger", "&cRestore Food"));
-        restoreExperience = convertColorCodes((String) getDefaultValue("messages.restoreExperience", "&2Restore Player XP"));
-        restoreExperienceLevel = convertColorCodes((String) getDefaultValue("messages.restoreExperienceLevel", "&rLevel %XP%"));
+        if (saveChanges())
+            saveConfig();
     }
 
-    private static String convertColorCodes(String text) {
+    private static String nameVariable = "%NAME%";
+    private static String xpVariable = "%XP%";
+
+    public static void setNoPermission(String message) {
+        noPermission = message;
+    }
+
+    public static void setError(String message) {
+        error = message;
+    }
+
+    public static void setErrorInventory(String message) {
+        errorInventory = message;
+    }
+
+    public static void setPluginEnabled(String message) {
+        enabledMessage = message;
+    }
+
+    public static void setPluginDisabled(String message) {
+        disabledMessage = message;
+    }
+
+    public static void setPluginReload(String message) {
+        reloadMessage = message;
+    }
+
+    public static void setPlayerOnlyError(String message) {
+        playerOnly = message;
+    }
+
+    public static void setNoBackupError(String message) {
+        noBackup = message;
+    }
+
+    public static void setNotOnlineError(String message) {
+        notOnline = message;
+    }
+
+    public static void setForceBackupPlayer(String message) {
+        forceSavedPlayer = message;
+    }
+    
+    public static void setForceBackupAll(String message) {
+        forceSavedAll = message;
+    }
+
+
+    public static void setForceBackupError(String message) {
+        notForcedSaved = message;
+    }
+
+    public static void setMainInventoryRestored(String message) {
+        mainInventoryRestored = message;
+    }
+
+    public static void setMainInventoryRestoredPlayer(String message) {
+        mainInventoryRestoredPlayer = message;
+    }
+
+    public static void setMainInventoryNotOnline(String message) {
+        mainInventoryNotOnline = message;
+    }
+    
+    public static void setMainInventoryButton(String message) {
+        mainInventoryButton = message;
+    }
+
+    public static void setEnderChestRestored(String message) {
+        enderChestRestored = message;
+    }
+
+    public static void setEnderChestRestoredPlayer(String message) {
+        enderChestRestoredPlayer = message;
+    }
+
+    public static void setEnderChestNotOnline(String message) {
+        enderChestNotOnline = message;
+    }
+    
+    public static void setEnderChestButton(String message) {
+        enderChestButton = message;
+    }
+
+    public static void setHealthRestored(String message) {
+        healthRestored = message;
+    }
+
+    public static void setHealthRestoredPlayer(String message) {
+        healthRestoredPlayer = message;
+    }
+
+    public static void setHealthNotOnline(String message) {
+        healthNotOnline = message;
+    }
+    
+    public static void setHealthButton(String message) {
+        healthButton = message;
+    }
+
+    public static void setHungerRestored(String message) {
+        hungerRestored = message;
+    }
+
+    public static void setHungerRestoredPlayer(String message) {
+        hungerRestoredPlayer = message;
+    }
+
+    public static void setHungerNotOnline(String message) {
+        hungerNotOnline = message;
+    }
+    
+    public static void setHungerButton(String message) {
+        hungerButton = message;
+    }
+
+    public static void setExperienceRestored(String message) {
+        experienceRestored = message;
+    }
+
+    public static void setExperienceRestoredPlayer(String message) {
+        experienceRestoredPlayer = message;
+    }
+
+    public static void setExperienceNotOnlinePlayer(String message) {
+        experienceNotOnline = message;
+    }
+    
+    public static void setExperienceButton(String message) {
+        experienceButton = message;
+    }
+
+    public static void setExperienceButtonLore(String message) {
+        experienceButtonLore = message;
+    }
+
+    public static void setDeathLocationWorld(String message) {
+        deathLocationWorld = message;
+    }
+
+    public static void setDeathLocationX(String message) {
+        deathLocationX = message;
+    }
+
+    public static void setDeathLocationY(String message) {
+        deathLocationY = message;
+    }
+
+    public static void setDeathLocationZ(String message) {
+        deathLocationZ = message;
+    }
+    
+    public static void setDeathReason(String message) {
+        deathReason = message;
+    }
+
+    public static void setDeathTime(String message) {
+        deathTime = message;
+    }
+    
+    public static void setDeathLocation(String message) {
+        deathLocationTeleportTo = message;
+    }
+
+
+    public static void setDeathLocationTeleport(String message) {
+        deathLocationTeleport = message;
+    }
+
+    public static void setDeathLocationInvalidWorldError(String message) {
+        deathLocationInvalidWorld = message;
+    }
+
+    public static void setMainMenuButton(String message) {
+        mainMenuButton = message;
+    }
+
+    public static void setNextPageButton(String message) {
+        nextPageButton = message;
+    }
+
+    public static void setPreviousPageButton(String message) {
+        previousPageButton = message;
+    }
+
+    public static void setBackButton(String message) {
+        backButton = message;
+    }
+
+    public static String getPluginName() {
+        return pluginName;
+    }
+
+    public static String getNoPermission() {
+        return noPermission;
+    }
+
+    public static String getError() {
+        return error;
+    }
+
+    public static String getErrorInventory() {
+        return errorInventory;
+    }
+
+    public static String getPluginEnabled() {
+        return enabledMessage;
+    }
+
+    public static String getPluginDisabled() {
+        return disabledMessage;
+    }
+
+    public static String getPluginReload() {
+        return reloadMessage;
+    }
+
+    public static String getPlayerOnlyError() {
+        return playerOnly;
+    }
+
+    public static String getNoBackupError(String name) {
+        return noBackup.replaceAll(nameVariable, name);
+    }
+
+    public static String getNotOnlineError(String name) {
+        return notOnline.replaceAll(nameVariable, name);
+    }
+
+    public static String getForceBackupPlayer(String name) {
+        return forceSavedPlayer.replaceAll(nameVariable, name);
+    }
+    
+    public static String getForceBackupAll() {
+        return forceSavedAll;
+    }
+
+    public static String getForceBackupError(String name) {
+        return notForcedSaved.replaceAll(nameVariable, name);
+    }
+    
+    public static String getMainInventoryRestored(String name) {
+        return mainInventoryRestored.replaceAll(nameVariable, name);
+    }
+
+    public static String getMainInventoryRestoredPlayer(String name) {
+        return mainInventoryRestoredPlayer.replaceAll(nameVariable, name);
+    }
+
+    public static String getMainInventoryNotOnline(String name) {
+        return mainInventoryNotOnline.replaceAll(nameVariable, name);
+    }
+    
+    public static String getMainInventoryRestoreButton() {
+        return mainInventoryButton;
+    }
+
+    public static String getEnderChestRestored(String name) {
+        return enderChestRestored.replaceAll(nameVariable, name);
+    }
+
+    public static String getEnderChestRestoredPlayer(String name) {
+        return enderChestRestoredPlayer.replaceAll(nameVariable, name);
+    }
+
+    public static String getEnderChestNotOnline(String name) {
+        return enderChestNotOnline.replaceAll(nameVariable, name);
+    }
+    
+    public static String getEnderChestRestoreButton() {
+        return enderChestButton;
+    }
+
+    public static String getHealthRestored(String name) {
+        return healthRestored.replaceAll(nameVariable, name);
+    }
+
+    public static String getHealthRestoredPlayer(String name) {
+        return healthRestoredPlayer.replaceAll(nameVariable, name);
+    }
+
+    public static String getHealthNotOnline(String name) {
+        return healthNotOnline.replaceAll(nameVariable, name);
+    }
+    
+    public static String getHealthRestoreButton() {
+        return healthButton;
+    }
+
+    public static String getHungerRestored(String name) {
+        return hungerRestored.replaceAll(nameVariable, name);
+    }
+
+    public static String getHungerRestoredPlayer(String name) {
+        return hungerRestoredPlayer.replaceAll(nameVariable, name);
+    }
+
+    public static String getHungerNotOnline(String name) {
+        return hungerNotOnline.replaceAll(nameVariable, name);
+    }
+    
+    public static String getHungerRestoreButton() {
+        return hungerButton;
+    }
+
+    public static String getExperienceRestored(String name, int xp) {
+        return experienceRestored.replaceAll(nameVariable, name).replaceAll(xpVariable, xp + "");
+    }
+
+    public static String getExperienceRestoredPlayer(String name, int xp) {
+        return experienceRestoredPlayer.replaceAll(nameVariable, name).replaceAll(xpVariable, xp + "");
+    }
+
+    public static String getExperienceNotOnlinePlayer(String name) {
+        return experienceNotOnline.replaceAll(nameVariable, name);
+    }
+    
+    public static String getExperienceRestoreButton() {
+        return experienceButton;
+    }
+    
+    public static String getExperienceRestoreLevel(int xp) {
+        return experienceButtonLore.replaceAll(xpVariable, xp + "");
+    }
+
+    public static String getDeathLocationWorld(String world) {
+        return deathLocationWorld.replace("%WORLD%", world);
+    }
+
+    public static String getDeathLocationX(Double x) {
+        return deathLocationX.replace("%X%", Math.floor(x) + "");
+    }
+
+    public static String getDeathLocationY(Double y) {
+        return deathLocationY.replace("%Y%", Math.floor(y) + "");
+    }
+
+    public static String getDeathLocationZ(Double z) {
+        return deathLocationZ.replace("%Z%", Math.floor(z) + "");
+    }
+
+    public static String getDeathReason(String reason) {
+        return deathReason.replace("%REASON%", reason);
+    }
+
+    public static String getDeathTime(String time) {
+        return deathTime.replace("%TIME%", time);
+    }
+    
+    public static String getDeathLocation() {
+        return deathLocationTeleportTo;
+    }
+    
+    public static String getDeathLocationTeleport(Location location) {
+        return deathLocationTeleport.replace("%LOCATION%", "X:" + (int) location.getX() + " Y:" + (int) location.getY() + " Z:" + (int) location.getZ());
+    }
+
+    public static String getDeathLocationInvalidWorldError(String world) {
+        return deathLocationInvalidWorld.replace("%WORLD%", world);
+    }
+
+    public static String getMainMenuButton() {
+        return mainMenuButton;
+    }
+
+    public static String getNextPageButton() {
+        return nextPageButton;
+    }
+
+    public static String getPreviousPageButton() {
+        return previousPageButton;
+    }
+
+    public static String getBackButton() {
+        return backButton;
+    }
+    
+    private static String convertColourCodes(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
-    public String noBackup(String name) {
-        return noBackup.replaceAll("%NAME%", name);
+    private boolean saveChanges = false;
+    public Object getDefaultValue(String path, Object defaultValue) {
+        Object obj = messages.get(path);
+
+        if (obj == null) {
+            obj = defaultValue;
+
+            messages.set(path, defaultValue);
+            saveChanges = true;
+        }
+
+        return obj;
     }
 
-    public String notOnline(String name) {
-        return notOnline.replaceAll("%NAME%", name);
-    }
-
-    public String forceSaved(String name) {
-        return forceSaved.replaceAll("%NAME%", name);
-    }
-
-    public String notForcedSaved(String name) {
-        return notForcedSaved.replaceAll("%NAME%", name);
-    }
-
-    public String inventoryNotEmpty(String name) {
-        return inventoryNotEmpty.replaceAll("%NAME%", name);
-    }
-
-    public String inventoryRestored(String name) {
-        return inventoryRestored.replaceAll("%NAME%", name);
-    }
-
-    public String inventoryRestoredPlayer(String name) {
-        return inventoryRestoredPlayer.replaceAll("%NAME%", name);
-    }
-
-    public String inventoryNotOnline(String name) {
-        return inventoryNotOnline.replaceAll("%NAME%", name);
-    }
-
-    public String enderChestNotEmpty(String name) {
-        return enderChestNotEmpty.replaceAll("%NAME%", name);
-    }
-
-    public String enderChestRestored(String name) {
-        return enderChestRestored.replaceAll("%NAME%", name);
-    }
-
-    public String enderChestRestoredPlayer(String name) {
-        return enderChestRestoredPlayer.replaceAll("%NAME%", name);
-    }
-
-    public String enderChestNotOnline(String name) {
-        return enderChestNotOnline.replaceAll("%NAME%", name);
-    }
-
-    public String healthRestored(String name) {
-        return healthRestored.replaceAll("%NAME%", name);
-    }
-
-    public String healthRestoredPlayer(String name) {
-        return healthRestoredPlayer.replaceAll("%NAME%", name);
-    }
-
-    public String healthNotOnline(String name) {
-        return healthNotOnline.replaceAll("%NAME%", name);
-    }
-
-    public String hungerRestored(String name) {
-        return hungerRestored.replaceAll("%NAME%", name);
-    }
-
-    public String hungerRestoredPlayer(String name) {
-        return hungerRestoredPlayer.replaceAll("%NAME%", name);
-    }
-
-    public String hungerNotOnline(String name) {
-        return hungerNotOnline.replaceAll("%NAME%", name);
-    }
-
-    public String experienceRestored(String name, int xp) {
-        return experienceRestored.replaceAll("%NAME%", name).replaceAll("%XP%", xp + "");
-    }
-
-    public String experienceRestoredPlayer(String name, int xp) {
-        return experienceRestoredPlayer.replaceAll("%NAME%", name).replaceAll("%XP%", xp + "");
-    }
-
-    public String experienceNotOnline(String name) {
-        return experienceNotOnline.replaceAll("%NAME%", name);
-    }
-
-    public String deathLocationWorld(String world) {
-        return deathLocationWorld.replaceAll("%WORLD%", world);
-    }
-
-    public String deathLocationX(String x) {
-        return deathLocationX.replaceAll("%X%", x);
-    }
-
-    public String deathLocationY(String y) {
-        return deathLocationY.replaceAll("%Y%", y);
-    }
-
-    public String deathLocationZ(String z) {
-        return deathLocationZ.replaceAll("%Z%", z);
-    }
-
-    public String deathLocationTeleport(Location location) {
-        return deathLocationTeleport.replaceAll("%LOCATION%", "X:" + location.getX() + " Y:" + location.getY() + " Z:" + location.getZ());
-    }
-
-    public String deathLocationInvalidWorld(String world) {
-        return deathLocationInvalidWorld.replaceAll("%WORLD%", world);
-    }
-
-    public String deathReason(String reason) {
-        return deathReason.replaceAll("%REASON%", reason);
-    }
-
-    public String deathTime(String time) {
-        return deathTime.replaceAll("%TIME%", time);
-    }
-
-    public String restoreExperienceLevel(String xp) {
-        return restoreExperienceLevel.replaceAll("%XP%", xp);
+    private boolean saveChanges() {
+        return saveChanges;
     }
 }
