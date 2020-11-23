@@ -1,4 +1,4 @@
-package com.nuclyon.technicallycoded.inventoryrollback.reflections;
+package me.danjono.inventoryrollback.reflections;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
 

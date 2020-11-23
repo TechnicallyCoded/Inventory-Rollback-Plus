@@ -2,9 +2,9 @@ package com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollbac
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.IRPCommand;
-import com.nuclyon.technicallycoded.inventoryrollback.config.MessageData;
-import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
-import com.nuclyon.technicallycoded.inventoryrollback.inventory.SaveInventory;
+import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

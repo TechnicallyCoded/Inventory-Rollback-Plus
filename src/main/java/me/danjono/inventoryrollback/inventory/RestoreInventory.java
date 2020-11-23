@@ -1,7 +1,7 @@
-package com.nuclyon.technicallycoded.inventoryrollback.inventory;
+package me.danjono.inventoryrollback.inventory;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
-import com.nuclyon.technicallycoded.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.config.MessageData;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

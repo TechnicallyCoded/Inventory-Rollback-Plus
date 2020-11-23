@@ -1,4 +1,4 @@
-package com.nuclyon.technicallycoded.inventoryrollback.reflections;
+package me.danjono.inventoryrollback.reflections;
 
 import org.bukkit.inventory.ItemStack;
 

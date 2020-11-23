@@ -1,19 +1,21 @@
-package com.nuclyon.technicallycoded.inventoryrollback.commands;
+package me.danjono.inventoryrollback.commands;
 
-import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.commands.IRPCommand;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback.Disable;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback.Enable;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback.Reload;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback.Restore;
+import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.MessageData;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Commands implements CommandExecutor, TabCompleter {
 
@@ -24,11 +26,11 @@ public class Commands implements CommandExecutor, TabCompleter {
     private HashMap<String, IRPCommand> subCommands = new HashMap<>();
 
     public Commands(InventoryRollback mainIn) {
-        this.main = mainIn;
-        this.subCommands.put("restore", new Restore(mainIn));
-        this.subCommands.put("enable", new Enable(mainIn));
-        this.subCommands.put("disable", new Disable(mainIn));
-        this.subCommands.put("reload", new Reload(mainIn));
+//        this.main = mainIn;
+//        this.subCommands.put("restore", new Restore(mainIn));
+//        this.subCommands.put("enable", new Enable(mainIn));
+//        this.subCommands.put("disable", new Disable(mainIn));
+//        this.subCommands.put("reload", new Reload(mainIn));
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

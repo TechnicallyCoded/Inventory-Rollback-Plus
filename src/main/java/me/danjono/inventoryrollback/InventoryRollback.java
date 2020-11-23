@@ -1,12 +1,10 @@
-package com.nuclyon.technicallycoded.inventoryrollback;
+package me.danjono.inventoryrollback;
 
-import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
-import me.danjono.inventoryrollback.config.ConfigFile;
+import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker;
 import com.nuclyon.technicallycoded.inventoryrollback.listeners.ClickGUI;
+import me.danjono.inventoryrollback.commands.Commands;
+import me.danjono.inventoryrollback.config.ConfigFile;
 import me.danjono.inventoryrollback.listeners.EventLogs;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,6 +14,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InventoryRollback extends JavaPlugin {
     public static final Logger logger = Logger.getLogger("Minecraft");
@@ -122,7 +123,7 @@ public class InventoryRollback extends JavaPlugin {
         if (!enabled)
             return;
         logger.log(Level.INFO, "Checking for updates...");
-        UpdateChecker.UpdateResult result = (new UpdateChecker(instance, Integer.valueOf(85811), enabled)).getResult();
+        com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult result = (new UpdateChecker(instance, Integer.valueOf(85811), enabled)).getResult();
         switch (result) {
             case FAIL_SPIGOT:
                 logger.log(Level.INFO, "Could not contact Spigot.");

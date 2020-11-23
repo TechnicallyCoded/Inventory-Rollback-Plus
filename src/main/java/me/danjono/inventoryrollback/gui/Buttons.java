@@ -1,4 +1,4 @@
-package com.nuclyon.technicallycoded.inventoryrollback.gui;
+package me.danjono.inventoryrollback.gui;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback.VersionName;

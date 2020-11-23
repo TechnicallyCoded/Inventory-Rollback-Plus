@@ -1,8 +1,8 @@
-package com.nuclyon.technicallycoded.inventoryrollback.inventory;
+package me.danjono.inventoryrollback.inventory;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
-import com.nuclyon.technicallycoded.inventoryrollback.data.LogType;
-import com.nuclyon.technicallycoded.inventoryrollback.data.PlayerData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;

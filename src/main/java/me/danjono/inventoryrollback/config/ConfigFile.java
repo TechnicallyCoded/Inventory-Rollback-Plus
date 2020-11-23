@@ -1,4 +1,4 @@
-package com.nuclyon.technicallycoded.inventoryrollback.config;
+package me.danjono.inventoryrollback.config;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
 import java.io.File;
