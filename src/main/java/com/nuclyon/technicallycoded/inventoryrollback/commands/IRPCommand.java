@@ -1,14 +1,14 @@
 package com.nuclyon.technicallycoded.inventoryrollback.commands;
 
-import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public abstract class IRPCommand {
 
-    public InventoryRollback main;
+    public InventoryRollbackPlus main;
 
-    public IRPCommand(InventoryRollback mainIn) {
+    public IRPCommand(InventoryRollbackPlus mainIn) {
         this.main = mainIn;
     }
 

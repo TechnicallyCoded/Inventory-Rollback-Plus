@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,20 +27,21 @@ public class InventoryRollback extends JavaPlugin {
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static InventoryRollback instance;
     private static String packageVersion;
+    private ConfigData configData;
 
     public static Logger getPluginLogger() {
         return logger;
     }
 
-    private static void setInstance(InventoryRollback plugin) {
+    public static void setInstance(InventoryRollback plugin) {
         instance = plugin;
     }
 
     public static InventoryRollback getInstance() {
-        return instance;
+        return InventoryRollbackPlus.getInstance();
     }
 
-    private static void setPackageVerison(String version) {
+    public static void setPackageVersion(String version) {
         packageVersion = version;
     }
 
@@ -51,10 +53,15 @@ public class InventoryRollback extends JavaPlugin {
         return instance.getDescription().getVersion();  
     }
 
+    public ConfigData getConfigData() {
+        return configData;
+    }
+
     @Override
     public void onEnable() {
+        // !!!! WARNING !!!! This method is never used since it's overridden by the InventoryRollbackPlus onEnable()
         setInstance(this);
-        setPackageVerison(Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3]);
+        setPackageVersion(Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3]);
 
         if (!isCompatible()) {        
             logger.log(Level.WARNING, MessageData.getPluginName() + ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **");
@@ -77,10 +84,10 @@ public class InventoryRollback extends JavaPlugin {
         setInstance(null);
     }
 
-    public static void startupTasks() {
-        ConfigData config = new ConfigData();
+    public void startupTasks() {
+        configData = new ConfigData();
 
-        config.setVariables();
+        configData.setVariables();
 
         if (ConfigData.getSaveType() == SaveType.YAML) {
             YAML.createStorageFolders();
@@ -98,10 +105,10 @@ public class InventoryRollback extends JavaPlugin {
         logger.log(Level.INFO, () -> MessageData.getPluginName() + "Inventory backup data is set to save to: " + ConfigData.getSaveType().getName());
 
         if (ConfigData.isUpdateCheckerEnabled())
-            checkUpdate();
+            getInstance().checkUpdate();
     }
 
-    private enum CompatibleVersions {
+    public enum CompatibleVersions {
         V1_8_R1,
         V1_8_R2,
         V1_8_R3,
@@ -115,7 +122,8 @@ public class InventoryRollback extends JavaPlugin {
         V1_14_R1,
         V1_15_R1,
         V1_16_R1,
-        V1_16_R2
+        V1_16_R2,
+        V1_16_R3
     }
 
     public enum VersionName {
@@ -126,7 +134,7 @@ public class InventoryRollback extends JavaPlugin {
 
     private static VersionName version = VersionName.V1_13_PLUS;
 
-    private static void setVersion(VersionName versionName) {
+    public static void setVersion(VersionName versionName) {
         version = versionName;
     }
 
@@ -134,7 +142,7 @@ public class InventoryRollback extends JavaPlugin {
         return version;
     }
 
-    private boolean isCompatible() {
+    public boolean isCompatible() {
         for (CompatibleVersions v : CompatibleVersions.values()) {
             if (v.name().equalsIgnoreCase(packageVersion)) {
                 //Check if 1.8
@@ -159,7 +167,7 @@ public class InventoryRollback extends JavaPlugin {
         return false;
     }
 
-    private void bStats() {
+    public void bStats() {
         Metrics metrics = new Metrics(this);
 
         if (metrics.isEnabled())
@@ -195,21 +203,21 @@ public class InventoryRollback extends JavaPlugin {
         }));
     }
 
-    public static void checkUpdate() {
+    public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
             logger.log(Level.INFO, MessageData.getPluginName() + "Checking for updates...");
 
-            final UpdateResult result = new UpdateChecker(instance, 48074).getResult();
+            final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
             switch (result) {
             case FAIL_SPIGOT:
                 logger.log(Level.INFO, MessageData.getPluginName() + "Could not contact Spigot to check if an update is available.");
                 break;
             case UPDATE_AVAILABLE:		
-                logger.log(Level.INFO, ChatColor.AQUA + "===============================================================================");
-                logger.log(Level.INFO, ChatColor.AQUA + "An update to InventoryRollback is available!");
-                logger.log(Level.INFO, ChatColor.AQUA + "Download at https://www.spigotmc.org/resources/inventoryrollback.48074/");
-                logger.log(Level.INFO, ChatColor.AQUA + "===============================================================================");		
+                logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
+                logger.log(Level.INFO, ChatColor.AQUA + "An update to InventoryRollbackPlus is available!");
+                logger.log(Level.INFO, ChatColor.AQUA + "Download at https://www.spigotmc.org/resources/inventoryrollback-plus-1-8-1-16-x.85811/");
+                logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
                 break;
             case NO_UPDATE:
                 logger.log(Level.INFO, MessageData.getPluginName() + ChatColor.AQUA + "You are running the latest version.");

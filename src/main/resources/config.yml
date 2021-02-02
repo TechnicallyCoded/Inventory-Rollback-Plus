@@ -25,7 +25,9 @@ mysql:
     database: 'inventory_rollback'
     username: 'username'
     password: 'password'
-    use-SSL: false
+    use-SSL: true
+    verifyCertificate: true
+    allowPubKeyRetrieval: false
 
 ## Sounds will play to the player when parts of their player is restored.
 sounds:

@@ -1,10 +1,12 @@
 package com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback;
 
-import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.IRPCommand;
-import me.danjono.inventoryrollback.config.ConfigFile;
+import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
-import me.danjono.inventoryrollback.gui.MainMenu;
+import me.danjono.inventoryrollback.gui.menu.MainMenu;
+import me.danjono.inventoryrollback.gui.menu.PlayerMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -13,43 +15,57 @@ import org.bukkit.entity.Player;
 
 public class Restore extends IRPCommand {
 
-    public Restore(InventoryRollback mainIn) {
+    public Restore(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
-            if (sender.hasPermission("inventoryrollback.restore")) {
-                if (!ConfigFile.enabled) {
-                    sender.sendMessage(MessageData.pluginName + MessageData.disabledMessage);
+            if (sender.hasPermission("inventoryrollbackplus.restore") || sender.hasPermission("inventoryrollback.restore")) {
+                if (!ConfigData.isEnabled()) {
+                    sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginDisabled());
                     return;
                 }
-
                 Player staff = (Player) sender;
-
-                if (args.length == 1) {
-                    try {
-                        staff.openInventory(new MainMenu(staff, staff).getMenu());
-                    } catch (NullPointerException ignored) {
-                    }
-                } else if (args.length == 2) {
-                    @SuppressWarnings("deprecation")
-                    OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
-
-                    try {
-                        staff.openInventory(new MainMenu(staff, rollbackPlayer).getMenu());
-                    } catch (NullPointerException ignored) {
-                    }
-                } else {
-                    sender.sendMessage(MessageData.pluginName + MessageData.error);
-                }
+                openBackupMenu(sender, staff, args);
             } else {
-                sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
+                sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
             }
         } else {
-            sender.sendMessage(MessageData.pluginName + MessageData.playerOnly);
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getPlayerOnlyError());
         }
+    }
+
+    private void openBackupMenu(CommandSender sender, Player staff, String[] args) {
+        if (args.length <= 0 || args.length == 1) {
+            try {
+                openMainMenu(staff);
+            } catch (NullPointerException e) {}
+        } else if(args.length == 2) {
+            @SuppressWarnings("deprecation")
+            OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
+
+            try {
+                openPlayerMenu(staff, rollbackPlayer);
+            } catch (NullPointerException e) {}
+        } else {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+        }
+    }
+
+    private void openMainMenu(Player staff) {
+        MainMenu menu = new MainMenu(staff, 1);
+
+        staff.openInventory(menu.getInventory());
+        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+    }
+
+    private void openPlayerMenu(Player staff, OfflinePlayer offlinePlayer) {
+        PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
+
+        staff.openInventory(menu.getInventory());
+        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
     }
 
 }

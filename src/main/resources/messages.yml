@@ -17,27 +17,27 @@ attribute-restore:
   main-inventory:
     restored: '%NAME%''s main inventory has been restored.'
     restored-player: 'Your inventory has been restored by %NAME% from backup.'
-    not-online: '%NAME% is not online to have their inventory restored.'
+    not-online: 'You can''t restore %NAME%''s inventory while they are offline.'
     button-name: '&dRestore Main Inventory'
   ender-chest:
     restored: '%NAME%''s ender chest has been restored.'
     restored-player: 'Your ender chest has been restored by %NAME% from backup.'
-    not-online: '%NAME% is not online to have their ender chest restored.'
+    not-online: 'You can''t restore %NAME%''s ender chest while they are offline.'
     button-name: '&dRestore Ender Chest'
   health:
     restored: '%NAME%''s health has been restored.'
     restored-player: 'Your health has been restored by %NAME% from backup.'
-    not-online: '%NAME% is not online to have their health set.'
+    not-online: 'You can''t restore %NAME%''s health while they are offline.'
     button-name: '&aRestore Health'
   hunger:
     restored: '%NAME%''s hunger has been restored.'
     restored-player: 'Your hunger has been restored by %NAME% from backup.'
-    not-online: '%NAME% is not online to have their hunger set.'
+    not-online: 'You can''t restore %NAME%''s hunger while they are offline.'
     button-name: '&cRestore Food'
   experience:
     restored: '%NAME%''s XP has been set to level %XP%.'
     restored-player: 'Your XP has been restored to level %XP% by %NAME% from backup.'
-    not-online: '%NAME% is not online to have their XP set.'
+    not-online: 'You can''t restore %NAME%''s experience while they are offline.'
     button-name: '&2Restore Player XP'
     button-lore: '&rLevel %XP%'
 

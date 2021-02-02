@@ -20,14 +20,16 @@ public class SaveInventory {
     private Player player;
     private LogType logType;
     private DamageCause deathCause;
+    private String causeAlias;
 
     private PlayerInventory mainInventory;
     private Inventory enderChestInventory;
 
-    public SaveInventory(Player player, LogType logType, DamageCause deathCause, PlayerInventory mainInventory, Inventory enderChestInventory) {
+    public SaveInventory(Player player, LogType logType, DamageCause deathCause, String causeAliasIn, PlayerInventory mainInventory, Inventory enderChestInventory) {
         this.player = player;
         this.logType = logType;
         this.deathCause = deathCause;
+        this.causeAlias = causeAliasIn;
 
         this.mainInventory = mainInventory;
         this.enderChestInventory = enderChestInventory;
@@ -75,8 +77,9 @@ public class SaveInventory {
         data.setLogType(logType);
         data.setVersion(InventoryRollback.getPackageVersion());
 
-        if (deathCause != null)
-            data.setDeathReason(deathCause.name());
+        if (causeAlias != null) data.setDeathReason(causeAlias);
+        else if (deathCause != null) data.setDeathReason(deathCause.name());
+        //else data.setDeathReason("UNKNOWN");
 
         data.saveData();
     }

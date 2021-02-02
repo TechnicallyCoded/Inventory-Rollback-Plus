@@ -82,7 +82,12 @@ public class MySQL {
                     "?connectionTimeout=30000" + 
                     "&socketTimeout=45000" +
                     "&useSSL=" + 
-                    ConfigData.isMySQLUseSSL(),
+                    ConfigData.isMySQLUseSSL() +
+                    "&verifyServerCertificate=" +
+                    ConfigData.isMySQLVerifyCertificate() +
+                    "&allowPublicKeyRetrieval=" +
+                    ConfigData.isMySQLPubKeyRetrievalAllowed() +
+                    "&characterEncoding=UTF-8",
                     ConfigData.getMySQLUsername(),
                     ConfigData.getMySQLPassword());
         }

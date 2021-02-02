@@ -1,1 +1,13 @@
 /changelog
+
+out/
+target/
+
+.idea/
+.settings/
+.git/
+
+.classpath
+.project
+
+*.iml

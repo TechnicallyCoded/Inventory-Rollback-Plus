@@ -1,6 +1,6 @@
 package me.danjono.inventoryrollback.reflections;
 
-import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.InventoryRollback;
 
 public class Packets {
 

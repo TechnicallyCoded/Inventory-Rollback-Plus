@@ -1,16 +1,75 @@
 name: ${project.name}
-main: me.danjono.inventoryrollback.InventoryRollback
+main: ${project.groupId}.InventoryRollbackPlus
 version: ${project.version}
 description: ${project.description}
 author: ${project.organization.name}
+authors: [${project.organization.name}, danjono]
 api-version: 1.13
 commands:
-  inventoryrollback:
+  inventoryrollbackplus:
     description: ${project.description}
-    usage: /<command>
-    permission: inventoryrollback.cmd
-    aliases: ir
+    usage: /irp <subcommand>
+    aliases: [ir, irp, inventoryrollback]
 permissions:
+  inventoryrollbackplus.*:
+    description: Gives access to all InventoryRollbackPlus commands.
+    children:
+      inventoryrollback.*: true
+  inventoryrollbackplus.cmd:
+    description: Allows InventoryRollback commands to work.
+    default: true
+    children:
+      inventoryrollback.cmd: true
+  inventoryrollbackplus.deathsave:
+    description: Player inventories will be saved when they die.
+    default: true
+    children:
+      inventoryrollback.deathsave: true
+  inventoryrollbackplus.joinsave:
+    description: Player inventories will be saved when the join.
+    default: true
+    children:
+      inventoryrollback.joinsave: true
+  inventoryrollbackplus.leavesave:
+    description: Player inventories will be saved when they leave.
+    default: true
+    children:
+      inventoryrollback.leavesave: true
+  inventoryrollbackplus.worldchangesave:
+    description: Player inventories will be saved when they change worlds.
+    default: true
+    children:
+      inventoryrollback.worldchangesave: true
+  inventoryrollbackplus.enable:
+    description: Grants access to enable the plugin globally.
+    default: op
+    children:
+      inventoryrollback.enable: true
+  inventoryrollbackplus.disable:
+    description: Grants access to disable the plugin globally.
+    default: op
+    children:
+      inventoryrollback.disable: true
+  inventoryrollbackplus.reload:
+    description: Grants access to reload the plugin configuration.
+    default: op
+    children:
+      inventoryrollback.reload: true
+  inventoryrollbackplus.restore:
+    description: Grants access to perform player roll backs.
+    default: op
+    children:
+      inventoryrollback.restore: true
+  inventoryrollbackplus.forcebackup:
+    description: Forces a backup for an online player.
+    default: op
+    children:
+      inventoryrollback.forcebackup: true
+  inventoryrollbackplus.version:
+    description: Allows player to see the version the plugin is running on the server.
+    default: true
+    children:
+      inventoryrollback.version: true
   inventoryrollback.*:
     description: Gives access to all InventoryRollback commands.
     children:
@@ -28,34 +87,23 @@ permissions:
     default: op
   inventoryrollback.cmd:
     description: Allows InventoryRollback commands to work.
-    default: true
   inventoryrollback.deathsave:
     description: Player inventories will be saved when they die.
-    default: true
   inventoryrollback.joinsave:
     description: Player inventories will be saved when the join.
-    default: true
   inventoryrollback.leavesave:
     description: Player inventories will be saved when they leave.
-    default: true
   inventoryrollback.worldchangesave:
     description: Player inventories will be saved when they change worlds.
-    default: true
   inventoryrollback.enable:
     description: Grants access to enable the plugin globally.
-    default: op
   inventoryrollback.disable:
-    description: Grants access to disable the plugin globally. 
-    default: op
+    description: Grants access to disable the plugin globally.
   inventoryrollback.reload:
     description: Grants access to reload the plugin configuration.
-    default: op
   inventoryrollback.restore:
     description: Grants access to perform player roll backs.
-    default: op
   inventoryrollback.forcebackup:
-    description: Forces a backup for an online player. 
-    default: op
+    description: Forces a backup for an online player.
   inventoryrollback.version:
-    description: Allows player to see the version the plugin is running on the server. 
-    default: true
+    description: Allows player to see the version the plugin is running on the server.

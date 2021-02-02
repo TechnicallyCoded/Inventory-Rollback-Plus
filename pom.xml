@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
-    <version>1.5.2</version>
+    <version>1.6.0</version>
     <name>InventoryRollbackPlus</name>
 
     <organization>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.9-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -65,6 +65,9 @@
                     <target>1.8</target>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+<!--                    <excludes>-->
+<!--                        <exclude>**/com/nuclyon/**</exclude>-->
+<!--                    </excludes>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -93,7 +96,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
     <description>Allows server moderators to restore player items and data from backups.</description>

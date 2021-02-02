@@ -80,6 +80,8 @@ public class ConfigData {
     private static String mysqlUsername;
     private static String mysqlPassword;
     private static boolean mysqlUseSSL;
+    private static boolean mysqlVerifyCertificate;
+    private static boolean mysqlPubKeyRetrieval;
 
     private static boolean restoreToPlayerButton;
     private static int backupLinesVisible;
@@ -122,7 +124,9 @@ public class ConfigData {
         setMySQLDatabase((String) getDefaultValue("mysql.details.database", "inventory_rollback"));
         setMySQLUsername((String) getDefaultValue("mysql.details.username", "username"));
         setMySQLPassword((String) getDefaultValue("mysql.details.password", "password"));
-        setMySQLUseSSL((boolean) getDefaultValue("mysql.details.use-SSL", false));
+        setMySQLUseSSL((boolean) getDefaultValue("mysql.details.use-SSL", true));
+        setMySQLVerifyCertificate((boolean) getDefaultValue("mysql.details.verifyCertificate", true));
+        setMysqlPubKeyRetrievalAllowed((boolean) getDefaultValue("mysql.details.allowPubKeyRetrieval", false));
 
         setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", false));
         setBackupLinesVisible((int) getDefaultValue("backup-lines-visible", 1));
@@ -181,6 +185,14 @@ public class ConfigData {
 
     public static void setMySQLUseSSL(boolean value) {
         mysqlUseSSL = value;
+    }
+
+    public static void setMySQLVerifyCertificate(boolean value) {
+        mysqlVerifyCertificate = value;
+    }
+
+    public static void setMysqlPubKeyRetrievalAllowed(boolean value) {
+        mysqlPubKeyRetrieval = value;
     }
 
     public static void setRestoreToPlayerButton(boolean value) {
@@ -281,6 +293,14 @@ public class ConfigData {
 
     public static boolean isMySQLUseSSL() {
         return mysqlUseSSL;
+    }
+
+    public static boolean isMySQLVerifyCertificate() {
+        return mysqlVerifyCertificate;
+    }
+
+    public static boolean isMySQLPubKeyRetrievalAllowed() {
+        return mysqlPubKeyRetrieval;
     }
 
     public static boolean isRestoreToPlayerButton() {

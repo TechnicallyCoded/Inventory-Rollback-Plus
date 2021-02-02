@@ -1,6 +1,6 @@
 package com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback;
 
-import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollback;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.IRPCommand;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -13,32 +13,60 @@ import org.bukkit.entity.Player;
 
 public class ForceBackup extends IRPCommand {
 
-    public ForceBackup(InventoryRollback mainIn) {
+    public ForceBackup(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender.hasPermission("inventoryrollback.forcebackup")) {
-            if (args.length == 1 || args.length > 2) {
-                sender.sendMessage(MessageData.pluginName + MessageData.error);
+        if (sender.hasPermission("inventoryrollbackplus.forcebackup") || sender.hasPermission("inventoryrollback.forcebackup")) {
+            if (args.length == 1 || args.length > 3) {
+                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
                 return;
             }
 
-            @SuppressWarnings("deprecation")
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
-
-            if (!offlinePlayer.isOnline()) {
-                sender.sendMessage(MessageData.pluginName + main.getConfigFile().getMsgData().notOnline(offlinePlayer.getName()));
-                return;
+            if (args[1].equalsIgnoreCase("all")) {
+                forceBackupAll(sender);
+            } else if (args[1].equalsIgnoreCase("player")) {
+                forceBackupPlayer(sender, args);
+            } else {
+                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
             }
-
-            Player player = (Player) offlinePlayer;
-            new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
-            sender.sendMessage(MessageData.pluginName + main.getConfigFile().getMsgData().forceSaved(offlinePlayer.getName()));
         } else {
-            sender.sendMessage(MessageData.pluginName + MessageData.noPermission);
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
         }
+    }
+
+    private void forceBackupAll(CommandSender sender) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
+        }
+
+        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
+    }
+
+    private void forceBackupPlayer(CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            return;
+        }
+
+        OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
+
+        if (offlinePlayer == null) {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(args[2]));
+            return;
+        }
+
+        if (!offlinePlayer.isOnline()) {
+            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
+            return;
+        }
+
+        Player player = (Player) offlinePlayer;
+        new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
+
+        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }
 
 }

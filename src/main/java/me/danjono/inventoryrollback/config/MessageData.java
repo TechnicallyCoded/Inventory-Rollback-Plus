@@ -51,7 +51,7 @@ public class MessageData {
         return true;
     }
 
-    private static String pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollback" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
+    private static String pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollbackPlus" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
     private static String noPermission;
     private static String error;
     private static String errorInventory = "You cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.";
@@ -120,27 +120,27 @@ public class MessageData {
 
         setMainInventoryRestored(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.restored", "%NAME%''s main inventory has been restored.")));
         setMainInventoryRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.restored-player", "Your inventory has been restored by %NAME%.")));
-        setMainInventoryNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.not-online", "%NAME% is not online to have their inventory restored.")));
+        setMainInventoryNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.not-online", "You can't restore %NAME%'s inventory while they are offline.")));
         setMainInventoryButton(convertColourCodes((String) getDefaultValue("attribute-restore.main-inventory.button-name", "&dRestore Main Inventory")));
         
         setEnderChestRestored(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.restored", "%NAME%'s ender chest has been restored.")));
         setEnderChestRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.restored-player", "Your ender chest has been restored by %NAME%.")));
-        setEnderChestNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.not-online", "%NAME% is not online to have their ender chest set.")));
+        setEnderChestNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.not-online", "You can't restore %NAME%'s ender chest while they are offline.")));
         setEnderChestButton(convertColourCodes((String) getDefaultValue("attribute-restore.ender-chest.button-name", "&dRestore Ender Chest")));
         
         setHealthRestored(convertColourCodes((String) getDefaultValue("attribute-restore.health.restored", "%NAME%'s health has been restored.")));
         setHealthRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.health.restored-player", "Your health has been restored by %NAME%.")));
-        setHealthNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.health.not-online", "%NAME% is not online to have their health set.")));
+        setHealthNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.health.not-online", "You can't restore %NAME%'s health while they are offline.")));
         setHealthButton(convertColourCodes((String) getDefaultValue("attribute-restore.health.button-name", "&aRestore Health")));
         
         setHungerRestored(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.restored", "%NAME%'s hunger has been restored.")));
         setHungerRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.restored-player", "Your hunger has been restored by %NAME%.")));
-        setHungerNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.not-online", "%NAME% is not online to have their hunger set.")));
+        setHungerNotOnline(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.not-online", "You can't restore %NAME%'s hunger while they are offline.")));
         setHungerButton(convertColourCodes((String) getDefaultValue("attribute-restore.hunger.button-name", "&cRestore Food")));
         
         setExperienceRestored(convertColourCodes((String) getDefaultValue("attribute-restore.experience.restored", "%NAME%'s XP has been set to level %XP%.")));
         setExperienceRestoredPlayer(convertColourCodes((String) getDefaultValue("attribute-restore.experience.restored-player", "Your XP has been restored to level %XP% by %NAME%.")));
-        setExperienceNotOnlinePlayer(convertColourCodes((String) getDefaultValue("attribute-restore.experience.not-online", "%NAME% is not online to have their XP set.")));
+        setExperienceNotOnlinePlayer(convertColourCodes((String) getDefaultValue("attribute-restore.experience.not-online", "You can't restore %NAME%'s experience while they are offline.")));
         setExperienceButton(convertColourCodes((String) getDefaultValue("attribute-restore.experience.button-name", "&2Restore Player XP")));
         setExperienceButtonLore(convertColourCodes((String) getDefaultValue("attribute-restore.experience.button-lore", "&rLevel %XP%")));
 
@@ -165,6 +165,10 @@ public class MessageData {
 
     private static String nameVariable = "%NAME%";
     private static String xpVariable = "%XP%";
+
+    public static void setPluginName(String message) {
+        pluginName = message;
+    }
 
     public static void setNoPermission(String message) {
         noPermission = message;

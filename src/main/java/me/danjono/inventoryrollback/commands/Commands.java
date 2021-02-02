@@ -154,7 +154,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void forceBackupAll(CommandSender sender) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+            new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
         }
 
         sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
@@ -179,7 +179,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         }
 
         Player player = (Player) offlinePlayer;
-        new SaveInventory(player, LogType.FORCE, null, player.getInventory(), player.getEnderChest()).createSave();
+        new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
 
         sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }
@@ -208,7 +208,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void reloadCommand(CommandSender sender) {
         if (sender.hasPermission("inventoryrollback.reload")) {                                     
-            InventoryRollback.startupTasks();
+            InventoryRollback.getInstance().startupTasks();
 
             sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginReload());
         } else {
