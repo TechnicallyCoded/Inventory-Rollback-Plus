@@ -3,6 +3,7 @@ package com.nuclyon.technicallycoded.inventoryrollback;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
@@ -31,7 +32,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         InventoryRollback.setPackageVersion(Bukkit.getServer().getClass().getPackage().getName()
                 .replace(".",  ",").split(",")[3]);
 
-        if (!super.isCompatible()) {
+        if (!this.isCompatible()) {
             getLogger().log(Level.WARNING, MessageData.getPluginName() + "\n" + ChatColor.RED +
                     " ** WARNING... Plugin may not be compatible with this version of Minecraft. **\n" +
                     " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
@@ -43,7 +44,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
         if (ConfigData.isbStatsEnabled()) initBStats();
 
-        PluginCommand plCmd = getCommand("inventoryrollback");
+        PluginCommand plCmd = getCommand("inventoryrollbackplus");
         Commands cmds = new Commands(this);
         if (plCmd == null) return;
         plCmd.setExecutor(cmds);
@@ -58,6 +59,31 @@ public class InventoryRollbackPlus extends InventoryRollback {
         super.onDisable();
     }
 
+    public boolean isCompatible() {
+        for (EnumNmsVersion v : EnumNmsVersion.values()) {
+            if (v.name().equalsIgnoreCase(getPackageVersion())) {
+                //Check if 1.8
+                if (v.name().equalsIgnoreCase("v1_8_R1")
+                        || v.name().equalsIgnoreCase("v1_8_R2")
+                        || v.name().equalsIgnoreCase("v1_8_R3")) {
+                    setVersion(VersionName.V1_8);
+                }
+                //Check if 1.9 - 1.12.2
+                else if (v.name().equalsIgnoreCase("v1_9_R1")
+                        || v.name().equalsIgnoreCase("v1_9_R2")
+                        || v.name().equalsIgnoreCase("v1_10_R1")
+                        || v.name().equalsIgnoreCase("v1_11_R1")
+                        || v.name().equalsIgnoreCase("v1_12_R1")) {
+                    setVersion(VersionName.V1_9_V1_12);
+                }
+                //Else it is 1.13+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
             getPluginLogger().log(Level.INFO, MessageData.getPluginName() + "Checking for updates...");
@@ -68,7 +94,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
             String prioColor = ChatColor.AQUA.toString();
             String prioLevelName = "null";
 
-            switch (result) {
+            switch (result.getType()) {
                 case FAIL_SPIGOT:
                     getPluginLogger().log(Level.INFO, MessageData.getPluginName() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
                     break;
@@ -97,10 +123,11 @@ public class InventoryRollbackPlus extends InventoryRollback {
             }
 
             if (prioLevel > 0) {
-                getPluginLogger().log(Level.INFO, prioColor +
+                getPluginLogger().log(Level.INFO, "\n" + prioColor +
                         "===============================================================================\n" +
                         "A " + prioLevelName + " update to InventoryRollbackPlus is available!\n" +
                         "Download at https://www.spigotmc.org/resources/inventoryrollbackplus-1-8-1-16-x.85811/\n" +
+                        "(current: " + result.getCurrentVer() + ", latest: " + result.getLatestVer() + ")\n" +
                         "===============================================================================");
             }
 

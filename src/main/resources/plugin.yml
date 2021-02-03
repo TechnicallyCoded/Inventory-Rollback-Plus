@@ -15,6 +15,7 @@ permissions:
     description: Gives access to all InventoryRollbackPlus commands.
     children:
       inventoryrollback.*: true
+      inventoryrollbackplus.help: true
   inventoryrollbackplus.cmd:
     description: Allows InventoryRollback commands to work.
     default: true
@@ -70,6 +71,9 @@ permissions:
     default: true
     children:
       inventoryrollback.version: true
+  inventoryrollbackplus.help:
+    description: Get the list of commands and what they do
+    default: true
   inventoryrollback.*:
     description: Gives access to all InventoryRollback commands.
     children:

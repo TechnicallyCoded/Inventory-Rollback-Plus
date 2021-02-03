@@ -29,6 +29,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         this.subCommands.put("reload", new Reload(mainIn));
         this.subCommands.put("version", new Version(mainIn));
         this.subCommands.put("forcebackup", new ForceBackup(mainIn));
+        this.subCommands.put("help", new Help(mainIn));
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -38,15 +39,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 label.equalsIgnoreCase("inventoryrollbackplus")
         ) {
             if (args.length == 0) {
-                sender.sendMessage(
-                        MessageData.getPluginName() + "Server is running v" + InventoryRollbackPlus.getPluginVersion() + " - Maintained by TechnicallyCoded\n" +
-                        MessageData.getPluginName() + "Available Commands:\n" +
-                        MessageData.getPluginName() + "/ir restore [player]" + ChatColor.GRAY + " - Open rollback GUI for optional [player]\n" +
-                        MessageData.getPluginName() + "/ir forcebackup <all/player> [player]" + ChatColor.GRAY + " - Create a forced save of a player's inventory\n" +
-                        MessageData.getPluginName() + "/ir enable" + ChatColor.GRAY + " - Enable the plugin\n" +
-                        MessageData.getPluginName() + "/ir disable" + ChatColor.GRAY + " - Disable the plugin\n" +
-                        MessageData.getPluginName() + "/ir reload" + ChatColor.GRAY + " - Reload the plugin\n" +
-                        MessageData.getPluginName() + "/ir version" + ChatColor.GRAY + " - Reload the plugin\n");
+                ((Help) this.subCommands.get("help")).sendHelp(sender);
                 return true;
             }
             IRPCommand irpCmd = this.subCommands.get(args[0]);

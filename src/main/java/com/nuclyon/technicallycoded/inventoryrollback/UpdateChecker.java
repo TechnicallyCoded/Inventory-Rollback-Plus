@@ -22,27 +22,49 @@ public class UpdateChecker {
     private String[] currVersionSections;
     private String availableVersion;
    
-    private UpdateResult result = UpdateResult.FAIL_SPIGOT;
+    private UpdateResult result;
    
-    public enum UpdateResult {
-        NO_UPDATE,
-        FAIL_SPIGOT,
-        UNKNOWN_VERSION,
-        UPDATE_LOW,
-        UPDATE_MEDIUM,
-        UPDATE_HIGH,
-        DEV_BUILD
+    public static class UpdateResult {
+
+        private Type type;
+        private String latestVer;
+        private String currentVer;
+
+        public UpdateResult(Type typeIn, String latestVerIn, String currentVerIn) {
+            this.type = typeIn;
+            this.latestVer = latestVerIn;
+            this.currentVer = currentVerIn;
+        }
+
+        public void setType(Type typeIn) { this.type = typeIn; }
+        public void setLatestVer(String latestVerIn) { this.latestVer = latestVerIn; }
+
+        public Type getType() { return this.type; }
+        public String getCurrentVer() { return this.currentVer; }
+        public String getLatestVer() { return this.latestVer; }
+
+        public enum Type {
+            NO_UPDATE,
+            FAIL_SPIGOT,
+            UNKNOWN_VERSION,
+            UPDATE_LOW,
+            UPDATE_MEDIUM,
+            UPDATE_HIGH,
+            DEV_BUILD
+        }
     }
    
     public UpdateChecker(JavaPlugin plugin, Integer resourceId) {
         this.plugin = plugin;      
         this.currentVersion = this.plugin.getDescription().getVersion();
         this.currVersionSections = currentVersion.split("\\.");
-       
+
+        this.result = new UpdateResult(UpdateResult.Type.FAIL_SPIGOT, null, this.currentVersion);
+
         try {
             this.checkURL = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + resourceId);
         } catch (MalformedURLException e) {
-        	result = UpdateResult.FAIL_SPIGOT;
+        	result.setType(UpdateResult.Type.FAIL_SPIGOT);
             return;
         }
 
@@ -54,49 +76,59 @@ public class UpdateChecker {
 		try {
 			con = checkURL.openConnection();
 		} catch (IOException e1) {
-			result = UpdateResult.FAIL_SPIGOT;
+            result.setType(UpdateResult.Type.FAIL_SPIGOT);
 			return;
 		}
         
         try {
 			availableVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
 		} catch (IOException e) {
-			result = UpdateResult.FAIL_SPIGOT;
+            result.setType(UpdateResult.Type.FAIL_SPIGOT);
 			return;
 		}
 
         if (availableVersion.isEmpty()) {
-            result = UpdateResult.FAIL_SPIGOT;
+            result.setType(UpdateResult.Type.FAIL_SPIGOT);
             return;
         }
 
+        result.setLatestVer(availableVersion);
+
+        // Version sections of remote
         String[] versionSections = availableVersion.split("\\.");
-        for (int i = 0; i < versionSections.length || i < currVersionSections.length; i++) {
+        // Test diff
+        for (int i = 0; i < versionSections.length || i < currVersionSections.length; i++) { // Continue until both versions run out of sub sections
             try {
+                // - Detailed walk through -
+                // Statement below means: if number of sections is i+1 or greater
+                // (Example: 5.3.2 has 3 sections and i = 0, true)
+                //   - Explanation -
+                // 5.3.2 has indexes 0-2, which also means if i = 3, we are on the 4th iteration and
+                // ran out of available sub-sections
                 boolean vSecExists = versionSections.length - i > 0;
-                boolean cvSecExists = currVersionSections.length - i > 0;
-                if (!vSecExists) {
-                    result = UpdateResult.DEV_BUILD;
+                boolean cvSecExists = currVersionSections.length - i > 0; // current version has that many sections too?
+                if (!vSecExists) { // if remote version doesn't have that many sub sections (aka, we are running something newer)
+                    result.setType(UpdateResult.Type.DEV_BUILD);
                     return;
-                } else if (!cvSecExists) {
-                    result = getUpdateResultPriority(i);
+                } else if (!cvSecExists) { // if local version doesn't have that many sub sections (aka remote is running something newer)
+                    result.setType(getUpdateResultPriority(i));
                     return;
                 }
-                int vSecInt = Integer.parseInt(versionSections[i]);
-                int cvSecInt = Integer.parseInt(currVersionSections[i]);
-                if (vSecInt > cvSecInt) {
-                    result = getUpdateResultPriority(i);
+                int vSecInt = Integer.parseInt(versionSections[i]); // get int value of remote sub-section value
+                int cvSecInt = Integer.parseInt(currVersionSections[i]); // get int value of local sub-section value
+                if (vSecInt > cvSecInt) { // remote  > local ? We are out of date.
+                    result.setType(getUpdateResultPriority(i));
                     return;
-                } else if (cvSecInt > vSecInt) {
-                    result = UpdateResult.DEV_BUILD;
+                } else if (cvSecInt > vSecInt) { // local > remote ? We are running something not yet released!
+                    result.setType(UpdateResult.Type.DEV_BUILD);
                     return;
                 }
             } catch (NumberFormatException e) {
-                result = UpdateResult.UNKNOWN_VERSION;
+                result.setType(UpdateResult.Type.UNKNOWN_VERSION); // Not a parsable number? Unknown version, since we can't compare!
                 return;
             }
         }
-        result = UpdateResult.NO_UPDATE;
+        result.setType(UpdateResult.Type.NO_UPDATE);
     }
    
     public UpdateResult getResult() {
@@ -107,14 +139,14 @@ public class UpdateChecker {
         return this.availableVersion;
     }
 
-    public UpdateResult getUpdateResultPriority(int i) {
+    public UpdateResult.Type getUpdateResultPriority(int i) {
         switch (i) {
             case 0:
-                return UpdateResult.UPDATE_HIGH;
+                return UpdateResult.Type.UPDATE_HIGH;
             case 1:
-                return UpdateResult.UPDATE_MEDIUM;
+                return UpdateResult.Type.UPDATE_MEDIUM;
             default:
-                return UpdateResult.UPDATE_LOW;
+                return UpdateResult.Type.UPDATE_LOW;
         }
     }
 	
