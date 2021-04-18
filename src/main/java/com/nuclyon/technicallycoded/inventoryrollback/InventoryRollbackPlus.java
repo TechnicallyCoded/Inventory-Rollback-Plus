@@ -19,8 +19,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     private static InventoryRollbackPlus instancePlus;
     private ConfigData configData;
+    private EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
 
-    public static InventoryRollback getInstance() {
+    public static InventoryRollbackPlus getInstance() {
         return instancePlus;
     }
 
@@ -59,24 +60,18 @@ public class InventoryRollbackPlus extends InventoryRollback {
         super.onDisable();
     }
 
+    public void setVersion(EnumNmsVersion versionName) {
+        version = versionName;
+    }
+
+    public EnumNmsVersion getVersion() {
+        return version;
+    }
+
     public boolean isCompatible() {
         for (EnumNmsVersion v : EnumNmsVersion.values()) {
             if (v.name().equalsIgnoreCase(getPackageVersion())) {
-                //Check if 1.8
-                if (v.name().equalsIgnoreCase("v1_8_R1")
-                        || v.name().equalsIgnoreCase("v1_8_R2")
-                        || v.name().equalsIgnoreCase("v1_8_R3")) {
-                    setVersion(VersionName.V1_8);
-                }
-                //Check if 1.9 - 1.12.2
-                else if (v.name().equalsIgnoreCase("v1_9_R1")
-                        || v.name().equalsIgnoreCase("v1_9_R2")
-                        || v.name().equalsIgnoreCase("v1_10_R1")
-                        || v.name().equalsIgnoreCase("v1_11_R1")
-                        || v.name().equalsIgnoreCase("v1_12_R1")) {
-                    setVersion(VersionName.V1_9_V1_12);
-                }
-                //Else it is 1.13+
+                this.setVersion(v);
                 return true;
             }
         }

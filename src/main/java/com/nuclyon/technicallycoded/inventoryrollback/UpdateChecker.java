@@ -10,10 +10,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class UpdateChecker {
-	
-	// Credit to PatoTheBest and TRollStar12345 on SpigotMC for the below code
-	// https://www.spigotmc.org/threads/resource-updater-for-your-plugins-v1-1.37315/
-	// https://www.spigotmc.org/threads/check-for-updates-using-the-new-spigot-api.266310/
 		
     private JavaPlugin plugin;
     private URL checkURL;
@@ -72,7 +68,7 @@ public class UpdateChecker {
     }
     
     private void run() {
-        URLConnection con = null;
+        URLConnection con;
 		try {
 			con = checkURL.openConnection();
 		} catch (IOException e1) {

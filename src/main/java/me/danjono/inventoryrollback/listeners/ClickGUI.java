@@ -2,6 +2,8 @@ package me.danjono.inventoryrollback.listeners;
 
 import java.util.UUID;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +17,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -32,11 +33,17 @@ import me.danjono.inventoryrollback.reflections.NBT;
 
 public class ClickGUI implements Listener {
 
+    private final InventoryRollbackPlus main;
+
     private Player staff;
     private ItemStack icon;
 
     private static boolean isLocationAvailable(Location location) {
         return location != null;
+    }
+
+    public ClickGUI() {
+        this.main = InventoryRollbackPlus.getInstance();
     }
 
     @EventHandler
@@ -53,7 +60,7 @@ public class ClickGUI implements Listener {
         e.setCancelled(true);
 
         //Check if inventory is a virtual one and not one that has the same name on a player chest
-        if (InventoryRollback.getVersion() != VersionName.V1_8 && isLocationAvailable(e.getInventory().getLocation())) {
+        if (this.main.getVersion().isAtLeast(EnumNmsVersion.v1_9_R1) && isLocationAvailable(e.getInventory().getLocation())) {
             e.setCancelled(false);
             return;
         }
@@ -82,7 +89,7 @@ public class ClickGUI implements Listener {
         e.setCancelled(true);
 
         //Check if inventory is a virtual one and not one that has the same name on a player chest
-        if (InventoryRollback.getVersion() != VersionName.V1_8 && isLocationAvailable(e.getInventory().getLocation())) {
+        if (this.main.getVersion().isAtLeast(EnumNmsVersion.v1_9_R1) && isLocationAvailable(e.getInventory().getLocation())) {
             e.setCancelled(false);
             return;
         }
@@ -206,7 +213,7 @@ public class ClickGUI implements Listener {
 
                     staff.openInventory(menu.getInventory());
                     Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackupItems);
-                } catch (NullPointerException e1) {}
+                } catch (NullPointerException ignored) {}
             } 
 
             //Player has selected a page icon
@@ -270,7 +277,7 @@ public class ClickGUI implements Listener {
                     ItemStack[] armour = data.getArmour();
 
                     player.getInventory().setContents(inventory);
-                    if (InventoryRollback.getVersion() == VersionName.V1_8)
+                    if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3))
                         player.getInventory().setArmorContents(armour);
 
                     if (SoundData.isInventoryRestoreEnabled())
@@ -328,7 +335,7 @@ public class ClickGUI implements Listener {
 
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;	
-                    Double health = nbt.getDouble("health");
+                    double health = nbt.getDouble("health");
 
                     player.setHealth(health);
 

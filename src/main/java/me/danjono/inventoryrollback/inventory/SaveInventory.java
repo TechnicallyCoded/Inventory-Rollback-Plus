@@ -2,6 +2,8 @@ package me.danjono.inventoryrollback.inventory;
 
 import java.io.ByteArrayOutputStream;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
@@ -11,21 +13,22 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 
 public class SaveInventory {
 
-    private Player player;
-    private LogType logType;
-    private DamageCause deathCause;
-    private String causeAlias;
+    private final InventoryRollbackPlus main;
+    private final Player player;
+    private final LogType logType;
+    private final DamageCause deathCause;
+    private final String causeAlias;
 
-    private PlayerInventory mainInventory;
-    private Inventory enderChestInventory;
+    private final PlayerInventory mainInventory;
+    private final Inventory enderChestInventory;
 
     public SaveInventory(Player player, LogType logType, DamageCause deathCause, String causeAliasIn, PlayerInventory mainInventory, Inventory enderChestInventory) {
+        this.main = InventoryRollbackPlus.getInstance();
         this.player = player;
         this.logType = logType;
         this.deathCause = deathCause;
@@ -49,7 +52,7 @@ public class SaveInventory {
             }
         }
 
-        if (InventoryRollback.getVersion().equals(VersionName.V1_8) && mainInventory.getArmorContents() != null) {
+        if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
             for (ItemStack item : mainInventory.getArmorContents()) {
                 if (item != null) {
                     data.setArmour(mainInventory.getArmorContents());

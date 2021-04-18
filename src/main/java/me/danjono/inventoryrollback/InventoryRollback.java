@@ -1,11 +1,13 @@
 package me.danjono.inventoryrollback;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +24,7 @@ import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.listeners.ClickGUI;
 import me.danjono.inventoryrollback.listeners.EventLogs;
 
-public class InventoryRollback extends JavaPlugin {
+public abstract class InventoryRollback extends JavaPlugin {
 
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static InventoryRollback instance;
@@ -73,7 +75,7 @@ public class InventoryRollback extends JavaPlugin {
         if (ConfigData.isbStatsEnabled())
             bStats();
 
-        this.getCommand("inventoryrollback").setExecutor(new Commands());
+        Objects.requireNonNull(this.getCommand("inventoryrollback")).setExecutor(new Commands());
 
         this.getServer().getPluginManager().registerEvents(new ClickGUI(), instance);
         this.getServer().getPluginManager().registerEvents(new EventLogs(), instance);
@@ -108,7 +110,7 @@ public class InventoryRollback extends JavaPlugin {
             getInstance().checkUpdate();
     }
 
-    public enum CompatibleVersions {
+    /*public enum CompatibleVersions {
         V1_8_R1,
         V1_8_R2,
         V1_8_R3,
@@ -124,25 +126,28 @@ public class InventoryRollback extends JavaPlugin {
         V1_16_R1,
         V1_16_R2,
         V1_16_R3
-    }
+    }*/
 
-    public enum VersionName {
+    /*public enum VersionName {
         V1_8,
         V1_9_V1_12,
         V1_13_PLUS
-    }
+    }*/
 
-    private static VersionName version = VersionName.V1_13_PLUS;
+    private static EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
 
-    public static void setVersion(VersionName versionName) {
+    public abstract void setVersion(EnumNmsVersion versionName);
+    /*{
         version = versionName;
-    }
+    }*/
 
-    public static VersionName getVersion() {
+    public abstract EnumNmsVersion getVersion();
+    /*{
         return version;
-    }
+    }*/
 
-    public boolean isCompatible() {
+    public abstract boolean isCompatible();
+    /* {
         for (CompatibleVersions v : CompatibleVersions.values()) {
             if (v.name().equalsIgnoreCase(packageVersion)) {
                 //Check if 1.8
@@ -165,7 +170,7 @@ public class InventoryRollback extends JavaPlugin {
         }
 
         return false;
-    }
+    }*/
 
     public void bStats() {
         Metrics metrics = new Metrics(this);
@@ -173,32 +178,21 @@ public class InventoryRollback extends JavaPlugin {
         if (metrics.isEnabled())
             logger.log(Level.INFO, MessageData.getPluginName() + "bStats are enabled");
 
-        metrics.addCustomChart(new Metrics.SimplePie("database_type", new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return ConfigData.getSaveType().getName();
+        metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
+
+        metrics.addCustomChart(new Metrics.SimplePie("restore_to_player_enabled", () -> {
+            if (ConfigData.isRestoreToPlayerButton()) {
+                return "Enabled";
+            } else {
+                return "Disabled";
             }
         }));
 
-        metrics.addCustomChart(new Metrics.SimplePie("restore_to_player_enabled", new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                if (ConfigData.isRestoreToPlayerButton()) {
-                    return "Enabled";
-                } else {
-                    return "Disabled";
-                }
-            }
-        }));
-
-        metrics.addCustomChart(new Metrics.SimplePie("save_location", new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                if (ConfigData.getFolderLocation() == InventoryRollback.getInstance().getDataFolder()) {
-                    return "Default";
-                } else {
-                    return "Not Default";
-                }
+        metrics.addCustomChart(new Metrics.SimplePie("save_location", () -> {
+            if (ConfigData.getFolderLocation() == InventoryRollback.getInstance().getDataFolder()) {
+                return "Default";
+            } else {
+                return "Not Default";
             }
         }));
     }

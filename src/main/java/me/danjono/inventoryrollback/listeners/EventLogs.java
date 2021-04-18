@@ -1,5 +1,7 @@
 package me.danjono.inventoryrollback.listeners;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,12 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
 
 public class EventLogs implements Listener {
+
+	private InventoryRollbackPlus main;
+
+	public EventLogs() {
+		this.main = InventoryRollbackPlus.getInstance();
+	}
 
 	@EventHandler
 	private void playerJoin(PlayerJoinEvent e) {
@@ -79,7 +87,7 @@ public class EventLogs implements Listener {
 	public boolean isEntityCause(EntityDamageEvent.DamageCause cause) {
 		if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) ||
 				cause.equals(EntityDamageEvent.DamageCause.PROJECTILE)) return true;
-		if (!InventoryRollback.getInstance().getVersion().equals(InventoryRollback.VersionName.V1_8)) {
+		if (this.main.getVersion().isAtLeast(EnumNmsVersion.v1_11_R1)) {
 			if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) return true;
 		}
 		return false;

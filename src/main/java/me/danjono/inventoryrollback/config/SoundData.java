@@ -1,12 +1,15 @@
 package me.danjono.inventoryrollback.config;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import org.bukkit.Sound;
 
 import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 
 public class SoundData extends ConfigData {
-	
+
+	private InventoryRollbackPlus main;
+
 	private static Sound teleport;
 	private static boolean teleportEnabled;
 
@@ -22,14 +25,18 @@ public class SoundData extends ConfigData {
 	private static Sound experienceRestored;
 	private static boolean experienceRestoredEnabled;
 
+	public SoundData() {
+		this.main = InventoryRollbackPlus.getInstance();
+	}
+
 	public void setSounds() {	    
 	    //If sounds are invalid they will be disabled.
 		try {
 			setTeleport(Sound.ENTITY_ENDERMAN_TELEPORT);
 		} catch (NoSuchFieldError e) {
-            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+            if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                 setTeleport(Sound.valueOf("ENDERMAN_TELEPORT"));
-            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+            } else if (this.main.getVersion().isWithin(EnumNmsVersion.v1_9_R1, EnumNmsVersion.v1_12_R1)) {
                 setTeleport(Sound.valueOf("ENTITY_ENDERMEN_TELEPORT"));
             }
 		}
@@ -40,9 +47,9 @@ public class SoundData extends ConfigData {
 		try {
 			setInvetoryRestored(Sound.ENTITY_ENDER_DRAGON_FLAP);
 		} catch (NoSuchFieldError e) {
-            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+            if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                 setInvetoryRestored(Sound.valueOf("ENDERDRAGON_WINGS"));
-            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+            } else if (this.main.getVersion().isWithin(EnumNmsVersion.v1_9_R1, EnumNmsVersion.v1_12_R1)) {
                 setInvetoryRestored(Sound.valueOf("ENTITY_ENDERDRAGON_FLAP"));
             }
 		}
@@ -53,9 +60,9 @@ public class SoundData extends ConfigData {
 		try {
 			setFoodRestored(Sound.ENTITY_GENERIC_EAT);
 		} catch (NoSuchFieldError e) {
-            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+            if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                 setFoodRestored(Sound.valueOf("EAT"));
-            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+            } else if (this.main.getVersion().isWithin(EnumNmsVersion.v1_9_R1, EnumNmsVersion.v1_12_R1)) {
                 setFoodRestored(Sound.valueOf("ENTITY_GENERIC_EAT"));
             }
 		}
@@ -66,9 +73,9 @@ public class SoundData extends ConfigData {
 		try {
 			setHungerRestored(Sound.ENTITY_HORSE_EAT);
 		} catch (NoSuchFieldError e) {
-            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+            if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                 setHungerRestored(Sound.valueOf("HORSE_IDLE"));
-            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+            } else if (this.main.getVersion().isWithin(EnumNmsVersion.v1_9_R1, EnumNmsVersion.v1_12_R1)) {
                 setHungerRestored(Sound.valueOf("ENTITY_HORSE_EAT"));
             }
 		}
@@ -79,9 +86,9 @@ public class SoundData extends ConfigData {
 		try {
 			setExperienceSound(Sound.ENTITY_PLAYER_LEVELUP);
 		} catch (NoSuchFieldError e) {
-            if (InventoryRollback.getVersion().equals(VersionName.V1_8)) {
+            if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                 setExperienceSound(Sound.valueOf("LEVEL_UP"));
-            } else if (InventoryRollback.getVersion().equals(VersionName.V1_9_V1_12)) {
+            } else if (this.main.getVersion().isWithin(EnumNmsVersion.v1_9_R1, EnumNmsVersion.v1_12_R1)) {
                 setExperienceSound(Sound.valueOf("ENTITY_PLAYER_LEVELUP"));
             }
 		}

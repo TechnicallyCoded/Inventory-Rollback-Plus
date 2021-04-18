@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -21,7 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.InventoryRollback.VersionName;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
@@ -32,17 +33,17 @@ public class Buttons {
     private UUID uuid;
     
     private static final Material death = Material.BONE;
-    private static final Material join = InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS) ? Material.OAK_SAPLING : Material.getMaterial("SAPLING");
-    private static final Material quit = InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS) ? Material.RED_BED : Material.getMaterial("BED");
+    private static final Material join = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.OAK_SAPLING : Material.getMaterial("SAPLING");
+    private static final Material quit = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.RED_BED : Material.getMaterial("BED");
     private static final Material worldChange = Material.COMPASS;
     private static final Material forceSave = Material.DIAMOND;
 
-    private static final Material pageSelector = InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS) ? Material.WHITE_BANNER : Material.getMaterial("BANNER");
+    private static final Material pageSelector = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.WHITE_BANNER : Material.getMaterial("BANNER");
     private static final Material teleport = Material.ENDER_PEARL;
     private static final Material enderChest = Material.ENDER_CHEST;
-    private static final Material health = InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS) ? Material.MELON_SLICE : Material.getMaterial("MELON");
+    private static final Material health = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.MELON_SLICE : Material.getMaterial("MELON");
     private static final Material hunger = Material.ROTTEN_FLESH;
-    private static final Material experience = InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS) ? Material.EXPERIENCE_BOTTLE : Material.getMaterial("EXP_BOTTLE");
+    private static final Material experience = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.EXPERIENCE_BOTTLE : Material.getMaterial("EXP_BOTTLE");
     private static final Material restoreAllInventory = Material.NETHER_STAR;
 
     public Buttons(UUID uuid) {
@@ -111,6 +112,7 @@ public class Buttons {
         patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));
         patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
 
+        assert meta != null;
         meta.setPatterns(patterns);
 
         meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
@@ -119,11 +121,7 @@ public class Buttons {
             meta.setDisplayName(displayName);
         }
 
-        if (lore != null) {
-            meta.setLore(lore);
-        } else {
-            meta.setLore(null);
-        }
+        meta.setLore(lore);
 
         button.setItemMeta(meta);
 
@@ -147,6 +145,7 @@ public class Buttons {
         patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
         patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
 
+        assert meta != null;
         meta.setPatterns(patterns);
 
         meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
@@ -181,6 +180,7 @@ public class Buttons {
         patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
         patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
 
+        assert meta != null;
         meta.setPatterns(patterns);
 
         meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
@@ -209,6 +209,7 @@ public class Buttons {
         patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
         patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
 
+        assert meta != null;
         meta.setPatterns(patterns);
 
         meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
@@ -232,7 +233,8 @@ public class Buttons {
     public ItemStack createInventoryButton(ItemStack item, LogType logType, String location, Long time, String displayName, List<String> lore) {    	
         ItemMeta meta = item.getItemMeta();
 
-        if (lore != null) {	    	
+        assert meta != null;
+        if (lore != null) {
             meta.setLore(lore);
         }
 
@@ -254,7 +256,8 @@ public class Buttons {
     public ItemStack createDeathLogButton(LogType logType, List<String> lore) {    	
         ItemStack item = new ItemStack(getDeathLogIcon());        
         ItemMeta meta = item.getItemMeta();
-        
+
+        assert meta != null;
         if (lore != null) {         
             meta.setLore(lore);
         }
@@ -275,7 +278,8 @@ public class Buttons {
     public ItemStack createJoinLogButton(LogType logType, List<String> lore) {      
         ItemStack item = new ItemStack(getJoinLogIcon());        
         ItemMeta meta = item.getItemMeta();
-        
+
+        assert meta != null;
         if (lore != null) {         
             meta.setLore(lore);
         }
@@ -296,7 +300,8 @@ public class Buttons {
     public ItemStack createQuitLogButton(LogType logType, List<String> lore) {      
         ItemStack item = new ItemStack(getQuitLogIcon());        
         ItemMeta meta = item.getItemMeta();
-        
+
+        assert meta != null;
         if (lore != null) {         
             meta.setLore(lore);
         }
@@ -317,7 +322,8 @@ public class Buttons {
     public ItemStack createWorldChangeLogButton(LogType logType, List<String> lore) {      
         ItemStack item = new ItemStack(getWorldChangeLogIcon());        
         ItemMeta meta = item.getItemMeta();
-        
+
+        assert meta != null;
         if (lore != null) {         
             meta.setLore(lore);
         }
@@ -338,7 +344,8 @@ public class Buttons {
     public ItemStack createForceSaveLogButton(LogType logType, List<String> lore) {      
         ItemStack item = new ItemStack(getForceSaveLogIcon());        
         ItemMeta meta = item.getItemMeta();
-        
+
+        assert meta != null;
         if (lore != null) {         
             meta.setLore(lore);
         }
@@ -363,10 +370,10 @@ public class Buttons {
         ItemStack skull = null;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         
-        if (InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS)) {
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1)) {
             skull = new ItemStack(Material.PLAYER_HEAD);
         } else {
-            Constructor<?> itemStackConstructor = null;
+            Constructor<?> itemStackConstructor;
             
             try {
                 itemStackConstructor = Class.forName("org.bukkit.inventory.ItemStack").getConstructor(Material.class, int.class, short.class);
@@ -377,11 +384,13 @@ public class Buttons {
             }
         }
 
+        assert skull != null;
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        
-        if (setSkin) {            
+
+        assert skullMeta != null;
+        if (setSkin) {
             try {
-                if (InventoryRollback.getVersion().equals(VersionName.V1_13_PLUS)) {              
+                if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1)) {
                     skullMeta.setOwningPlayer(player);
                 } else {
                     Method method = skullMeta.getClass().getMethod("setOwner", String.class);
@@ -414,6 +423,7 @@ public class Buttons {
         ItemStack item = new ItemStack(getTeleportLocationIcon());
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(MessageData.getDeathLocation());
 
         List<String> lore = new ArrayList<>();
@@ -445,6 +455,7 @@ public class Buttons {
         ItemStack item = new ItemStack(getEnderChestIcon());
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(MessageData.getEnderChestRestoreButton());
 
         List<String> lore = new ArrayList<>();
@@ -472,6 +483,7 @@ public class Buttons {
         ItemStack item = new ItemStack(getHealthIcon());
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(MessageData.getHealthRestoreButton());
 
         item.setItemMeta(meta);
@@ -490,6 +502,7 @@ public class Buttons {
         ItemStack item = new ItemStack(getHungerIcon());
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(MessageData.getHungerRestoreButton());
 
         item.setItemMeta(meta);
@@ -509,6 +522,7 @@ public class Buttons {
         ItemStack item = new ItemStack(getExperienceIcon());
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(MessageData.getExperienceRestoreButton());
 
         List<String> lore = new ArrayList<>();
@@ -531,6 +545,7 @@ public class Buttons {
         ItemStack item = new ItemStack(getRestoreAllInventoryIcon());
 
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setDisplayName(ChatColor.RED + "Overwrite player inventory with backup");
 
         item.setItemMeta(meta);
