@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -311,12 +312,12 @@ public class ClickGUI implements Listener {
                 //Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
                 Bukkit.getScheduler().runTaskLater(InventoryRollback.getInstance(), () -> {
                     e.getWhoClicked().closeInventory();
-                    staff.teleport(loc);
+                    PaperLib.teleportAsync(staff,loc).thenAccept((result) -> {
+                        if (SoundData.isTeleportEnabled())
+                            staff.playSound(loc, SoundData.getTeleport(), 1, 1);
 
-                    if (SoundData.isTeleportEnabled())
-                        staff.playSound(loc, SoundData.getTeleport(), 1, 1);
-
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getDeathLocationTeleport(loc));
+                        staff.sendMessage(MessageData.getPluginName() + MessageData.getDeathLocationTeleport(loc));
+                    });
                 }, 1L);
             } 
 

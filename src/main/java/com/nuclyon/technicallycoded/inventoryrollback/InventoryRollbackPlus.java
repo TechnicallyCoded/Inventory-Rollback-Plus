@@ -4,6 +4,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
@@ -52,6 +53,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         plCmd.setTabCompleter(cmds);
         getServer().getPluginManager().registerEvents(new ClickGUI(), this);
         getServer().getPluginManager().registerEvents(new EventLogs(), this);
+        PaperLib.suggestPaper(this);
     }
 
     @Override
