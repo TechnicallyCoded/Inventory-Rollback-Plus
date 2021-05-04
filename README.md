@@ -61,4 +61,4 @@ You can change these values in the configuration file.
  - inventoryrollback.worldchangesave - (Default: All) Allow backup on world change
 
 ## Spigot Link
-[https://www.spigotmc.org/resources/inventoryrollbackplus-1-8-1-16-x.85811/](https://www.spigotmc.org/resources/inventoryrollbackplus-1-8-1-16-x.85811/)
+[https://www.spigotmc.org/resources/85811/](https://www.spigotmc.org/resources/85811/)
