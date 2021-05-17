@@ -123,7 +123,7 @@ public class ConfigData {
         setMySQLHost((String) getDefaultValue("mysql.details.host", "127.0.0.1"));
         setMySQLPort((int) getDefaultValue("mysql.details.port", 3306));
         setMySQLDatabase((String) getDefaultValue("mysql.details.database", "inventory_rollback"));
-        setMySQLPrefix((String) getDefaultValue("mysql.details.prefix", ""));
+        setMySQLPrefix((String) getDefaultValue("mysql.details.prefix", "backup_"));
         setMySQLUsername((String) getDefaultValue("mysql.details.username", "username"));
         setMySQLPassword((String) getDefaultValue("mysql.details.password", "password"));
         setMySQLUseSSL((boolean) getDefaultValue("mysql.details.use-SSL", true));
