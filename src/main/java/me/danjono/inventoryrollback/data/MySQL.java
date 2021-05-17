@@ -28,11 +28,11 @@ public class MySQL {
     private BackupTable backupTable;
 
     public enum BackupTable {
-        DEATH("backup_deaths"),
-        JOIN("backup_joins"),
-        QUIT("backup_quits"),
-        WORLD_CHANGE("backup_world_changes"),
-        FORCE("backup_force_backups");
+        DEATH(ConfigData.getMySQLPrefix() + "backup_deaths"),
+        JOIN(ConfigData.getMySQLPrefix() + "backup_joins"),
+        QUIT(ConfigData.getMySQLPrefix() + "backup_quits"),
+        WORLD_CHANGE(ConfigData.getMySQLPrefix() + "backup_world_changes"),
+        FORCE(ConfigData.getMySQLPrefix() + "backup_force_backups");
 
         private final String tableName;
 

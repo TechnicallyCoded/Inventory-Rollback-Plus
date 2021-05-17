@@ -23,6 +23,7 @@ mysql:
     host: 'localhost'
     port: 3306
     database: 'inventory_rollback'
+    prefix: ''
     username: 'username'
     password: 'password'
     use-SSL: true
