@@ -23,7 +23,7 @@ mysql:
     host: 'localhost'
     port: 3306
     database: 'inventory_rollback'
-    prefix: 'backup_'
+    table-prefix: 'backup_'
     username: 'username'
     password: 'password'
     use-SSL: true

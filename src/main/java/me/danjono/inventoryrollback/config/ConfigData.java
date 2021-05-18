@@ -77,7 +77,7 @@ public class ConfigData {
     private static String mysqlHost;
     private static int mysqlPort;
     private static String mysqlDatabase;
-    private static String mysqlPrefix;
+    private static String mysqlTablePrefix;
     private static String mysqlUsername;
     private static String mysqlPassword;
     private static boolean mysqlUseSSL;
@@ -123,7 +123,7 @@ public class ConfigData {
         setMySQLHost((String) getDefaultValue("mysql.details.host", "127.0.0.1"));
         setMySQLPort((int) getDefaultValue("mysql.details.port", 3306));
         setMySQLDatabase((String) getDefaultValue("mysql.details.database", "inventory_rollback"));
-        setMySQLPrefix((String) getDefaultValue("mysql.details.prefix", "backup_"));
+        setMySQLTablePrefix((String) getDefaultValue("mysql.details.table-prefix", "backup_"));
         setMySQLUsername((String) getDefaultValue("mysql.details.username", "username"));
         setMySQLPassword((String) getDefaultValue("mysql.details.password", "password"));
         setMySQLUseSSL((boolean) getDefaultValue("mysql.details.use-SSL", true));
@@ -177,8 +177,8 @@ public class ConfigData {
         mysqlDatabase = value;
     }
 
-    public static void setMySQLPrefix(String value) {
-        mysqlPrefix = value;
+    public static void setMySQLTablePrefix(String value) {
+        mysqlTablePrefix = value;
     }
 
     public static void setMySQLUsername(String value) {
@@ -289,8 +289,8 @@ public class ConfigData {
         return mysqlDatabase;
     }
 
-    public static String getMySQLPrefix() {
-        return mysqlPrefix;
+    public static String getMySQLTablePrefix() {
+        return mysqlTablePrefix;
     }
 
     public static String getMySQLUsername() {
