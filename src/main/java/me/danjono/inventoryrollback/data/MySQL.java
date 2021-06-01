@@ -28,11 +28,11 @@ public class MySQL {
     private BackupTable backupTable;
 
     public enum BackupTable {
-        DEATH("backup_deaths"),
-        JOIN("backup_joins"),
-        QUIT("backup_quits"),
-        WORLD_CHANGE("backup_world_changes"),
-        FORCE("backup_force_backups");
+        DEATH(ConfigData.getMySQLTablePrefix() + "deaths"),
+        JOIN(ConfigData.getMySQLTablePrefix() + "joins"),
+        QUIT(ConfigData.getMySQLTablePrefix() + "quits"),
+        WORLD_CHANGE(ConfigData.getMySQLTablePrefix() + "world_changes"),
+        FORCE(ConfigData.getMySQLTablePrefix() + "force_backups");
 
         private final String tableName;
 
@@ -116,9 +116,9 @@ public class MySQL {
                         "`location_z` DOUBLE NOT NULL," + 
                         "`version` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL," + 
                         "`death_reason` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," + 
-                        "`main_inventory` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," + 
-                        "`armour` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," + 
-                        "`ender_chest` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," +
+                        "`main_inventory` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci," + 
+                        "`armour` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci," + 
+                        "`ender_chest` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci," +
                         "PRIMARY KEY (`id`));";
                 
                 try (PreparedStatement statement = connection.prepareStatement(tableQuery)) {
