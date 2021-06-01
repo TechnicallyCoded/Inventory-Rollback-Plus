@@ -5,6 +5,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -45,7 +46,7 @@ public class EventLogs implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	private void playerDeath(EntityDamageEvent e) {
 		if (!ConfigData.isEnabled()) return;
 		if (!(e.getEntity() instanceof Player)) return;
@@ -58,7 +59,7 @@ public class EventLogs implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void playerDeathByEntity(EntityDamageByEntityEvent e) {
 		if (!ConfigData.isEnabled()) return;
 		if (!(e.getEntity() instanceof Player)) return;
