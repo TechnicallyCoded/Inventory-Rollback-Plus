@@ -22,11 +22,10 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import me.danjono.inventoryrollback.reflections.NBT;
+import me.danjono.inventoryrollback.reflections.NBTWrapper;
 
 public class Buttons {
 
@@ -125,7 +124,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBT nbt = new NBT(button);
+        NBTWrapper nbt = new NBTWrapper(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -160,7 +159,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBT nbt = new NBT(button);
+        NBTWrapper nbt = new NBTWrapper(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -191,7 +190,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBT nbt = new NBT(button);
+        NBTWrapper nbt = new NBTWrapper(button);
 
         nbt.setString("uuid", uuid.toString());
         button = nbt.setItemData();
@@ -220,7 +219,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBT nbt = new NBT(button);
+        NBTWrapper nbt = new NBTWrapper(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -242,7 +241,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -266,7 +265,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -288,7 +287,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -310,7 +309,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -332,7 +331,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -354,7 +353,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -411,7 +410,7 @@ public class Buttons {
 
         skull.setItemMeta(skullMeta);
         
-        NBT nbt = new NBT(skull);
+        NBTWrapper nbt = new NBTWrapper(skull);
         
         nbt.setString("uuid", uuid + "");
         skull = nbt.setItemData();
@@ -441,7 +440,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -469,7 +468,7 @@ public class Buttons {
         meta.setLore(lore);
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -488,7 +487,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -507,7 +506,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -531,7 +530,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -550,7 +549,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBT nbt = new NBT(item);
+        NBTWrapper nbt = new NBTWrapper(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());

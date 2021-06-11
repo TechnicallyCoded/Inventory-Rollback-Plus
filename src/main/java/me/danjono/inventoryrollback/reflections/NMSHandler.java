@@ -2,7 +2,7 @@ package me.danjono.inventoryrollback.reflections;
 
 import me.danjono.inventoryrollback.InventoryRollback;
 
-public class Packets {
+public class NMSHandler {
 
     public Class<?> getNMSClass(String name) {
         Class<?> c = null;

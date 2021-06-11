@@ -5,6 +5,7 @@
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
     <version>1.6.0</version>
+    <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
 
     <organization>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.17-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- bStats API -->
@@ -44,6 +45,7 @@
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.4</version>
+            <scope>compile</scope>
         </dependency>
         <!-- Paper-Lib -->
         <dependency>
@@ -59,9 +61,9 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
+                <excludes>
+                    <exclude>.gitignore</exclude>
+                </excludes>
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -69,15 +71,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
-<!--                    <excludes>-->
-<!--                        <exclude>**/com/nuclyon/**</exclude>-->
-<!--                    </excludes>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -89,7 +88,11 @@
                     <artifactSet>
                         <includes>
                             <include>org.bstats:*</include>
+                            <include>io.papermc:*</include>
                         </includes>
+                        <excludes>
+                            <exclude>**/MANIFEST.MF</exclude>
+                        </excludes>
                     </artifactSet>
                     <relocations>
                         <relocation>
@@ -98,9 +101,17 @@
                         </relocation>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>[YOUR PLUGIN PACKAGE].paperlib</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>${project.groupId}.paperlib</shadedPattern>
                         </relocation>
                     </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/maven/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>

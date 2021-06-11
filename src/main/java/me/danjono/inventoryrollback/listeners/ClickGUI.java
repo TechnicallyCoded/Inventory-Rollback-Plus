@@ -30,7 +30,7 @@ import me.danjono.inventoryrollback.gui.menu.MainMenu;
 import me.danjono.inventoryrollback.gui.menu.PlayerMenu;
 import me.danjono.inventoryrollback.gui.menu.RollbackListMenu;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import me.danjono.inventoryrollback.reflections.NBT;
+import me.danjono.inventoryrollback.reflections.NBTWrapper;
 
 public class ClickGUI implements Listener {
 
@@ -130,7 +130,7 @@ public class ClickGUI implements Listener {
 
     private void mainMenu(InventoryClickEvent e) {        
         if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.MAIN_MENU.getSize())) {                
-            NBT nbt = new NBT(icon);
+            NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -165,7 +165,7 @@ public class ClickGUI implements Listener {
             return;
 
         if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.PLAYER_MENU.getSize())) {				
-            NBT nbt = new NBT(icon);
+            NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -194,7 +194,7 @@ public class ClickGUI implements Listener {
 
     private void rollbackMenu(InventoryClickEvent e) {
         if (e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.ROLLBACK_LIST.getSize()) {
-            NBT nbt = new NBT(icon);
+            NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -249,7 +249,7 @@ public class ClickGUI implements Listener {
             return;
 
         if (e.getRawSlot() >= (InventoryName.MAIN_BACKUP.getSize() - 9) && e.getRawSlot() < InventoryName.MAIN_BACKUP.getSize()) {
-            NBT nbt = new NBT(icon);            
+            NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -410,7 +410,7 @@ public class ClickGUI implements Listener {
             return;
 
         if (e.getRawSlot() >= (InventoryName.ENDER_CHEST_BACKUP.getSize() - 9) && e.getRawSlot() < InventoryName.ENDER_CHEST_BACKUP.getSize()) {
-            NBT nbt = new NBT(icon);
+            NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
                 return;
 
