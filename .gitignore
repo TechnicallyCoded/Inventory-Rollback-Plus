@@ -4,3 +4,5 @@ out/
 target/
 dependency-reduced-pom.xml
 *.iml
+.classpath
+.project
