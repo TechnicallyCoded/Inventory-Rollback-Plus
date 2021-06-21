@@ -63,15 +63,17 @@ public class EventLogs implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void playerDeathByEntity(EntityDamageByEntityEvent e) {
-		if (!ConfigData.isEnabled()) return;
-		if (!(e.getEntity() instanceof Player)) return;
-		if (!isEntityCause(e.getCause())) return;
+		if (!e.isCancelled()) {
+			if (!ConfigData.isEnabled()) return;
+			if (!(e.getEntity() instanceof Player)) return;
+			if (!isEntityCause(e.getCause())) return;
 
-		Player player = (Player) e.getEntity();
+			Player player = (Player) e.getEntity();
 
-		if (player.getHealth() - e.getFinalDamage() <= 0 && (player.hasPermission("inventoryrollbackplus.deathsave") || player.hasPermission("inventoryrollback.deathsave"))) {
-			String reason = e.getCause().name() + " (" + e.getDamager().getName() + ")";
-			new SaveInventory(player, LogType.DEATH, e.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave();
+			if (player.getHealth() - e.getFinalDamage() <= 0 && (player.hasPermission("inventoryrollbackplus.deathsave") || player.hasPermission("inventoryrollback.deathsave"))) {
+				String reason = e.getCause().name() + " (" + e.getDamager().getName() + ")";
+				new SaveInventory(player, LogType.DEATH, e.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave();
+			}
 		}
 
 	}
