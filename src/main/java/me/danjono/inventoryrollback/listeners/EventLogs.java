@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -48,14 +49,16 @@ public class EventLogs implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void playerDeath(EntityDamageEvent e) {
-		if (!ConfigData.isEnabled()) return;
-		if (!(e.getEntity() instanceof Player)) return;
-		if (isEntityCause(e.getCause())) return;
+		if (!e.isCancelled()) {
+			if (!ConfigData.isEnabled()) return;
+			if (!(e.getEntity() instanceof Player)) return;
+			if (isEntityCause(e.getCause())) return;
 
-		Player player = (Player) e.getEntity();
+			Player player = (Player) e.getEntity();
 
-		if (player.getHealth() - e.getFinalDamage() <= 0 && (player.hasPermission("inventoryrollbackplus.deathsave") || player.hasPermission("inventoryrollback.deathsave"))) {
-			new SaveInventory(player, LogType.DEATH, e.getCause(), null, player.getInventory(), player.getEnderChest()).createSave();
+			if (player.getHealth() - e.getFinalDamage() <= 0 && (player.hasPermission("inventoryrollbackplus.deathsave") || player.hasPermission("inventoryrollback.deathsave"))) {
+				new SaveInventory(player, LogType.DEATH, e.getCause(), null, player.getInventory(), player.getEnderChest()).createSave();
+			}
 		}
 	}
 
