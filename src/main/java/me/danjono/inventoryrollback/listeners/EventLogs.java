@@ -51,6 +51,7 @@ public class EventLogs implements Listener {
 		if (!ConfigData.isEnabled()) return;
 		if (!(e.getEntity() instanceof Player)) return;
 		if (isEntityCause(e.getCause())) return;
+		if (e.isCancelled()) return;
 
 		Player player = (Player) e.getEntity();
 
@@ -64,6 +65,7 @@ public class EventLogs implements Listener {
 		if (!ConfigData.isEnabled()) return;
 		if (!(e.getEntity() instanceof Player)) return;
 		if (!isEntityCause(e.getCause())) return;
+		if (e.isCancelled()) return;
 
 		Player player = (Player) e.getEntity();
 
