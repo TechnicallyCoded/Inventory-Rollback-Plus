@@ -18,7 +18,8 @@ attribute-restore:
     restored: '%NAME%''s main inventory has been restored.'
     restored-player: 'Your inventory has been restored by %NAME% from backup.'
     not-online: 'You can''t restore %NAME%''s inventory while they are offline.'
-    button-name: '&dRestore Main Inventory'
+    button-name: '&cOverwrite Main Inventory from Backup'
+    button-disabled: '&cYou must enable this option in the configuration'
   ender-chest:
     restored: '%NAME%''s ender chest has been restored.'
     restored-player: 'Your ender chest has been restored by %NAME% from backup.'

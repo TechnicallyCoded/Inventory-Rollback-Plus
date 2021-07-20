@@ -67,9 +67,16 @@ public class EnderChestBackupMenu {
             return;
         }
 
-        //Add restore all player inventory button
-        if (ConfigData.isRestoreToPlayerButton())
-            inventory.setItem(InventoryName.ENDER_CHEST_BACKUP.getSize() - 2, buttons.restoreAllInventory(logType, timestamp));
+        // Add restore all player inventory button
+        if (ConfigData.isRestoreToPlayerButton()) {
+            inventory.setItem(
+                    InventoryName.ENDER_CHEST_BACKUP.getSize() - 2,
+                    buttons.restoreAllInventory(logType, timestamp));
+        } else {
+            inventory.setItem(
+                    InventoryName.ENDER_CHEST_BACKUP.getSize() - 2,
+                    buttons.restoreAllInventoryDisabled(logType, timestamp));
+        }
     }
 
 }

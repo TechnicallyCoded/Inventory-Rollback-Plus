@@ -102,10 +102,12 @@ public class MainInventoryBackupMenu {
 			}
 		}
 				
-		//Add restore all player inventory button
+		// Add restore all player inventory button
 		if (ConfigData.isRestoreToPlayerButton())
 		    inventory.setItem(48, buttons.restoreAllInventory(logType, timestamp));
-		
+		 else
+			inventory.setItem(48, buttons.restoreAllInventoryDisabled(logType, timestamp));
+
 		//Add teleport back button
 		inventory.setItem(49, buttons.enderPearlButton(logType, location));
 		

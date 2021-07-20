@@ -30,20 +30,44 @@ import me.danjono.inventoryrollback.reflections.NBTWrapper;
 public class Buttons {
 
     private UUID uuid;
-    
+
     private static final Material death = Material.BONE;
-    private static final Material join = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.OAK_SAPLING : Material.getMaterial("SAPLING");
-    private static final Material quit = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.RED_BED : Material.getMaterial("BED");
+
+    private static final Material join =
+            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+                    Material.OAK_SAPLING : Material.getMaterial("SAPLING");
+
+    private static final Material quit =
+            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+                    Material.RED_BED : Material.getMaterial("BED");
+
     private static final Material worldChange = Material.COMPASS;
+
     private static final Material forceSave = Material.DIAMOND;
 
-    private static final Material pageSelector = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.WHITE_BANNER : Material.getMaterial("BANNER");
+
+    private static final Material pageSelector =
+            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+                    Material.WHITE_BANNER : Material.getMaterial("BANNER");
+
     private static final Material teleport = Material.ENDER_PEARL;
+
     private static final Material enderChest = Material.ENDER_CHEST;
-    private static final Material health = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.MELON_SLICE : Material.getMaterial("MELON");
+
+    private static final Material health =
+            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+                    Material.MELON_SLICE : Material.getMaterial("MELON");
+
     private static final Material hunger = Material.ROTTEN_FLESH;
-    private static final Material experience = InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ? Material.EXPERIENCE_BOTTLE : Material.getMaterial("EXP_BOTTLE");
+
+    private static final Material experience =
+            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+                    Material.EXPERIENCE_BOTTLE : Material.getMaterial("EXP_BOTTLE");
+
     private static final Material restoreAllInventory = Material.NETHER_STAR;
+
+    private static final Material restoreAllInventoryDisabled = Material.REDSTONE_BLOCK;
+
 
     public Buttons(UUID uuid) {
         this.uuid = uuid;
@@ -99,6 +123,10 @@ public class Buttons {
 
     public static Material getRestoreAllInventoryIcon() {
         return restoreAllInventory;
+    }
+
+    public static Material getRestoreAllInventoryDisabledIcon() {
+        return restoreAllInventoryDisabled;
     }
 
     public ItemStack nextButton(String displayName, LogType logType, int page, List<String> lore) {
@@ -545,7 +573,26 @@ public class Buttons {
 
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(ChatColor.RED + "Overwrite player inventory with backup");
+        meta.setDisplayName(MessageData.getMainInventoryRestoreButton());
+
+        item.setItemMeta(meta);
+
+        NBTWrapper nbt = new NBTWrapper(item);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        nbt.setLong("timestamp", timestamp);
+        item = nbt.setItemData();
+
+        return item;
+    }
+
+    public ItemStack restoreAllInventoryDisabled(LogType logType, Long timestamp) {
+        ItemStack item = new ItemStack(getRestoreAllInventoryDisabledIcon());
+
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(MessageData.getMainInventoryDisabledButton());
 
         item.setItemMeta(meta);
 
