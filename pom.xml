@@ -7,6 +7,7 @@
     <version>1.6.2</version>
     <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
+    <url>https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/</url>
 
     <organization>
         <name>TechnicallyCoded</name>
@@ -87,12 +88,9 @@
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                     <artifactSet>
                         <includes>
-                            <include>org.bstats:*</include>
-                            <include>io.papermc:*</include>
+                            <include>org.bstats:org/bstats/*</include>
+                            <include>io.papermc:io/papermc/lib/*</include>
                         </includes>
-                        <excludes>
-                            <exclude>**/MANIFEST.MF</exclude>
-                        </excludes>
                     </artifactSet>
                     <relocations>
                         <relocation>
@@ -121,6 +119,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Built-By>TechnicallyCoded</Built-By>
+                            <url>${project.url}</url>
+                        </manifestEntries>
+                        <manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
