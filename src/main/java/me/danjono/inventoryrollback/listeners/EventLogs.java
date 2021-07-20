@@ -3,7 +3,10 @@ package me.danjono.inventoryrollback.listeners;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,6 +19,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
+import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class EventLogs implements Listener {
 
@@ -46,34 +51,60 @@ public class EventLogs implements Listener {
 		}
 	}
 
+	/**
+	 * Handle saving the player's inventory on death.
+	 * @param event Bukkit damage event
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
-	private void playerDeath(EntityDamageEvent e) {
+	private void playerDeath(EntityDamageEvent event) {
+		// Sanity checks to prevent unwanted saves
 		if (!ConfigData.isEnabled()) return;
-		if (!(e.getEntity() instanceof Player)) return;
-		if (isEntityCause(e.getCause())) return;
-		if (e.isCancelled()) return;
+		if (!(event.getEntity() instanceof Player)) return;
+		if (event.isCancelled()) return;
 
-		Player player = (Player) e.getEntity();
+		Player player = (Player) event.getEntity();
 
-		if (player.getHealth() - e.getFinalDamage() <= 0 && (player.hasPermission("inventoryrollbackplus.deathsave") || player.hasPermission("inventoryrollback.deathsave"))) {
-			new SaveInventory(player, LogType.DEATH, e.getCause(), null, player.getInventory(), player.getEnderChest()).createSave();
+		// Check that the player actually died from the damage & that the player has the permission for inventory saves
+		if (player.getHealth() - event.getFinalDamage() <= 0 && (
+				player.hasPermission("inventoryrollbackplus.deathsave") ||
+						player.hasPermission("inventoryrollback.deathsave"))) {
+
+			// Detailed reason for the death that can be applied given certain conditions
+			String reason = null;
+
+			// Handler the case where the death is caused by an entity
+			if (isEntityCause(event.getCause()) && event instanceof EntityDamageByEntityEvent) {
+				EntityDamageByEntityEvent damageByEntityEvent = (EntityDamageByEntityEvent) event;
+				Entity damager = damageByEntityEvent.getDamager();
+
+				// Get the shooter's name if the killing entity is a projectile
+				String shooterName = "";
+				if (damager instanceof Projectile) {
+
+					Projectile proj = (Projectile) damager;
+					ProjectileSource shooter = proj.getShooter();
+
+					// Show shooter name if it's a living entity
+					if (shooter instanceof LivingEntity) {
+						LivingEntity shooterEntity = (LivingEntity) shooter;
+						shooterName = ", " + shooterEntity.getName();
+					}
+					// Show shooter block type if it's a block projectile source
+					else if (shooter instanceof BlockProjectileSource) {
+						BlockProjectileSource shooterBlock = (BlockProjectileSource) shooter;
+						shooterName = ", " + shooterBlock.getBlock().getType().name();
+
+					}
+					// In all other cases, don't show projectile detailed shooter info
+				}
+
+				// Create a more specific reason given the data above
+				reason = event.getCause().name() + " (" + damageByEntityEvent.getDamager().getName() + shooterName + ")";
+			}
+
+			// After all checks, create the save with data provided above
+			new SaveInventory(player, LogType.DEATH, event.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave();
 		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void playerDeathByEntity(EntityDamageByEntityEvent e) {
-		if (!ConfigData.isEnabled()) return;
-		if (!(e.getEntity() instanceof Player)) return;
-		if (!isEntityCause(e.getCause())) return;
-		if (e.isCancelled()) return;
-
-		Player player = (Player) e.getEntity();
-
-		if (player.getHealth() - e.getFinalDamage() <= 0 && (player.hasPermission("inventoryrollbackplus.deathsave") || player.hasPermission("inventoryrollback.deathsave"))) {
-			String reason = e.getCause().name() + " (" + e.getDamager().getName() + ")";
-			new SaveInventory(player, LogType.DEATH, e.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave();
-		}
-
 	}
 
 	@EventHandler
