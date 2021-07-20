@@ -1,0 +1,60 @@
+# Translation by https://github.com/TechnicallyCoded
+commands:
+  no-permission: '&cVous n''avez pas la permission!'
+  error: '&cCommande invalide.'
+  enable: '&2Le plugin a été activé.'
+  disable: '&2Le plugin a été désactivé.'
+  reload: '&2Le plugin a été rechargé correctement.'
+  player-only: '&cLa commande peut seulement être éxecutée par un joueur.'
+
+backup:
+  no-backup: 'Il n''y a aucune sauvegarde pour %NAME%.'
+  not-online: '%NAME% n''est pas en ligne.'
+  force-saved-player: 'L''inventaire de %NAME% a été sauvegardé manuellement.'
+  force-saved-all: 'L''inventaires de tous des joueur en ligne ont été sauvegardés manuellement.'
+  not-forced-saved: 'Une erreur s''est produite avec l''inventaire de %NAME%''s.'
+
+attribute-restore:
+  main-inventory:
+    restored: 'L''inventaire de %NAME% a été restauré.'
+    restored-player: 'Votre inventaire a été restauré par %NAME% à partir d''une sauvegarde.'
+    not-online: 'Vous ne pouvez pas restaurer l''inventaire de %NAME% pendant que ce joueur n''est pas en ligne.'
+    button-name: '&dRestaurer l''Inventaire'
+    button-disabled: '&cActivez la restauration en un clic dans le fichier config.yml'
+  ender-chest:
+    restored: 'L''ender chest de %NAME% a été restauré.'
+    restored-player: 'Votre ender chest a été restauré par %NAME% à partir d''une sauvegarde.'
+    not-online: 'Vous ne pouvez pas restaurer l''ender chest de %NAME% pendant que ce joueur n''est pas en ligne.'
+    button-name: '&dRestaurer l''Ender Chest'
+  health:
+    restored: 'Les points de vie de %NAME% ont été restaurés.'
+    restored-player: 'Vos points de vie ont été restaurés par %NAME% à partir d''une sauvegarde.'
+    not-online: 'Vous ne pouvez pas restaurer les points de vie de %NAME% pendant que ce joueur n''est pas en ligne.'
+    button-name: '&aRestaurer Les Points de Vie'
+  hunger:
+    restored: 'Les points de nourriture de %NAME% ont été restaurés.'
+    restored-player: 'Vos points de nourriture ont été restaurés par %NAME% à partir d''une sauvegarde.'
+    not-online: 'Vous ne pouvez pas restaurer les points de nourriture de %NAME% pendant que ce joueur n''est pas en ligne.'
+    button-name: '&aRestaurer Les Points de Nourriture'
+  experience:
+    restored: 'L''XP de %NAME% a été restauré.'
+    restored-player: 'Votre XP a été restauré par %NAME% à partir d''une sauvegarde.'
+    not-online: 'Vous ne pouvez pas restaurer l''XP de %NAME% pendant que ce joueur n''est pas en ligne.'
+    button-name: '&dRestaurer l''XP'
+
+death-location:
+  world: '&6Monde: &f%WORLD%'
+  x: '&6X: &f%X%'
+  y: '&6Y: &f%Y%'
+  z: '&6Z: &f%Z%'
+  reason: '&6Raison de mort: &f%REASON%'
+  time: '&6Heure: &f%TIME%'
+  teleport-to: '&3Se téléporter à l''endroit où cette sauvegarde a été créée.'
+  teleport: 'Vous avez été téléporté à %LOCATION%'
+  invalid-world: 'Le monde %WORLD% n''existe pas actuellement sur ce serveur.'
+
+menu-buttons:
+  main-menu: '&fMenu Principal'
+  next-page: '&fProchaine Page'
+  previous-page: '&fPage Précédente'
+  back-page: '&fRetour'

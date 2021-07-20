@@ -1,0 +1,61 @@
+# Original messages by https://github.com/danjono & https://github.com/TechnicallyCoded
+commands:
+  no-permission: '&cYou do not have permission!'
+  error: '&cInvalid command.'
+  enable: '&2The plugin has been enabled.'
+  disable: '&2The plugin has been disabled.'
+  reload: '&2The plugin has been reloaded successfully.'
+  player-only: '&cCommand can only be run by a player.'
+
+backup:
+  no-backup: 'There is currently no backups for %NAME%.'
+  not-online: '%NAME% is not currently online.'
+  force-saved-player: '%NAME%''s inventory has been force saved.'
+  force-saved-all: 'All online player inventories have been force saved.'
+  not-forced-saved: 'There was an issue with saving %NAME%''s inventory.'
+
+attribute-restore:
+  main-inventory:
+    restored: '%NAME%''s main inventory has been restored.'
+    restored-player: 'Your inventory has been restored by %NAME% from backup.'
+    not-online: 'You can''t restore %NAME%''s inventory while they are offline.'
+    button-name: '&dRestore Main Inventory'
+    button-disabled: '&cEnable single-click restore in the config file'
+  ender-chest:
+    restored: '%NAME%''s ender chest has been restored.'
+    restored-player: 'Your ender chest has been restored by %NAME% from backup.'
+    not-online: 'You can''t restore %NAME%''s ender chest while they are offline.'
+    button-name: '&dRestore Ender Chest'
+  health:
+    restored: '%NAME%''s health has been restored.'
+    restored-player: 'Your health has been restored by %NAME% from backup.'
+    not-online: 'You can''t restore %NAME%''s health while they are offline.'
+    button-name: '&aRestore Health'
+  hunger:
+    restored: '%NAME%''s hunger has been restored.'
+    restored-player: 'Your hunger has been restored by %NAME% from backup.'
+    not-online: 'You can''t restore %NAME%''s hunger while they are offline.'
+    button-name: '&cRestore Food'
+  experience:
+    restored: '%NAME%''s XP has been set to level %XP%.'
+    restored-player: 'Your XP has been restored to level %XP% by %NAME% from backup.'
+    not-online: 'You can''t restore %NAME%''s experience while they are offline.'
+    button-name: '&2Restore Player XP'
+    button-lore: '&rLevel %XP%'
+
+death-location:
+  world: '&6World: &f%WORLD%'
+  x: '&6X: &f%X%'
+  y: '&6Y: &f%Y%'
+  z: '&6Z: &f%Z%'
+  reason: '&6Death reason: &f%REASON%'
+  time: '&6Time: &f%TIME%'
+  teleport-to: '&3Teleport to where this entry was logged.'
+  teleport: 'You have been teleported to %LOCATION%'
+  invalid-world: 'The world %WORLD% is not currently loaded on the server.'
+
+menu-buttons:
+  main-menu: '&fMain Menu'
+  next-page: '&fNext Page'
+  previous-page: '&fPrevious Page'
+  back-page: '&fBack'

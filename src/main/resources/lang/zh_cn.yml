@@ -1,0 +1,63 @@
+# Translation by https://github.com/Youwenqwq
+commands:
+  no-permission: '&c你没有权限!'
+  error: '&c无效指令'
+  enable: '&2已启用插件'
+  disable: '&2已关闭插件'
+  reload: '&2插件已重载'
+  player-only: '&c只能由玩家运行这个指令'
+
+backup:
+  no-backup: '目前没有 %NAME% 的备份'
+  not-online: '%NAME% 现在不在线'
+  force-saved-player: '%NAME% 的背包已被保存'
+  # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+  force-saved-all: 'All online player inventories have been force saved.'
+  not-forced-saved: '在保存 %NAME% 的背包时出现问题'
+
+attribute-restore:
+  main-inventory:
+    restored: '%NAME% 的背包已被回档.'
+    restored-player: '你的背包已被 %NAME% 从备份中回档.'
+    not-online: '%NAME% 不在线，因此背包无法回档.'
+    button-name: '&d回档背包'
+    # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+    button-disabled: '&cEnable single-click restore in the config file'
+  ender-chest:
+    restored: '%NAME% 的末影箱已被回档.'
+    restored-player: '你的末影箱已被 %NAME% 从备份中回档.'
+    not-online: '%NAME% 不在线，因此末影箱无法回档.'
+    button-name: '&d回档末影箱'
+  health:
+    restored: '%NAME% 的生命值已被回档.'
+    restored-player: '你的生命值已被 %NAME% 从备份中回档.'
+    not-online: '%NAME% 不在线，因此生命值无法回档.'
+    button-name: '&a回档生命值'
+  hunger:
+    restored: '%NAME% 的饱食度已被回档.'
+    restored-player: '你的饱食度已被 %NAME% 从备份中回档.'
+    not-online: '%NAME% 不在线，因此饱食度无法回档.'
+    button-name: '&c回档饱食度'
+  experience:
+    restored: '%NAME% 的经验等级已被回档至 %XP%.'
+    restored-player: '你的经验已被 %NAME% 从备份中回档至 %XP%.'
+    not-online: '%NAME% 不在线，因此经验无法回档.'
+    button-name: '&2回档玩家经验'
+    button-lore: '&r经验等级 %XP%'
+
+death-location:
+  world: '&6世界: &f%WORLD%'
+  x: '&6X: &f%X%'
+  y: '&6Y: &f%Y%'
+  z: '&6Z: &f%Z%'
+  reason: '&6死因: &f%REASON%'
+  time: '&6时间: &f%TIME%'
+  teleport-to: '&3传送到玩家死亡的地方.'
+  teleport: '你传送到了 %LOCATION%'
+  invalid-world: '世界 %WORLD% 现在并没有在服务器上加载.'
+
+menu-buttons:
+  main-menu: '&f主菜单'
+  next-page: '&f下一页'
+  previous-page: '&f上一页'
+  back-page: '&f返回'

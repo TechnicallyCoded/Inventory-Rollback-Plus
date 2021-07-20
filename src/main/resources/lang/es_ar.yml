@@ -1,0 +1,62 @@
+# Translation by https://github.com/molocodev
+commands:
+  no-permission: '&c¡No tenés permisos!'
+  error: '&cComando inválido.'
+  enable: '&2El plugin se habilitó.'
+  disable: '&2El plugin se desactivó.'
+  reload: '&2El plugin se recargó de forma exitosa.'
+  player-only: '&cEl comando solo lo puede enviar un jugador.'
+
+backup:
+  no-backup: 'Actualmente no hay backups para %NAME%.'
+  not-online: '%NAME% no está conectado en este momento.'
+  force-saved-player: 'El inventario de %NAME% fue guardado de forma forzosa.'
+  force-saved-all: 'Se guardaron todos los inventarios de forma forsoza.'
+  not-forced-saved: 'Hubo un problema al guardar el inventario de %NAME%.'
+
+attribute-restore:
+  main-inventory:
+    restored: 'Se restaruo el inventario principal de %NAME%.'
+    restored-player: 'Tu inventario fue restablecido por %NAME% usando un backup.'
+    not-online: 'No podés restablecer el inventario de %NAME% mientras que este offline.'
+    button-name: '&dRestaurar el Inventario Principal'
+    # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+    button-disabled: '&cEnable single-click restore in the config file'
+  ender-chest:
+    restored: 'Se restaruo el cofre de ender de %NAME%.'
+    restored-player: 'Tu cofre de ender fue restablecido por %NAME% usando un backup.'
+    not-online: 'No podés restablecer el cofre de ender de %NAME% mientras que este offline.'
+    button-name: '&dRestaurar el Cofre de Ender'
+  health:
+    restored: 'La vida de %NAME% fue restablecida.'
+    restored-player: 'Tu vida fue restablecido por %NAME% usando un backup.'
+    not-online: 'No podés restablecer la vida de %NAME% mientras que este offline.'
+    button-name: '&dRestaurar la Vida'
+  hunger:
+    restored: 'El hambre de %NAME% fue restablecido.'
+    restored-player: 'Tu hambre fue restablecido por %NAME% usando un backup.'
+    not-online: 'No podes restablecer el hambre de %NAME% mientras que este offline.'
+    button-name: '&dRestaurar el Hambre'
+  experience:
+    restored: 'La experiencia de %NAME% fue restablecida al nivel %XP%.'
+    restored-player: 'Tu experiencia fue restablecida al nivel %XP% por %NAME% usando un backup.'
+    not-online: 'No podés restablecer la experiencia de %NAME% mientras que este desconectado.'
+    button-name: '&2Restablecer XP del Jugador'
+    button-lore: '&rNivel %XP%'
+
+death-location:
+  world: '&6Mundo: &f%WORLD%'
+  x: '&6X: &f%X%'
+  y: '&6Y: &f%Y%'
+  z: '&6Z: &f%Z%'
+  reason: '&6Razon: &f%REASON%'
+  time: '&6Hora: &f%TIME%'
+  teleport-to: '&3Teletransportarse al lugar del registro.'
+  teleport: 'Fuiste teletransportado a %LOCATION%'
+  invalid-world: 'El mundo %WORLD% no está cargado en el servidor.'
+
+menu-buttons:
+  main-menu: '&fMenu Principal'
+  next-page: '&fPagina Siguiente'
+  previous-page: '&fPagina Anterior'
+  back-page: '&fAtras'
