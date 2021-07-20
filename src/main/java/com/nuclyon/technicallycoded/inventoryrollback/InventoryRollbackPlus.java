@@ -10,6 +10,8 @@ import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.listeners.ClickGUI;
 import me.danjono.inventoryrollback.listeners.EventLogs;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -132,7 +134,33 @@ public class InventoryRollbackPlus extends InventoryRollback {
     }
 
     public void initBStats() {
-        super.bStats();
+        bStats();
+    }
+
+    @Override
+    public void bStats() {
+        Metrics metrics = new Metrics(this,  	9437);
+
+        if (ConfigData.isbStatsEnabled())
+            getLogger().info(MessageData.getPluginName() + "bStats are enabled");
+
+        metrics.addCustomChart(new SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
+
+        metrics.addCustomChart(new SimplePie("restore_to_player_enabled", () -> {
+            if (ConfigData.isRestoreToPlayerButton()) {
+                return "Enabled";
+            } else {
+                return "Disabled";
+            }
+        }));
+
+        metrics.addCustomChart(new SimplePie("save_location", () -> {
+            if (ConfigData.getFolderLocation() == InventoryRollback.getInstance().getDataFolder()) {
+                return "Default";
+            } else {
+                return "Not Default";
+            }
+        }));
     }
 
 }

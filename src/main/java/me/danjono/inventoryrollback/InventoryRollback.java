@@ -173,28 +173,7 @@ public abstract class InventoryRollback extends JavaPlugin {
     }*/
 
     public void bStats() {
-        Metrics metrics = new Metrics(this);
-
-        if (metrics.isEnabled())
-            logger.log(Level.INFO, MessageData.getPluginName() + "bStats are enabled");
-
-        metrics.addCustomChart(new Metrics.SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
-
-        metrics.addCustomChart(new Metrics.SimplePie("restore_to_player_enabled", () -> {
-            if (ConfigData.isRestoreToPlayerButton()) {
-                return "Enabled";
-            } else {
-                return "Disabled";
-            }
-        }));
-
-        metrics.addCustomChart(new Metrics.SimplePie("save_location", () -> {
-            if (ConfigData.getFolderLocation() == InventoryRollback.getInstance().getDataFolder()) {
-                return "Default";
-            } else {
-                return "Not Default";
-            }
-        }));
+        // Override by IRP
     }
 
     public void checkUpdate() {
