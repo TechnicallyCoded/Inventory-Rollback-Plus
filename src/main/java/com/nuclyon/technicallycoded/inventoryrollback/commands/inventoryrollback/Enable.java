@@ -18,9 +18,9 @@ public class Enable extends IRPCommand {
             main.getConfigData().setEnabled(true);
             main.getConfigData().saveConfig();
 
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginEnabled());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginEnabled());
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
         return;
     }

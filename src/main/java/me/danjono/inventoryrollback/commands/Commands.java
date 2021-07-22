@@ -76,7 +76,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
                 break;
 
             default:
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
             }
         }
 
@@ -88,17 +88,17 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         if (sender instanceof Player) {
             if (sender.hasPermission("inventoryrollback.restore")) {
                 if (!ConfigData.isEnabled()) {
-                    sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginDisabled());
+                    sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginDisabled());
                     return;
                 }
 
                 openBackupMenu(sender, (Player) sender, args);
 
             } else {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
             }
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPlayerOnlyError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPlayerOnlyError());
         }
     }
 
@@ -115,7 +115,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
                 openPlayerMenu(staff, rollbackPlayer);
             } catch (NullPointerException e) {}
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
         }
     }
 
@@ -136,7 +136,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
     private void forceBackupCommand(CommandSender sender, String[] args) {
         if (sender.hasPermission("inventoryrollback.forcebackup")) {
             if (args.length == 1 || args.length > 3) {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
                 return;
             }
 
@@ -145,10 +145,10 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             } else if (args[1].equalsIgnoreCase("player")) {
                 forceBackupPlayer(sender, args);
             } else {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
             }
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 
@@ -157,31 +157,31 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
         }
 
-        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
+        sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupAll());
     }
 
     private void forceBackupPlayer(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
             return;
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
 
         if (offlinePlayer == null) {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(args[2]));
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNotOnlineError(args[2]));
             return;
         }
 
         if (!offlinePlayer.isOnline()) {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNotOnlineError(offlinePlayer.getName()));
             return;
         }
 
         Player player = (Player) offlinePlayer;
         new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
 
-        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
+        sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }
 
     private void enableCommand(CommandSender sender) {
@@ -189,9 +189,9 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             setEnabled(true);
             saveConfig();
 
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginEnabled());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginEnabled());
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 
@@ -200,9 +200,9 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
             setEnabled(false);
             saveConfig();
 
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginDisabled());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginDisabled());
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 
@@ -210,9 +210,9 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         if (sender.hasPermission("inventoryrollback.reload")) {                                     
             InventoryRollback.getInstance().startupTasks();
 
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginReload());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginReload());
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 
@@ -222,7 +222,7 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void versionCommand(CommandSender sender) {
         if (sender.hasPermission("inventoryrollback.version"))
-            sender.sendMessage(MessageData.getPluginName() + "Server is running v" + InventoryRollback.getPluginVersion() + " - Created by danjono");
+            sender.sendMessage(MessageData.getPluginPrefix() + "Server is running v" + InventoryRollback.getPluginVersion() + " - Created by danjono");
     }
 
     private void convertMySQL(CommandSender sender) {

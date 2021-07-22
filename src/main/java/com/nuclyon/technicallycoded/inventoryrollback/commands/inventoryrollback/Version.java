@@ -16,7 +16,7 @@ public class Version extends IRPCommand {
 
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        StringBuilder strb = new StringBuilder(MessageData.getPluginName());
+        StringBuilder strb = new StringBuilder(MessageData.getPluginPrefix());
         boolean hasVersionPerm = sender.hasPermission("inventoryrollbackplus.version") || sender.hasPermission("inventoryrollback.version");
 
         strb.append("\n")

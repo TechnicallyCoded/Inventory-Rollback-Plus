@@ -6,7 +6,7 @@ import me.danjono.inventoryrollback.config.MessageData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.bukkit.ChatColor;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,7 +47,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 irpCmd.onCommand(sender, cmd, label, args);
                 return true;
             }
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
         }
         return true;
     }

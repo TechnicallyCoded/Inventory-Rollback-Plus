@@ -21,7 +21,7 @@ public class ForceBackup extends IRPCommand {
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender.hasPermission("inventoryrollbackplus.forcebackup") || sender.hasPermission("inventoryrollback.forcebackup")) {
             if (args.length == 1 || args.length > 3) {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
                 return;
             }
 
@@ -30,10 +30,10 @@ public class ForceBackup extends IRPCommand {
             } else if (args[1].equalsIgnoreCase("player")) {
                 forceBackupPlayer(sender, args);
             } else {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
             }
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 
@@ -42,31 +42,31 @@ public class ForceBackup extends IRPCommand {
             new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
         }
 
-        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupAll());
+        sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupAll());
     }
 
     private void forceBackupPlayer(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
             return;
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getPlayer(args[2]);
 
         if (offlinePlayer == null) {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(args[2]));
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNotOnlineError(args[2]));
             return;
         }
 
         if (!offlinePlayer.isOnline()) {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNotOnlineError(offlinePlayer.getName()));
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNotOnlineError(offlinePlayer.getName()));
             return;
         }
 
         Player player = (Player) offlinePlayer;
         new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
 
-        sender.sendMessage(MessageData.getPluginName() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
+        sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }
 
 }

@@ -237,7 +237,7 @@ public class ConfigData {
 
     public static void setTimeZone(String zone) {
         try {
-            timeZone = TimeZone.getTimeZone(ZoneId.of(zone));
+            timeZone = TimeZone.getTimeZone(zone);
         } catch (ZoneRulesException e) {
             timeZone = TimeZone.getTimeZone("GMT");
             InventoryRollback.getInstance().getLogger().log(Level.WARNING, ("Time zone ID \"" + zone + "\" in config.yml is not valid. Defaulting to \"GMT\""));

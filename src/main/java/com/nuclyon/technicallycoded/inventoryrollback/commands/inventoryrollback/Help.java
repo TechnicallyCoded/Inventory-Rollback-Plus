@@ -18,14 +18,14 @@ public class Help extends IRPCommand {
         if (sender.hasPermission("inventoryrollbackplus.help") || sender.hasPermission("inventoryrollback.help")) {
             this.sendHelp(sender);
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
         return;
     }
 
     public void sendHelp(CommandSender sender) {
         sender.sendMessage(
-                MessageData.getPluginName() + ChatColor.GRAY + "InventoryRollbackPlus - by TechnicallyCoded\n" +
+                MessageData.getPluginPrefix() + ChatColor.GRAY + "InventoryRollbackPlus - by TechnicallyCoded\n" +
                         ChatColor.WHITE + "  Available Commands:\n" +
                         ChatColor.WHITE + "    /ir restore [player]" + ChatColor.GRAY + " - Open rollback GUI for optional [player]\n" +
                         ChatColor.WHITE + "    /ir forcebackup <all/player> [player]" + ChatColor.GRAY + " - Create a forced save of a player's inventory\n" +

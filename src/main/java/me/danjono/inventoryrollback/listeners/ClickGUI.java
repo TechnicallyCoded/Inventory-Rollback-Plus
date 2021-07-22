@@ -284,11 +284,11 @@ public class ClickGUI implements Listener {
                     if (SoundData.isInventoryRestoreEnabled())
                         player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1);
 
-                    player.sendMessage(MessageData.getPluginName() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
+                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginName() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));           
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));
                 } else {
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getMainInventoryNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryNotOnline(offlinePlayer.getName()));
                 }
             }
 
@@ -299,7 +299,7 @@ public class ClickGUI implements Listener {
 
                 if (world == null) {
                     //World is not available
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getDeathLocationInvalidWorldError(location[0]));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getDeathLocationInvalidWorldError(location[0]));
                     return;
                 }
 
@@ -316,7 +316,7 @@ public class ClickGUI implements Listener {
                         if (SoundData.isTeleportEnabled())
                             staff.playSound(loc, SoundData.getTeleport(), 1, 1);
 
-                        staff.sendMessage(MessageData.getPluginName() + MessageData.getDeathLocationTeleport(loc));
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getDeathLocationTeleport(loc));
                     });
                 }, 1L);
             } 
@@ -343,11 +343,11 @@ public class ClickGUI implements Listener {
                     if (SoundData.isFoodRestoredEnabled())
                         player.playSound(player.getLocation(), SoundData.getFoodRestored(), 1, 1);
 
-                    player.sendMessage(MessageData.getPluginName() + MessageData.getHealthRestoredPlayer(staff.getName()));
+                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getHealthRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginName() + MessageData.getHealthRestored(player.getName()));
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHealthRestored(player.getName()));
                 } else {
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getHealthNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHealthNotOnline(offlinePlayer.getName()));
                 }
             } 
 
@@ -365,11 +365,11 @@ public class ClickGUI implements Listener {
                     if (SoundData.isHungerRestoredEnabled())
                         player.playSound(player.getLocation(), SoundData.getHungerRestored(), 1, 1);
 
-                    player.sendMessage(MessageData.getPluginName() + MessageData.getHungerRestoredPlayer(staff.getName()));
+                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getHungerRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginName() + MessageData.getHungerRestored(player.getName()));
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHungerRestored(player.getName()));
                 } else {
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getHungerNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHungerNotOnline(offlinePlayer.getName()));
                 }
             } 
 
@@ -384,11 +384,11 @@ public class ClickGUI implements Listener {
                     if (SoundData.isExperienceRestoredEnabled())
                         player.playSound(player.getLocation(), SoundData.getExperienceSound(), 1, 1);
 
-                    player.sendMessage(MessageData.getPluginName() + MessageData.getExperienceRestoredPlayer(staff.getName(), xp.intValue()));
+                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestoredPlayer(staff.getName(), xp.intValue()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginName() + MessageData.getExperienceRestored(player.getName(), (int) RestoreInventory.getLevel(xp))); 
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestored(player.getName(), (int) RestoreInventory.getLevel(xp)));
                 } else {				    
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getExperienceNotOnlinePlayer(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceNotOnlinePlayer(offlinePlayer.getName()));
                 }
             }
         } else {             
@@ -439,11 +439,11 @@ public class ClickGUI implements Listener {
                     if (SoundData.isInventoryRestoreEnabled())
                         player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); 
 
-                    player.sendMessage(MessageData.getPluginName() + MessageData.getEnderChestRestoredPlayer(staff.getName()));
+                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getEnderChestRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginName() + MessageData.getEnderChestRestored(offlinePlayer.getName()));
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getEnderChestRestored(offlinePlayer.getName()));
                 } else {
-                    staff.sendMessage(MessageData.getPluginName() + MessageData.getEnderChestNotOnline(offlinePlayer.getName()));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getEnderChestNotOnline(offlinePlayer.getName()));
                 }
             }
         } else {             

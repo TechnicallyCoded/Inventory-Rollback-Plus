@@ -352,7 +352,7 @@ public class YAML {
 
         for (File backupFolders : backupLocations) {
             if (!backupFolders.exists()) {
-                InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginName() + "Backup folder does not exist at " + backupFolders.getAbsolutePath());
+                InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginPrefix() + "Backup folder does not exist at " + backupFolders.getAbsolutePath());
                 logTypeNumber++;
                 continue;
             }
@@ -367,7 +367,7 @@ public class YAML {
             }
 
             LogType log = logTypeFiles.get(logTypeNumber);
-            InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginName() + "Converting the backup location " + log.name());
+            InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Converting the backup location " + log.name());
 
             for (File backup : backupFiles) {
                 YamlConfiguration data = new YamlConfiguration();
@@ -375,7 +375,7 @@ public class YAML {
                 try {
                     data.load(backup);
                 } catch (InvalidConfigurationException | IOException e) {
-                    InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginName() + "Error converting backup file at " + backup.getAbsolutePath() + " - Invalid YAML format possibly from corruption.");
+                    InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginPrefix() + "Error converting backup file at " + backup.getAbsolutePath() + " - Invalid YAML format possibly from corruption.");
                     continue;
                 }
 
@@ -414,7 +414,7 @@ public class YAML {
 
                         yaml.saveData();
                     } catch (Exception e) {
-                        InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginName() + "Error converting backup file at " + backup.getAbsolutePath() + " on timestamp " + time);
+                        InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginPrefix() + "Error converting backup file at " + backup.getAbsolutePath() + " on timestamp " + time);
                     }
                 }
             }
@@ -423,7 +423,7 @@ public class YAML {
 
         }
 
-        InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginName() + "Conversion completed!");
+        InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Conversion completed!");
     }
 
 }

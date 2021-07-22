@@ -19,9 +19,9 @@ public class Disable extends IRPCommand {
             ConfigData.setEnabled(false);
             main.getConfigData().saveConfig();
 
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginDisabled());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginDisabled());
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 

@@ -37,10 +37,10 @@ public class InventoryRollbackPlus extends InventoryRollback {
                 .replace(".",  ",").split(",")[3]);
 
         if (!this.isCompatible()) {
-            getLogger().log(Level.WARNING, MessageData.getPluginName() + "\n" + ChatColor.RED +
+            getLogger().log(Level.WARNING, MessageData.getPluginPrefix() + "\n" + ChatColor.RED +
                     " ** WARNING... Plugin may not be compatible with this version of Minecraft. **\n" +
                     " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
-                    MessageData.getPluginName()
+                    MessageData.getPluginPrefix()
             );
         }
 
@@ -85,7 +85,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
-            getPluginLogger().log(Level.INFO, MessageData.getPluginName() + "Checking for updates...");
+            getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
@@ -95,7 +95,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
             switch (result.getType()) {
                 case FAIL_SPIGOT:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginName() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
+                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
                     break;
                 case UPDATE_LOW:
                     prioLevel = 1;
@@ -112,10 +112,10 @@ public class InventoryRollbackPlus extends InventoryRollback {
                     prioColor = ChatColor.RED.toString();
                     break;
                 case DEV_BUILD:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginName() + ChatColor.GOLD + "Warning: You are running an experimental/development build! Proceed with caution.");
+                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: You are running an experimental/development build! Proceed with caution.");
                     break;
                 case NO_UPDATE:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginName() + ChatColor.RESET + "You are running the latest version.");
+                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.RESET + "You are running the latest version.");
                     break;
                 default:
                     break;
@@ -142,7 +142,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         Metrics metrics = new Metrics(this,  	9437);
 
         if (ConfigData.isbStatsEnabled())
-            getLogger().info(MessageData.getPluginName() + "bStats are enabled");
+            getLogger().info(MessageData.getPluginPrefix() + "bStats are enabled");
 
         metrics.addCustomChart(new SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
 

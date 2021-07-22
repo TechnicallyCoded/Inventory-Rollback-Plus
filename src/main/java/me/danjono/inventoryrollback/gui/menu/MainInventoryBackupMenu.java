@@ -78,7 +78,7 @@ public class MainInventoryBackupMenu {
     			item++;
     		}
 		} catch (NullPointerException e) {
-		    staff.sendMessage(MessageData.getPluginName() + MessageData.getErrorInventory());
+		    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
 		    return;
 		}
 

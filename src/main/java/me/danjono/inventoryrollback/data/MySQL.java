@@ -449,7 +449,7 @@ public class MySQL {
 
         for (File backupType : backupLocations) {
             LogType logType = logTypeFiles.get(logTypeNumber);
-            InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginName() + "Converting the backup location " + logType.name());
+            InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Converting the backup location " + logType.name());
             
             for (File UUIDBackup : backupType.listFiles()) {
                 UUID uuid = UUID.fromString(UUIDBackup.getName());   
@@ -492,7 +492,7 @@ public class MySQL {
 
         }
 
-        InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginName() + "Conversion completed!");
+        InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Conversion completed!");
 
     }
 

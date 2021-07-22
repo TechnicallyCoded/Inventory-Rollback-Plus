@@ -79,7 +79,7 @@ public class PlayerMenu {
                 && !forceSaveBackup.doesBackupTypeExist()) {
 
             //No backups have been found for the player
-            staff.sendMessage(MessageData.getPluginName() + MessageData.getNoBackupError(offlinePlayer.getName()));
+            staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoBackupError(offlinePlayer.getName()));
         }
         
         String backupsAvailable = " backup(s) available";

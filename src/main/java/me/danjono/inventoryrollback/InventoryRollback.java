@@ -2,13 +2,11 @@ package me.danjono.inventoryrollback;
 
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,8 +64,8 @@ public abstract class InventoryRollback extends JavaPlugin {
         setPackageVersion(Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3]);
 
         if (!isCompatible()) {        
-            logger.log(Level.WARNING, MessageData.getPluginName() + ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **");
-            logger.log(Level.WARNING, MessageData.getPluginName() + ChatColor.RED + " ** Please fully test the plugin before using on your server as features may be broken. **");
+            logger.log(Level.WARNING, MessageData.getPluginPrefix() + ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **");
+            logger.log(Level.WARNING, MessageData.getPluginPrefix() + ChatColor.RED + " ** Please fully test the plugin before using on your server as features may be broken. **");
         }
 
         startupTasks();
@@ -104,7 +102,7 @@ public abstract class InventoryRollback extends JavaPlugin {
         new MessageData().setMessages();    
         new SoundData().setSounds();
 
-        logger.log(Level.INFO, () -> MessageData.getPluginName() + "Inventory backup data is set to save to: " + ConfigData.getSaveType().getName());
+        logger.log(Level.INFO, () -> MessageData.getPluginPrefix() + "Inventory backup data is set to save to: " + ConfigData.getSaveType().getName());
 
         if (ConfigData.isUpdateCheckerEnabled())
             getInstance().checkUpdate();
@@ -178,13 +176,13 @@ public abstract class InventoryRollback extends JavaPlugin {
 
     public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
-            logger.log(Level.INFO, MessageData.getPluginName() + "Checking for updates...");
+            logger.log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
             switch (result) {
             case FAIL_SPIGOT:
-                logger.log(Level.INFO, MessageData.getPluginName() + "Could not contact Spigot to check if an update is available.");
+                logger.log(Level.INFO, MessageData.getPluginPrefix() + "Could not contact Spigot to check if an update is available.");
                 break;
             case UPDATE_AVAILABLE:		
                 logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
@@ -193,7 +191,7 @@ public abstract class InventoryRollback extends JavaPlugin {
                 logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
                 break;
             case NO_UPDATE:
-                logger.log(Level.INFO, MessageData.getPluginName() + ChatColor.AQUA + "You are running the latest version.");
+                logger.log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.AQUA + "You are running the latest version.");
                 break;
             default:
                 break;

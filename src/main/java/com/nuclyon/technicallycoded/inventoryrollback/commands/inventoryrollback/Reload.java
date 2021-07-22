@@ -17,9 +17,9 @@ public class Reload extends IRPCommand {
         if (sender.hasPermission("inventoryrollbackplus.reload") || sender.hasPermission("inventoryrollback.reload")) {
             main.startupTasks();
 
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginReload());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginReload());
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
         }
     }
 

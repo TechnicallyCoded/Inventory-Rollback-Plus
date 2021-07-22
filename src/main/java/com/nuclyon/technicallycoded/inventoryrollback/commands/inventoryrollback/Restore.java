@@ -24,16 +24,16 @@ public class Restore extends IRPCommand {
         if (sender instanceof Player) {
             if (sender.hasPermission("inventoryrollbackplus.restore") || sender.hasPermission("inventoryrollback.restore")) {
                 if (!ConfigData.isEnabled()) {
-                    sender.sendMessage(MessageData.getPluginName() + MessageData.getPluginDisabled());
+                    sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginDisabled());
                     return;
                 }
                 Player staff = (Player) sender;
                 openBackupMenu(sender, staff, args);
             } else {
-                sender.sendMessage(MessageData.getPluginName() + MessageData.getNoPermission());
+                sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
             }
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getPlayerOnlyError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPlayerOnlyError());
         }
     }
 
@@ -50,7 +50,7 @@ public class Restore extends IRPCommand {
                 openPlayerMenu(staff, rollbackPlayer);
             } catch (NullPointerException e) {}
         } else {
-            sender.sendMessage(MessageData.getPluginName() + MessageData.getError());
+            sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
         }
     }
 
