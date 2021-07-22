@@ -2,7 +2,10 @@ package me.danjono.inventoryrollback.listeners;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
-import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.config.ConfigData;
+import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -15,10 +18,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import me.danjono.inventoryrollback.config.ConfigData;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 
@@ -37,6 +36,13 @@ public class EventLogs implements Listener {
 		Player player = e.getPlayer();
 		if (player.hasPermission("inventoryrollbackplus.joinsave") || player.hasPermission("inventoryrollback.joinsave")) {
 			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null, player.getInventory(), player.getEnderChest()).createSave();
+		}
+		if (player.hasPermission("inventoryrollbackplus.adminalerts")) {
+			// TODO: remove bundle error saving workaround
+			boolean useBundleWorkaround = InventoryRollbackPlus.getInstance().getVersion()
+					.isWithin(EnumNmsVersion.v1_17_R1, EnumNmsVersion.v1_17_R1);
+			if (!useBundleWorkaround) return;
+			player.sendMessage(MessageData.getPluginPrefix() + MessageData.getAdminAlerts());
 		}
 	}
 

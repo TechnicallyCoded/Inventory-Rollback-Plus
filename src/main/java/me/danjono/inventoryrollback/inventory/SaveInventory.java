@@ -1,9 +1,11 @@
 package me.danjono.inventoryrollback.inventory;
 
-import java.io.ByteArrayOutputStream;
-
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
@@ -12,9 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import me.danjono.inventoryrollback.InventoryRollback;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.data.PlayerData;
+import java.io.ByteArrayOutputStream;
 
 public class SaveInventory {
 
@@ -109,11 +109,24 @@ public class SaveInventory {
 
                 dataOutput.writeInt(contents.length);
 
+                // TODO: remove bundle error saving workaround
+                boolean useBundleWorkaround = InventoryRollbackPlus.getInstance().getVersion()
+                        .isWithin(EnumNmsVersion.v1_17_R1, EnumNmsVersion.v1_17_R1);
+
                 for (ItemStack stack : contents) {
+                    // TODO: remove bundle error saving workaround
+                    if (stack != null && useBundleWorkaround && stack.getType().equals(Material.BUNDLE))
+                    {
+                        dataOutput.writeObject(null);
+                        continue;
+                    }
                     dataOutput.writeObject(stack);
                 }
                 dataOutput.close();
-                return Base64Coder.encodeLines(outputStream.toByteArray());
+                byte[] byteArr = outputStream.toByteArray();
+                // TODO: remove bundle error saving workaround
+                //test(byteArr);
+                return Base64Coder.encodeLines(byteArr);
             } catch (Exception e) {
                 throw new IllegalStateException("Unable to save item stacks.", e);
             }
@@ -121,6 +134,29 @@ public class SaveInventory {
 
         return null;
     }
+
+    // TODO: remove bundle error saving workaround
+    /*public static void test(byte[] byteArr) {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArr);
+        BukkitObjectInputStream dataInput = null;
+        ItemStack[] stacks = null;
+        try {
+            dataInput = new BukkitObjectInputStream(inputStream);
+            stacks = new ItemStack[dataInput.readInt()];
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        for (int i = 0; i < stacks.length; i++) {
+            try {
+                Object objectRead = dataInput.readObject();
+                stacks[i] = (ItemStack) objectRead;
+            } catch (IOException | ClassNotFoundException | NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        try { dataInput.close(); } catch (IOException ignored) {}
+    }*/
 
     //Credits to Dev_Richard (https://www.spigotmc.org/members/dev_richard.38792/)
     //https://gist.github.com/RichardB122/8958201b54d90afbc6f0
