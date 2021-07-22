@@ -86,23 +86,25 @@
                 <version>3.2.4</version>
                 <configuration>
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-                    <artifactSet>
-                        <includes>
-                            <include>org.bstats:org/bstats/*</include>
-                            <include>io.papermc:io/papermc/lib/*</include>
-                        </includes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>${project.groupId}</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>${project.groupId}.paperlib</shadedPattern>
-                        </relocation>
-                    </relocations>
                     <filters>
+                        <filter>
+                            <artifact>io.papermc:paperlib</artifact>
+                            <includes>
+                                <include>io/papermc/lib/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>org.bstats:bstats-bukkit</artifact>
+                            <includes>
+                                <include>org/bstats/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
@@ -110,6 +112,16 @@
                             </excludes>
                         </filter>
                     </filters>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>${project.groupId}.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.papermc.lib</pattern>
+                            <shadedPattern>${project.groupId}.paperlib</shadedPattern>
+                        </relocation>
+                    </relocations>
                 </configuration>
                 <executions>
                     <execution>
