@@ -51,7 +51,8 @@ public class MessageData {
         return true;
     }
 
-    private static String pluginName = ChatColor.WHITE + "[" + ChatColor.AQUA + "InventoryRollbackPlus" + ChatColor.WHITE + "]" + ChatColor.RESET + " ";
+    private static String pluginPrefix;
+    private static String adminAlerts = ChatColor.RED + "Admin alert: Bundles in 1.17.x are not saved in backups due to this item being incompatible with the current version of spigot.";
     private static String noPermission;
     private static String error;
     private static String errorInventory = "You cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.";
@@ -106,6 +107,8 @@ public class MessageData {
     private static String backButton;
 
     public void setMessages() {
+        setPluginPrefix(convertColorCodes((String) getDefaultValue("general.prefix", "&f[&bInventoryRollbackPlus&f]&r ")));
+
         setNoPermission(convertColorCodes((String) getDefaultValue("commands.no-permission", "&cYou do not have permission!")));
         setError(convertColorCodes((String) getDefaultValue("commands.error", "&cInvalid command.")));
         setPluginEnabled(convertColorCodes((String) getDefaultValue("commands.enable", "&2The plugin has been enabled.")));
@@ -168,8 +171,8 @@ public class MessageData {
     private static String nameVariable = "%NAME%";
     private static String xpVariable = "%XP%";
 
-    public static void setPluginName(String message) {
-        pluginName = message;
+    public static void setPluginPrefix(String message) {
+        pluginPrefix = message;
     }
 
     public static void setNoPermission(String message) {
@@ -362,8 +365,15 @@ public class MessageData {
         backButton = message;
     }
 
-    public static String getPluginName() {
-        return pluginName;
+
+    // GETTERS
+
+    public static String getAdminAlerts() {
+        return adminAlerts;
+    }
+
+    public static String getPluginPrefix() {
+        return pluginPrefix;
     }
 
     public static String getNoPermission() {

@@ -1,4 +1,7 @@
 # Translation by https://github.com/Youwenqwq
+general:
+  prefix: '&f[&bInventoryRollbackPlus&f]&r '
+
 commands:
   no-permission: '&c你没有权限!'
   error: '&c无效指令'
@@ -22,7 +25,7 @@ attribute-restore:
     not-online: '%NAME% 不在线，因此背包无法回档.'
     button-name: '&d回档背包'
     # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
-    button-disabled: '&cEnable single-click restore in the config file'
+    button-disabled: '&cSingle click restore is disabled\n&cin the config.yml file!'
   ender-chest:
     restored: '%NAME% 的末影箱已被回档.'
     restored-player: '你的末影箱已被 %NAME% 从备份中回档.'

@@ -1,3 +1,6 @@
+general:
+  prefix: '&f[&bInventoryRollbackPlus&f]&r '
+
 commands:
   no-permission: '&cYou do not have permission!'
   error: '&cInvalid command.'
@@ -19,7 +22,7 @@ attribute-restore:
     restored-player: 'Your inventory has been restored by %NAME% from backup.'
     not-online: 'You can''t restore %NAME%''s inventory while they are offline.'
     button-name: '&cOverwrite Main Inventory from Backup'
-    button-disabled: '&cYou must enable this option in the configuration'
+    button-disabled: '&cSingle click restore is disabled\n&cin the config.yml file!'
   ender-chest:
     restored: '%NAME%''s ender chest has been restored.'
     restored-player: 'Your ender chest has been restored by %NAME% from backup.'

@@ -1,4 +1,7 @@
 # Translation by https://github.com/molocodev
+general:
+  prefix: '&f[&bInventoryRollbackPlus&f]&r '
+
 commands:
   no-permission: '&c¡No tenés permisos!'
   error: '&cComando inválido.'
@@ -21,7 +24,7 @@ attribute-restore:
     not-online: 'No podés restablecer el inventario de %NAME% mientras que este offline.'
     button-name: '&dRestaurar el Inventario Principal'
     # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
-    button-disabled: '&cEnable single-click restore in the config file'
+    button-disabled: '&cSingle click restore is disabled\n&cin the config.yml file!'
   ender-chest:
     restored: 'Se restaruo el cofre de ender de %NAME%.'
     restored-player: 'Tu cofre de ender fue restablecido por %NAME% usando un backup.'

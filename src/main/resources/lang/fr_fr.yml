@@ -1,4 +1,7 @@
 # Translation by https://github.com/TechnicallyCoded
+general:
+  prefix: '&f[&bInventoryRollbackPlus&f]&r '
+
 commands:
   no-permission: '&cVous n''avez pas la permission!'
   error: '&cCommande invalide.'
@@ -20,7 +23,7 @@ attribute-restore:
     restored-player: 'Votre inventaire a été restauré par %NAME% à partir d''une sauvegarde.'
     not-online: 'Vous ne pouvez pas restaurer l''inventaire de %NAME% pendant que ce joueur n''est pas en ligne.'
     button-name: '&dRestaurer l''Inventaire'
-    button-disabled: '&cActivez la restauration en un clic dans le fichier config.yml'
+    button-disabled: '&cLa restauration en un clic est désactivée\n&cdans le fichier config.yml!'
   ender-chest:
     restored: 'L''ender chest de %NAME% a été restauré.'
     restored-player: 'Votre ender chest a été restauré par %NAME% à partir d''une sauvegarde.'

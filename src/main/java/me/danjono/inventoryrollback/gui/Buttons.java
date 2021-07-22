@@ -592,7 +592,16 @@ public class Buttons {
 
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(MessageData.getMainInventoryDisabledButton());
+
+        String[] nameParts = MessageData.getMainInventoryDisabledButton().split("\\\\n");
+        String titlePart = nameParts[0];
+        ArrayList<String> loreParts = new ArrayList<>();
+
+        meta.setDisplayName(titlePart);
+        for (int i = 1; i < nameParts.length; i ++) {
+            loreParts.add(nameParts[i]);
+        }
+        meta.setLore(loreParts);
 
         item.setItemMeta(meta);
 
