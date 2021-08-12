@@ -36,7 +36,7 @@ public class MySQL {
 
         private final String tableName;
 
-        private BackupTable(String tableName) {
+        BackupTable(String tableName) {
             this.tableName = tableName;
         }
 
@@ -223,7 +223,7 @@ public class MySQL {
             String delete = "DELETE FROM " + backupTable.getTableName() + " WHERE uuid = ? ORDER BY timestamp ASC LIMIT " + deleteAmount;
             
             try (PreparedStatement statement = connection.prepareStatement(delete)) {
-                statement.setString(1, uuid + "");
+                statement.setString(1, uuid.toString());
                 statement.executeUpdate();
             }
         } finally {
@@ -450,11 +450,19 @@ public class MySQL {
         for (File backupType : backupLocations) {
             LogType logType = logTypeFiles.get(logTypeNumber);
             InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Converting the backup location " + logType.name());
-            
-            for (File UUIDBackup : backupType.listFiles()) {
-                UUID uuid = UUID.fromString(UUIDBackup.getName());   
 
-                for (File backup : UUIDBackup.listFiles()) {
+            if (backupType == null) continue;
+
+            File[] uuidBackups = backupType.listFiles();
+            if (uuidBackups == null) continue;
+
+            for (File UUIDBackup : uuidBackups) {
+                UUID uuid = UUID.fromString(UUIDBackup.getName());
+
+                File[] backups = UUIDBackup.listFiles();
+                if (backups == null) continue;
+
+                for (File backup : backups) {
                     int pos = backup.getName().lastIndexOf(".");
                     String fileName = backup.getName().substring(0, pos);
 
