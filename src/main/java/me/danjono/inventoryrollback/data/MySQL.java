@@ -23,9 +23,9 @@ import me.danjono.inventoryrollback.inventory.SaveInventory;
 
 public class MySQL {
 
-    private UUID uuid;
-    private Long timestamp;
-    private BackupTable backupTable;
+    private final UUID uuid;
+    private final Long timestamp;
+    private final BackupTable backupTable;
 
     public enum BackupTable {
         DEATH(ConfigData.getMySQLTablePrefix() + "deaths"),
@@ -58,7 +58,7 @@ public class MySQL {
     private double x;
     private double y;
     private double z;
-    private LogType logType;
+    private final LogType logType;
     private String packageVersion;
     private String deathReason;
 
