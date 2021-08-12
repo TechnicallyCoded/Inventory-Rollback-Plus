@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.ConfigData.SaveType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerData {
 
@@ -105,23 +108,33 @@ public class PlayerData {
         return timeStamps;
     }
 
-    public void purgeExcessSaves() {
-        int maxSaves = getMaxSaves();
-        int currentSaves = getAmountOfBackups();
+    public CompletableFuture<Void> purgeExcessSaves() {
 
-        if ((maxSaves > 0) && (currentSaves >= maxSaves)) {
-            int deleteAmount = currentSaves - maxSaves + 1;
+        CompletableFuture<Void> future = new CompletableFuture<>();
 
-            if (ConfigData.getSaveType() == SaveType.YAML) {
-                yaml.purgeExcessSaves(deleteAmount);
-            } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
-                try {
-                    mysql.purgeExcessSaves(deleteAmount);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        new BukkitRunnable() {
+            public void run() {
+                int maxSaves = getMaxSaves();
+                int currentSaves = getAmountOfBackups();
+
+                if((maxSaves >0) && (currentSaves >= maxSaves)) {
+                    int deleteAmount = currentSaves - maxSaves + 1;
+
+                    if (ConfigData.getSaveType() == SaveType.YAML) {
+                        yaml.purgeExcessSaves(deleteAmount);
+                    } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+                        try {
+                            mysql.purgeExcessSaves(deleteAmount);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+                future.complete(null);
             }
-        }
+        }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
+
+        return future;
     }
 
     public void setMainInventory(ItemStack[] items) {

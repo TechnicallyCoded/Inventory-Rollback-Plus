@@ -5,6 +5,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -15,6 +16,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.CompletableFuture;
 
 public class SaveInventory {
 
@@ -41,9 +43,6 @@ public class SaveInventory {
     public void createSave() {
         Long timestamp = System.currentTimeMillis();
         PlayerData data = new PlayerData(player, logType, timestamp);
-
-        //Remove excess saves if limit is reached
-        data.purgeExcessSaves();
 
         for (ItemStack item : mainInventory.getContents()) {
             if (item != null) {
@@ -74,24 +73,34 @@ public class SaveInventory {
         data.setFoodLevel(player.getFoodLevel());
         data.setSaturation(player.getSaturation());
         data.setWorld(player.getWorld().getName());
-        data.setX(Math.floor(player.getLocation().getX()) + 0.5);
-        data.setY(Math.floor(player.getLocation().getY()));
-        data.setZ(Math.floor(player.getLocation().getZ()) + 0.5);
+
+        // Location data
+        Location pLoc = player.getLocation();
+        // Multiply by 10, truncate, divide by 10
+        // This has the effect of only keeping 1 decimal of precision
+        double locX = ((int)(pLoc.getX() * 10)) / 10d;
+        double locY = ((int)(pLoc.getY() * 10)) / 10d;
+        double locZ = ((int)(pLoc.getZ() * 10)) / 10d;
+        data.setX(locX);
+        data.setY(locY);
+        data.setZ(locZ);
+
         data.setLogType(logType);
         data.setVersion(InventoryRollback.getPackageVersion());
 
         if (causeAlias != null) data.setDeathReason(causeAlias);
         else if (deathCause != null) data.setDeathReason(deathCause.name());
-        //else data.setDeathReason("UNKNOWN");
+        else data.setDeathReason("UNKNOWN");
 
-        data.saveData();
+        // Remove excess saves if limit is reached
+        CompletableFuture<Void> purgeTask = data.purgeExcessSaves();
+
+        // Save new data
+        purgeTask.thenRun(data::saveData);
+
     }
 
-    //Conversion to Base64 code courtesy of github.com/JustRayz	
-    public static String toBase64(Inventory inventory) {
-        return toBase64(inventory.getContents());
-    }
-
+    //Conversion to Base64 code courtesy of github.com/JustRayz
     public static String toBase64(ItemStack[] contents) {
         boolean convert = false;
 
