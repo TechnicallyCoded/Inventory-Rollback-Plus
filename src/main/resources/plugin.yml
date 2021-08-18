@@ -26,6 +26,7 @@ permissions:
       inventoryrollbackplus.forcebackup: true
       inventoryrollbackplus.version: true
       inventoryrollbackplus.help: true
+      inventoryrollbackplus.adminalerts: true
     default: op
   inventoryrollbackplus.cmd:
     description: Allows InventoryRollback commands to work.

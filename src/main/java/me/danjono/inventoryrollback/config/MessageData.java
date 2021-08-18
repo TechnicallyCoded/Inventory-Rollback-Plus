@@ -52,7 +52,7 @@ public class MessageData {
     }
 
     private static String pluginPrefix;
-    private static String adminAlerts = ChatColor.RED + "Admin alert: Bundles in 1.17.x are not saved in backups due to this item being incompatible with the current version of spigot.";
+    private static String adminAlerts = ChatColor.RED + "Admin Only Alert: If bundles in 1.17 are causing errors when saved in backups please update your server to a newer release of the server software you are using. This issue was corrected in a recent patch of spigot and has already made it's way to paper (and probably most forks of paper)";
     private static String noPermission;
     private static String error;
     private static String errorInventory = "You cannot access this backup due to an error. The backup was likely generated on another Minecraft server version and a Material ID has now changed.";

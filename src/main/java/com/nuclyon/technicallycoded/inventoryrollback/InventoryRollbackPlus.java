@@ -142,7 +142,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         Metrics metrics = new Metrics(this,  	9437);
 
         if (ConfigData.isbStatsEnabled())
-            getLogger().info(MessageData.getPluginPrefix() + "bStats are enabled");
+            getPluginLogger().info(MessageData.getPluginPrefix() + "bStats are enabled");
 
         metrics.addCustomChart(new SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
 

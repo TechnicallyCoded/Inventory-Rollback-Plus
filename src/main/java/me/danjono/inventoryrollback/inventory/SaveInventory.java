@@ -124,11 +124,11 @@ public class SaveInventory {
 
                 for (ItemStack stack : contents) {
                     // TODO: remove bundle error saving workaround
-                    if (stack != null && useBundleWorkaround && stack.getType().equals(Material.BUNDLE))
+                    /*if (stack != null && useBundleWorkaround && stack.getType().equals(Material.BUNDLE))
                     {
                         dataOutput.writeObject(null);
                         continue;
-                    }
+                    }*/
                     dataOutput.writeObject(stack);
                 }
                 dataOutput.close();
