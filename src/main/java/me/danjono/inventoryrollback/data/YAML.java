@@ -159,7 +159,10 @@ public class YAML {
     public void purgeExcessSaves(int deleteAmount) {
         List<Long> timeSaved = new ArrayList<>();
 
-        for (File file : backupFolder.listFiles()) {
+        File[] backupFiles = backupFolder.listFiles();
+        if (backupFiles == null) return;
+
+        for (File file : backupFiles) {
             if (file.isDirectory())
                 continue;
 
