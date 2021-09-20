@@ -161,6 +161,14 @@ public class InventoryRollbackPlus extends InventoryRollback {
                 return "Not Default";
             }
         }));
+
+        metrics.addCustomChart(new SimplePie("storage_type", () -> {
+            if (ConfigData.isMySQLEnabled()) {
+                return "MySQL";
+            } else {
+                return "YAML";
+            }
+        }));
     }
 
 }
