@@ -6,3 +6,4 @@ dependency-reduced-pom.xml
 *.iml
 .classpath
 .project
+/spigot_bb_code_description.txt
