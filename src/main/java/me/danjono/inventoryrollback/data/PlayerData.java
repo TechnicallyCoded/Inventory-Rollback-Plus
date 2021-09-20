@@ -20,9 +20,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerData {
 
-    private OfflinePlayer offlinePlayer;
-    private LogType logType;
-    private Long timestamp;
+    private final OfflinePlayer offlinePlayer;
+    private final LogType logType;
+    private final Long timestamp;
 
     private YAML yaml;
     private MySQL mysql;
@@ -441,11 +441,11 @@ public class PlayerData {
 
         return 0;
     }
-    
+
     public static String getTime(Long time) {
         SimpleDateFormat sdf = ConfigData.getTimeFormat();
         sdf.setTimeZone(ConfigData.getTimeZone());
         return sdf.format(new Date(time));
-    }  
+    }
 
 }

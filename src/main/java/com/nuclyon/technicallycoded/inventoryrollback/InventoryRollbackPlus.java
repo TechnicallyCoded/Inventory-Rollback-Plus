@@ -4,6 +4,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
 import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
@@ -16,11 +17,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 public class InventoryRollbackPlus extends InventoryRollback {
 
     private static InventoryRollbackPlus instancePlus;
+
+    private TimeZoneUtil timeZoneUtil = null;
+
     private ConfigData configData;
     private EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
 
@@ -33,6 +38,10 @@ public class InventoryRollbackPlus extends InventoryRollback {
         instancePlus = this;
         InventoryRollback.setInstance(instancePlus);
 
+        // Load Utils
+        this.timeZoneUtil = new TimeZoneUtil();
+
+        // Init NMS
         InventoryRollback.setPackageVersion(Bukkit.getServer().getClass().getPackage().getName()
                 .replace(".",  ",").split(",")[3]);
 
@@ -44,17 +53,24 @@ public class InventoryRollbackPlus extends InventoryRollback {
             );
         }
 
+        // Storage Init & Update checker
         super.startupTasks();
 
+        // bStats
         if (ConfigData.isbStatsEnabled()) initBStats();
 
+        // Commands
         PluginCommand plCmd = getCommand("inventoryrollbackplus");
         Commands cmds = new Commands(this);
         if (plCmd == null) return;
         plCmd.setExecutor(cmds);
         plCmd.setTabCompleter(cmds);
+
+        // Events
         getServer().getPluginManager().registerEvents(new ClickGUI(), this);
         getServer().getPluginManager().registerEvents(new EventLogs(), this);
+
+        // PaperLib
         PaperLib.suggestPaper(this);
     }
 
@@ -66,10 +82,6 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public void setVersion(EnumNmsVersion versionName) {
         version = versionName;
-    }
-
-    public EnumNmsVersion getVersion() {
-        return version;
     }
 
     public boolean isCompatible() {
@@ -171,4 +183,13 @@ public class InventoryRollbackPlus extends InventoryRollback {
         }));
     }
 
+    // GETTERS
+
+    public EnumNmsVersion getVersion() {
+        return version;
+    }
+
+    public TimeZoneUtil getTimeZoneUtil() {
+        return this.timeZoneUtil;
+    }
 }

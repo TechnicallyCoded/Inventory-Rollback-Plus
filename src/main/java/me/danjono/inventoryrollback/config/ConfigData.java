@@ -3,11 +3,11 @@ package me.danjono.inventoryrollback.config;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.time.zone.ZoneRulesException;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -93,7 +93,9 @@ public class ConfigData {
     private static int maxSavesWorldChange;
     private static int maxSavesForce;
 
+    private static long timeZoneOffsetMillis;
     private static TimeZone timeZone;
+    private static String timeZoneName;
     private static SimpleDateFormat timeFormat;
 
     private static boolean updateChecker;
@@ -238,9 +240,11 @@ public class ConfigData {
     public static void setTimeZone(String zone) {
         try {
             timeZone = TimeZone.getTimeZone(zone);
-        } catch (ZoneRulesException e) {
-            timeZone = TimeZone.getTimeZone("GMT");
-            InventoryRollback.getInstance().getLogger().log(Level.WARNING, ("Time zone ID \"" + zone + "\" in config.yml is not valid. Defaulting to \"GMT\""));
+            timeZoneName = zone;
+            timeZoneOffsetMillis = InventoryRollbackPlus.getInstance().getTimeZoneUtil().getMillisOffsetAtTimeZone(zone);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            timeZoneOffsetMillis = 0L;
+            InventoryRollback.getInstance().getLogger().log(Level.WARNING, ("Time zone \"" + zone + "\" in config.yml is invalid. Defaulting to \"UTC\""));
         }
     }
 
@@ -339,6 +343,10 @@ public class ConfigData {
 
     public static int getMaxSavesForce() {
         return maxSavesForce;
+    }
+
+    public static long getTimeZoneOffsetMillis() {
+        return timeZoneOffsetMillis;
     }
 
     public static TimeZone getTimeZone() {
