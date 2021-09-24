@@ -2,6 +2,7 @@ package me.danjono.inventoryrollback.gui.menu;
 
 import java.util.UUID;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,6 +14,7 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class EnderChestBackupMenu {
 
@@ -53,15 +55,43 @@ public class EnderChestBackupMenu {
 
         //If the backup file is invalid it will return null, we want to catch it here
         try {
+
+            // Add items, 5 per tick
+            new BukkitRunnable() {
+
+                int invPosition = 0;
+                int itemPos = 0;
+                final int max = Math.min(enderchest.length, 27 + 1); // excluded
+
+                @Override
+                public void run() {
+                    for (int i = 0; i < 6; i++) {
+                        // If hit max item position, stop
+                        if (itemPos >= max) {
+                            this.cancel();
+                            return;
+                        }
+
+                        ItemStack itemStack = enderchest[itemPos];
+                        if (itemStack != null) {
+                            inventory.setItem(invPosition, itemStack);
+                            // Don't change inv position if there was nothing to place
+                            invPosition++;
+                        }
+                        // Move to next item stack
+                        itemPos++;
+                    }
+                }
+            }.runTaskTimer(InventoryRollbackPlus.getInstance(), 0, 1);
             //Add items
-            for (int i = 0; i < enderchest.length; i++) {
+            /*for (int i = 0; i < enderchest.length; i++) {
                 if (enderchest[item] != null) {	
                     inventory.setItem(position, enderchest[item]);
                     position++;
                 }
 
                 item++;
-            }
+            }*/
         } catch (NullPointerException e) {
             staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
             return;
