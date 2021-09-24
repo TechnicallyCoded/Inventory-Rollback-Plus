@@ -61,7 +61,7 @@ public class EnderChestBackupMenu {
 
                 int invPosition = 0;
                 int itemPos = 0;
-                final int max = Math.min(enderchest.length, 27 + 1); // excluded
+                final int max = Math.min(enderchest.length, 27); // excluded but starts from 0
 
                 @Override
                 public void run() {
