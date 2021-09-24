@@ -83,15 +83,6 @@ public class EnderChestBackupMenu {
                     }
                 }
             }.runTaskTimer(InventoryRollbackPlus.getInstance(), 0, 1);
-            //Add items
-            /*for (int i = 0; i < enderchest.length; i++) {
-                if (enderchest[item] != null) {	
-                    inventory.setItem(position, enderchest[item]);
-                    position++;
-                }
-
-                item++;
-            }*/
         } catch (NullPointerException e) {
             staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
             return;
