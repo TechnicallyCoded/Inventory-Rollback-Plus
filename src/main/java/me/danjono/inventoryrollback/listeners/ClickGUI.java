@@ -1,22 +1,8 @@
 package me.danjono.inventoryrollback.listeners;
 
-import java.util.UUID;
-
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import io.papermc.lib.PaperLib;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.ItemStack;
-
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
@@ -24,20 +10,26 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
-import me.danjono.inventoryrollback.gui.menu.EnderChestBackupMenu;
-import me.danjono.inventoryrollback.gui.menu.MainInventoryBackupMenu;
-import me.danjono.inventoryrollback.gui.menu.MainMenu;
-import me.danjono.inventoryrollback.gui.menu.PlayerMenu;
-import me.danjono.inventoryrollback.gui.menu.RollbackListMenu;
+import me.danjono.inventoryrollback.gui.menu.*;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.reflections.NBTWrapper;
+import org.bukkit.*;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class ClickGUI implements Listener {
 
     private final InventoryRollbackPlus main;
-
-    private Player staff;
-    private ItemStack icon;
 
     private static boolean isLocationAvailable(Location location) {
         return location != null;
@@ -95,32 +87,32 @@ public class ClickGUI implements Listener {
             return;
         }
 
-        staff = (Player) e.getWhoClicked();
-        icon = e.getCurrentItem();
+        Player staff = (Player) e.getWhoClicked();
+        ItemStack icon = e.getCurrentItem();
 
         //Listener for player menu
         if (title.equals(InventoryName.MAIN_MENU.getName())) {
-            mainMenu(e);
+            mainMenu(e,staff, icon);
         }
 
         //Listener for player menu
         else if (title.equals(InventoryName.PLAYER_MENU.getName())) {
-            playerMenu(e);
+            playerMenu(e,staff, icon);
         }
 
         //Listener for rollback list menu
         else if (title.equals(InventoryName.ROLLBACK_LIST.getName())) {
-            rollbackMenu(e);
+            rollbackMenu(e,staff, icon);
         }
 
         //Listener for main inventory backup menu
         else if (title.equals(InventoryName.MAIN_BACKUP.getName())) {
-            mainBackupMenu(e);
+            mainBackupMenu(e,staff, icon);
         }
 
         //Listener for enderchest backup menu
         else if (title.equals(InventoryName.ENDER_CHEST_BACKUP.getName())) {
-            enderChestBackupMenu(e);
+            enderChestBackupMenu(e,staff, icon);
         }
 
         else {
@@ -128,7 +120,7 @@ public class ClickGUI implements Listener {
         }
     }
 
-    private void mainMenu(InventoryClickEvent e) {        
+    private void mainMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.MAIN_MENU.getSize())) {                
             NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
@@ -159,7 +151,7 @@ public class ClickGUI implements Listener {
         }
     }
 
-    private void playerMenu(InventoryClickEvent e) {		
+    private void playerMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         //Return if a blank slot is selected
         if (icon == null)
             return;
@@ -192,7 +184,7 @@ public class ClickGUI implements Listener {
         }
     }
 
-    private void rollbackMenu(InventoryClickEvent e) {
+    private void rollbackMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if (e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.ROLLBACK_LIST.getSize()) {
             NBTWrapper nbt = new NBTWrapper(icon);
             if (!nbt.hasUUID())
@@ -205,16 +197,37 @@ public class ClickGUI implements Listener {
                 LogType logType = LogType.valueOf(nbt.getString("logType"));
                 String location = nbt.getString("location");
 
-                PlayerData data = new PlayerData(uuid, logType, timestamp);
-                data.getAllBackupData();
+                // Run all data retrieval operations async to avoid tick lag
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(uuid, logType, timestamp);
 
-                //If the backup file is invalid it will return null, we want to catch it here
-                try {
-                    MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                        // Get from MySQL
+                        try {
+                            data.getAllBackupData().get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
 
-                    staff.openInventory(menu.getInventory());
-                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackupItems);
-                } catch (NullPointerException ignored) {}
+                        // Create inventory
+                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+
+                        // Display inventory to player
+                        Future<InventoryView> inventoryViewFuture =
+                                main.getServer().getScheduler().callSyncMethod(main,
+                                        () -> staff.openInventory(menu.getInventory()));
+                        //If the backup file is invalid it will return null, we want to catch it here
+                        try {
+                            inventoryViewFuture.get();
+                            // Start placing items in the inventory async
+                            menu.showBackupItems();
+                        } catch (NullPointerException | ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }.runTaskAsynchronously(main);
             } 
 
             //Player has selected a page icon
@@ -222,14 +235,13 @@ public class ClickGUI implements Listener {
                 int page = nbt.getInt("page");
 
                 //Selected to go back to main menu
+                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
                 if (page == 0) {
-                    OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
                     PlayerMenu menu = new PlayerMenu(staff, player);
 
                     staff.openInventory(menu.getInventory());
                     Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
                 } else {
-                    OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));
                     LogType logType = LogType.valueOf(nbt.getString("logType"));
                     RollbackListMenu menu = new RollbackListMenu(staff, player, logType, page);
 
@@ -244,7 +256,7 @@ public class ClickGUI implements Listener {
         }
     }
 
-    private void mainBackupMenu(InventoryClickEvent e) {
+    private void mainBackupMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if (!e.getView().getTitle().equals(InventoryName.MAIN_BACKUP.getName()))
             return;
 
@@ -256,8 +268,6 @@ public class ClickGUI implements Listener {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(nbt.getString("uuid")));            
             LogType logType = LogType.valueOf(nbt.getString("logType"));
             Long timestamp = nbt.getLong("timestamp");
-
-            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);		
 
             //Click on page selector button to go back to rollback menu
             if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
@@ -272,21 +282,53 @@ public class ClickGUI implements Listener {
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
 
-                    data.getAllBackupData();
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            // Init from MySQL or, if YAML, init & load config file
+                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                    ItemStack[] inventory = data.getMainInventory();
-                    ItemStack[] armour = data.getArmour();
+                            // Get data if using MySQL
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
 
-                    player.getInventory().setContents(inventory);
-                    if (this.main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3))
-                        player.getInventory().setArmorContents(armour);
+                            ItemStack[] inventory = data.getMainInventory();
+                            ItemStack[] armour = data.getArmour();
 
-                    if (SoundData.isInventoryRestoreEnabled())
-                        player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1);
+                            // Place inventory items sync (compressed code)
+                            Future<Void> futureSetInv = main.getServer().getScheduler().callSyncMethod(main,
+                                    () -> { player.getInventory().setContents(inventory); return null; });
+                            try { futureSetInv.get(); }
+                            catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
 
-                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
-                    if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));
+                            // If 1.8, place armor contents separately
+                            if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
+                                // Place items sync (compressed code)
+                                Future<Void> futureSetArmor = main.getServer().getScheduler().callSyncMethod(main,
+                                        () -> { player.getInventory().setArmorContents(armour); return null; });
+                                try { futureSetArmor.get(); }
+                                catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
+                            }
+
+                            // Play sound effect is enabled
+                            if (SoundData.isInventoryRestoreEnabled()) {
+                                // Play sound sync (compressed code)
+                                Future<Void> futurePlaySound = main.getServer().getScheduler().callSyncMethod(main,
+                                        () -> { player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); return null; });
+                                try { futurePlaySound.get(); }
+                                catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
+                            }
+
+                            // Send player & staff feedback
+                            player.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
+                            if (!staff.getUniqueId().equals(player.getUniqueId()))
+                                staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));
+                        }
+                    }.runTaskAsynchronously(main);
+
                 } else {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryNotOnline(offlinePlayer.getName()));
                 }
@@ -323,13 +365,40 @@ public class ClickGUI implements Listener {
 
             //Clicked icon to restore backup players ender chest
             else if (icon.getType().equals(Buttons.getEnderChestIcon())) {
-                data.getAllBackupData();
 
-                EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showEnderChestItems);
-            } 
+                        // Get data if using MySQL
+                        try {
+                            data.getAllBackupData().get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+
+                        // Create Inventory
+                        EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data);
+
+                        // Open inventory sync (compressed code)
+                        Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
+                                () -> {
+                                    staff.openInventory(menu.getInventory());
+                                    return null;
+                                });
+                        try {
+                            futureOpenInv.get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+
+                        // Place items async
+                        menu.showEnderChestItems();
+                    }
+                }.runTaskAsynchronously(this.main);
+            }
 
             //Clicked icon to restore backup players health
             else if (icon.getType().equals(Buttons.getHealthIcon())) {
@@ -405,7 +474,7 @@ public class ClickGUI implements Listener {
         }
     }
 
-    private void enderChestBackupMenu(InventoryClickEvent e) {
+    private void enderChestBackupMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if (!e.getView().getTitle().equals(InventoryName.ENDER_CHEST_BACKUP.getName()))
             return;
 
@@ -418,23 +487,78 @@ public class ClickGUI implements Listener {
             LogType logType = LogType.valueOf(nbt.getString("logType"));
             Long timestamp = nbt.getLong("timestamp");
 
-            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp); 
-            data.getAllBackupData();
+            // Click on page selector button to go back to backup menu
+            if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
 
-            //Click on page selector button to go back to backup menu
-            if (icon.getType().equals(Buttons.getPageSelectorIcon())) {           
-                String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
-                MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                // Run all data retrieval operations async to avoid tick lag
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackupItems);
+                        // Get from MySQL
+                        try {
+                            data.getAllBackupData().get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+
+                        // Get location of where the backup was made from data
+                        String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
+
+                        // Create inventory
+                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+
+                        // Display inventory to player
+                        Future<InventoryView> inventoryViewFuture = main.getServer().getScheduler().callSyncMethod(main,
+                                () -> staff.openInventory(menu.getInventory()));
+                        //If the backup file is invalid it will return null, we want to catch it here
+                        try {
+                            inventoryViewFuture.get();
+                            // Start placing items in the inventory async
+                            menu.showBackupItems();
+                        } catch (NullPointerException | ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }.runTaskAsynchronously(main);
             }
 
             //Clicked icon to overwrite player ender chest with backup data
             else if (icon.getType().equals(Buttons.getRestoreAllInventoryIcon())) {
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
-                    player.getEnderChest().setContents(data.getEnderChest());
+
+                    // Run all data retrieval operations async to avoid tick lag
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            // Init from MySQL or, if YAML, init & load config file
+                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+
+                            // Get from MySQL
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+
+                            // Display inventory to player
+                            Future<Void> inventoryReplaceFuture = main.getServer().getScheduler().callSyncMethod(main,
+                                    () -> {
+                                        player.getEnderChest().setContents(data.getEnderChest());
+                                        return null;
+                                    });
+
+                            //If the backup file is invalid it will return null, we want to catch it here
+                            try {
+                                inventoryReplaceFuture.get();
+                            } catch (NullPointerException | ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }.runTaskAsynchronously(main);
 
                     if (SoundData.isInventoryRestoreEnabled())
                         player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); 

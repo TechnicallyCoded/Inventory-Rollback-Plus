@@ -1,23 +1,21 @@
 package me.danjono.inventoryrollback.config;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.zone.ZoneRulesException;
-import java.util.TimeZone;
-import java.util.logging.Level;
-
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import me.danjono.inventoryrollback.InventoryRollback;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.danjono.inventoryrollback.InventoryRollback;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.logging.Level;
 
 public class ConfigData {
 
     private File configurationFile;
     private FileConfiguration configuration;
-    private static String configurationFileName = "config.yml";
+    private static final String configurationFileName = "config.yml";
 
     public ConfigData() {
         generateConfigFile();
@@ -59,7 +57,7 @@ public class ConfigData {
         
         private final String name;
 
-        private SaveType(String name) {
+        SaveType(String name) {
             this.name = name;
         }
         

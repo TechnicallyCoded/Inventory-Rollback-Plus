@@ -257,14 +257,22 @@ public class PlayerData {
         }
     }
 
-    public void getAllBackupData() {
+    public CompletableFuture<Void> getAllBackupData() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
         if (ConfigData.getSaveType() == SaveType.MYSQL) {
-            try {
-                mysql.getAllBackupData();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        mysql.getAllBackupData();
+                        future.complete(null);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
         }
+        return future;
     }
 
     public ItemStack[] getMainInventory() {
