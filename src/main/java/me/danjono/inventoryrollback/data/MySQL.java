@@ -322,8 +322,6 @@ public class MySQL {
                 statement.setLong(2, timestamp);
                 
                 try (ResultSet results = statement.executeQuery()) {
-                    // TODO: REMOVE SIMULATED LAG
-                    Thread.sleep(40);
                     results.next();
         
                     mainInventory = results.getString("main_inventory");
@@ -341,8 +339,6 @@ public class MySQL {
                     
                     packageVersion = results.getString("version");
                     deathReason = results.getString("death_reason");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         } finally {
