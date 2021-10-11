@@ -121,6 +121,8 @@ public class YAML {
         if (!backupFolder.exists())
             return allTimeStamps;
 
+        long currTime = System.currentTimeMillis();
+
         for (File file : backupFolder.listFiles()) {
             if (file.isDirectory())
                 continue;
@@ -131,7 +133,9 @@ public class YAML {
             if (!StringUtils.isNumeric(fileName))
                 continue;
 
-            allTimeStamps.add(Long.parseLong(fileName));
+            long timestamp = Long.parseLong(fileName);
+            // Make sure that the file isn't newer than 1 second: we could still be writing to it
+            if (currTime - timestamp > 1000) allTimeStamps.add(timestamp);
         }
 
         //Set timestamps in order
