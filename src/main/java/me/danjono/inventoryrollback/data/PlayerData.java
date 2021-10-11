@@ -265,10 +265,10 @@ public class PlayerData {
                 public void run() {
                     try {
                         mysql.getAllBackupData();
-                        future.complete(null);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
+                    future.complete(null);
                 }
             }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
         }

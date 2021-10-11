@@ -19,19 +19,20 @@ import me.danjono.inventoryrollback.gui.InventoryName;
 
 public class RollbackListMenu {
 
+    private int pageNumber;
+
     private Player staff;
     private UUID playerUUID;
     private LogType logType;
-    private int pageNumber;
     
     private Buttons buttons;
     private Inventory inventory;
 
-    public RollbackListMenu(Player staff, OfflinePlayer player, LogType logType, int pageNumber) {
+    public RollbackListMenu(Player staff, OfflinePlayer player, LogType logType, int pageNumberIn) {
         this.staff = staff;
         this.playerUUID = player.getUniqueId();
         this.logType = logType;
-        this.pageNumber = pageNumber;
+        this.pageNumber = pageNumberIn;
         this.buttons = new Buttons(playerUUID);
         
         createInventory();
@@ -81,7 +82,7 @@ public class RollbackListMenu {
         List<Long> timeStamps = playerData.getSelectedPageTimestamps(pageNumber);
 
         int position = 0;
-        for (int i = 0; i < spaceRequired; i++) {							
+        for (int i = 0; i < Math.min(spaceRequired, backups); i++) {
             try {
                 Long timestamp = timeStamps.get(i);
                 playerData = new PlayerData(playerUUID, logType, timestamp);
@@ -111,7 +112,9 @@ public class RollbackListMenu {
 
                 inventory.setItem(position, item);
 
-            } catch (IndexOutOfBoundsException e) {}
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
 
             position++;
         }
