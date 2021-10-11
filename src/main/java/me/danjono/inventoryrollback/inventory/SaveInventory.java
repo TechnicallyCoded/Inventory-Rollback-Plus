@@ -6,12 +6,12 @@ import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
@@ -42,11 +42,14 @@ public class SaveInventory {
 
     public void createSave() {
         Long timestamp = System.currentTimeMillis();
-        PlayerData data = new PlayerData(player, logType, timestamp);
+
+        ItemStack[] mainInvContents = null;
+        ItemStack[] mainInvArmor = null;
+        ItemStack[] enderInvContents = null;
 
         for (ItemStack item : mainInventory.getContents()) {
             if (item != null) {
-                data.setMainInventory(mainInventory.getContents());
+                mainInvContents = mainInventory.getContents();
                 break;
             }
         }
@@ -54,7 +57,7 @@ public class SaveInventory {
         if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
             for (ItemStack item : mainInventory.getArmorContents()) {
                 if (item != null) {
-                    data.setArmour(mainInventory.getArmorContents());
+                    mainInvArmor = mainInventory.getArmorContents();
                     break;
                 }
             }
@@ -63,16 +66,16 @@ public class SaveInventory {
         if (enderChestInventory.getContents().length > 0)
             for (ItemStack item : enderChestInventory.getContents()) {
                 if (item != null) {
-                    data.setEnderChest(enderChestInventory.getContents());
+                    enderInvContents = enderChestInventory.getContents();
                     break;
                 }
             }
 
-        data.setXP(getTotalExperience(player));
-        data.setHealth(player.getHealth());
-        data.setFoodLevel(player.getFoodLevel());
-        data.setSaturation(player.getSaturation());
-        data.setWorld(player.getWorld().getName());
+        float totalXp = getTotalExperience(player);
+        double health = player.getHealth();
+        int foodLevel = player.getFoodLevel();
+        float saturation = player.getSaturation();
+        String worldName = player.getWorld().getName();
 
         // Location data
         Location pLoc = player.getLocation();
@@ -81,22 +84,45 @@ public class SaveInventory {
         double locX = ((int)(pLoc.getX() * 10)) / 10d;
         double locY = ((int)(pLoc.getY() * 10)) / 10d;
         double locZ = ((int)(pLoc.getZ() * 10)) / 10d;
-        data.setX(locX);
-        data.setY(locY);
-        data.setZ(locZ);
 
-        data.setLogType(logType);
-        data.setVersion(InventoryRollback.getPackageVersion());
+        // Final vars
+        ItemStack[] finalMainInvContents = mainInvContents;
+        ItemStack[] finalMainInvArmor = mainInvArmor;
+        ItemStack[] finalEnderInvContents = enderInvContents;
 
-        if (causeAlias != null) data.setDeathReason(causeAlias);
-        else if (deathCause != null) data.setDeathReason(deathCause.name());
-        else data.setDeathReason("UNKNOWN");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerData data = new PlayerData(player, logType, timestamp);
 
-        // Remove excess saves if limit is reached
-        CompletableFuture<Void> purgeTask = data.purgeExcessSaves();
+                if (finalMainInvContents != null) data.setMainInventory(finalMainInvContents);
+                if (finalMainInvArmor != null) data.setArmour(finalMainInvArmor);
+                if (finalEnderInvContents != null) data.setEnderChest(finalEnderInvContents);
 
-        // Save new data
-        purgeTask.thenRun(data::saveData);
+                data.setXP(totalXp);
+                data.setHealth(health);
+                data.setFoodLevel(foodLevel);
+                data.setSaturation(saturation);
+                data.setWorld(worldName);
+
+                data.setX(locX);
+                data.setY(locY);
+                data.setZ(locZ);
+
+                data.setLogType(logType);
+                data.setVersion(InventoryRollback.getPackageVersion());
+
+                if (causeAlias != null) data.setDeathReason(causeAlias);
+                else if (deathCause != null) data.setDeathReason(deathCause.name());
+                else data.setDeathReason("UNKNOWN");
+
+                // Remove excess saves if limit is reached
+                CompletableFuture<Void> purgeTask = data.purgeExcessSaves();
+
+                // Save new data
+                purgeTask.thenRun(data::saveData);
+            }
+        }.runTaskAsynchronously(main);
 
     }
 
@@ -118,23 +144,11 @@ public class SaveInventory {
 
                 dataOutput.writeInt(contents.length);
 
-                // TODO: remove bundle error saving workaround
-                boolean useBundleWorkaround = InventoryRollbackPlus.getInstance().getVersion()
-                        .isWithin(EnumNmsVersion.v1_17_R1, EnumNmsVersion.v1_17_R1);
-
                 for (ItemStack stack : contents) {
-                    // TODO: remove bundle error saving workaround
-                    /*if (stack != null && useBundleWorkaround && stack.getType().equals(Material.BUNDLE))
-                    {
-                        dataOutput.writeObject(null);
-                        continue;
-                    }*/
                     dataOutput.writeObject(stack);
                 }
                 dataOutput.close();
                 byte[] byteArr = outputStream.toByteArray();
-                // TODO: remove bundle error saving workaround
-                //test(byteArr);
                 return Base64Coder.encodeLines(byteArr);
             } catch (Exception e) {
                 throw new IllegalStateException("Unable to save item stacks.", e);
@@ -143,29 +157,6 @@ public class SaveInventory {
 
         return null;
     }
-
-    // TODO: remove bundle error saving workaround
-    /*public static void test(byte[] byteArr) {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArr);
-        BukkitObjectInputStream dataInput = null;
-        ItemStack[] stacks = null;
-        try {
-            dataInput = new BukkitObjectInputStream(inputStream);
-            stacks = new ItemStack[dataInput.readInt()];
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        for (int i = 0; i < stacks.length; i++) {
-            try {
-                Object objectRead = dataInput.readObject();
-                stacks[i] = (ItemStack) objectRead;
-            } catch (IOException | ClassNotFoundException | NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-        try { dataInput.close(); } catch (IOException ignored) {}
-    }*/
 
     //Credits to Dev_Richard (https://www.spigotmc.org/members/dev_richard.38792/)
     //https://gist.github.com/RichardB122/8958201b54d90afbc6f0

@@ -38,11 +38,7 @@ public class EventLogs implements Listener {
 			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null, player.getInventory(), player.getEnderChest()).createSave();
 		}
 		if (player.hasPermission("inventoryrollbackplus.adminalerts")) {
-			// TODO: remove bundle error saving workaround
-			boolean useBundleWorkaround = InventoryRollbackPlus.getInstance().getVersion()
-					.isWithin(EnumNmsVersion.v1_17_R1, EnumNmsVersion.v1_17_R1);
-			if (!useBundleWorkaround) return;
-			player.sendMessage(MessageData.getPluginPrefix() + MessageData.getAdminAlerts());
+			// can send info to admins here
 		}
 	}
 
