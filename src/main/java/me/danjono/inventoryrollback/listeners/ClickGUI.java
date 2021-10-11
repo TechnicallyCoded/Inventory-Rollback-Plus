@@ -4,6 +4,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -205,10 +206,12 @@ public class ClickGUI implements Listener {
                         PlayerData data = new PlayerData(uuid, logType, timestamp);
 
                         // Get from MySQL
-                        try {
-                            data.getAllBackupData().get();
-                        } catch (ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
                         }
 
                         // Create inventory
@@ -289,10 +292,12 @@ public class ClickGUI implements Listener {
                             PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                             // Get data if using MySQL
-                            try {
-                                data.getAllBackupData().get();
-                            } catch (ExecutionException | InterruptedException ex) {
-                                ex.printStackTrace();
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                                try {
+                                    data.getAllBackupData().get();
+                                } catch (ExecutionException | InterruptedException ex) {
+                                    ex.printStackTrace();
+                                }
                             }
 
                             ItemStack[] inventory = data.getMainInventory();
@@ -373,14 +378,16 @@ public class ClickGUI implements Listener {
                         PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                         // Get data if using MySQL
-                        try {
-                            data.getAllBackupData().get();
-                        } catch (ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
                         }
 
                         // Create Inventory
-                        EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data);
+                        EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, 1);
 
                         // Open inventory sync (compressed code)
                         Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
@@ -490,39 +497,85 @@ public class ClickGUI implements Listener {
             // Click on page selector button to go back to backup menu
             if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
 
-                // Run all data retrieval operations async to avoid tick lag
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        // Init from MySQL or, if YAML, init & load config file
-                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+                //Player has selected a page icon
+                int page = nbt.getInt("page");
 
-                        // Get from MySQL
-                        try {
-                            data.getAllBackupData().get();
-                        } catch (ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
+                //Selected to go back to main menu
+                if (page == 0) {
+
+                    // Run all data retrieval operations async to avoid tick lag
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            // Init from MySQL or, if YAML, init & load config file
+                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+
+                            // Get data if using MySQL
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                                try {
+                                    data.getAllBackupData().get();
+                                } catch (ExecutionException | InterruptedException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+
+                            // Get location of where the backup was made from data
+                            String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
+
+                            // Create inventory
+                            MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+
+                            // Display inventory to player
+                            Future<InventoryView> inventoryViewFuture = main.getServer().getScheduler().callSyncMethod(main,
+                                    () -> staff.openInventory(menu.getInventory()));
+                            //If the backup file is invalid it will return null, we want to catch it here
+                            try {
+                                inventoryViewFuture.get();
+                                // Start placing items in the inventory async
+                                menu.showBackupItems();
+                            } catch (NullPointerException | ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
                         }
+                    }.runTaskAsynchronously(main);
 
-                        // Get location of where the backup was made from data
-                        String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
+                } else {
 
-                        // Create inventory
-                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            // Init from MySQL or, if YAML, init & load config file
+                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                        // Display inventory to player
-                        Future<InventoryView> inventoryViewFuture = main.getServer().getScheduler().callSyncMethod(main,
-                                () -> staff.openInventory(menu.getInventory()));
-                        //If the backup file is invalid it will return null, we want to catch it here
-                        try {
-                            inventoryViewFuture.get();
-                            // Start placing items in the inventory async
-                            menu.showBackupItems();
-                        } catch (NullPointerException | ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
+                            // Get data if using MySQL
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                                try {
+                                    data.getAllBackupData().get();
+                                } catch (ExecutionException | InterruptedException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+
+                            // Create Inventory
+                            EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, page);
+
+                            // Open inventory sync (compressed code)
+                            Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
+                                    () -> {
+                                        staff.openInventory(menu.getInventory());
+                                        return null;
+                                    });
+                            try {
+                                futureOpenInv.get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+
+                            // Place items async
+                            menu.showEnderChestItems();
                         }
-                    }
-                }.runTaskAsynchronously(main);
+                    }.runTaskAsynchronously(this.main);
+                }
             }
 
             //Clicked icon to overwrite player ender chest with backup data
@@ -538,10 +591,12 @@ public class ClickGUI implements Listener {
                             PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                             // Get from MySQL
-                            try {
-                                data.getAllBackupData().get();
-                            } catch (ExecutionException | InterruptedException ex) {
-                                ex.printStackTrace();
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                                try {
+                                    data.getAllBackupData().get();
+                                } catch (ExecutionException | InterruptedException ex) {
+                                    ex.printStackTrace();
+                                }
                             }
 
                             // Display inventory to player

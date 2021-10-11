@@ -1,5 +1,7 @@
 package me.danjono.inventoryrollback.gui.menu;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
@@ -18,6 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class EnderChestBackupMenu {
 
+    private int pageNumber;
+
     private Player staff;
     private UUID playerUUID;
     private LogType logType;
@@ -27,12 +31,13 @@ public class EnderChestBackupMenu {
     private Buttons buttons;
     private Inventory inventory;
 
-    public EnderChestBackupMenu(Player staff, PlayerData data) {
+    public EnderChestBackupMenu(Player staff, PlayerData data, int pageNumberIn) {
         this.staff = staff;
         this.playerUUID = data.getOfflinePlayer().getUniqueId();
         this.logType = data.getLogType();
         this.timestamp = data.getTimestamp();
         this.enderchest = data.getEnderChest();
+        this.pageNumber = pageNumberIn;
         this.buttons = new Buttons(playerUUID);
         
         createInventory();
@@ -41,8 +46,18 @@ public class EnderChestBackupMenu {
     public void createInventory() {
         inventory = Bukkit.createInventory(staff, InventoryName.ENDER_CHEST_BACKUP.getSize(), InventoryName.ENDER_CHEST_BACKUP.getName());
 
-        //Add back button
-        inventory.setItem(InventoryName.ENDER_CHEST_BACKUP.getSize() - 8, buttons.inventoryMenuBackButton(MessageData.getBackButton(), logType, timestamp));
+        List<String> lore = new ArrayList<>();
+        if (pageNumber == 1) {
+            ItemStack mainInventoryMenu = buttons.inventoryMenuBackButton(MessageData.getBackButton(), logType, timestamp);
+            inventory.setItem(InventoryName.ENDER_CHEST_BACKUP.getSize() - 8, mainInventoryMenu);
+        }
+
+        if (pageNumber > 1) {
+            lore.add("Page " + (pageNumber - 1));
+            ItemStack previousPage = buttons.enderChestBackButton(MessageData.getPreviousPageButton(), logType, pageNumber - 1, timestamp, lore);
+
+            inventory.setItem(InventoryName.ENDER_CHEST_BACKUP.getSize() - 8, previousPage);
+        }
     }
 
     public Inventory getInventory() {
@@ -50,8 +65,21 @@ public class EnderChestBackupMenu {
     }
 
     public void showEnderChestItems() {
-        int item = 0;
-        int position = 0;
+        //Check how many items there are in total
+        int itemsToDisplay = enderchest.length;
+
+        // How many rows are available
+        int spaceAvailable = InventoryName.ROLLBACK_LIST.getSize() - 9;
+
+        // How many pages are required
+        int pagesRequired = Math.max(1, (int) Math.ceil(itemsToDisplay / (double) spaceAvailable));
+
+        //Check if pageNumber supplied is greater then pagesRequired, if true set to last page
+        if (pageNumber > pagesRequired) {
+            pageNumber = pagesRequired;
+        } else if (pageNumber <= 0) {
+            pageNumber = 1;
+        }
 
         //If the backup file is invalid it will return null, we want to catch it here
         try {
@@ -60,8 +88,8 @@ public class EnderChestBackupMenu {
             new BukkitRunnable() {
 
                 int invPosition = 0;
-                int itemPos = 0;
-                final int max = Math.min(enderchest.length, 27); // excluded but starts from 0
+                int itemPos = (pageNumber - 1) * 27;
+                final int max = Math.max(0, itemPos + Math.min(enderchest.length - itemPos, 27)); // excluded but starts from 0
 
                 @Override
                 public void run() {
@@ -71,6 +99,7 @@ public class EnderChestBackupMenu {
                             this.cancel();
                             return;
                         }
+
 
                         ItemStack itemStack = enderchest[itemPos];
                         if (itemStack != null) {
@@ -91,12 +120,22 @@ public class EnderChestBackupMenu {
         // Add restore all player inventory button
         if (ConfigData.isRestoreToPlayerButton()) {
             inventory.setItem(
-                    InventoryName.ENDER_CHEST_BACKUP.getSize() - 2,
+                    InventoryName.ENDER_CHEST_BACKUP.getSize() - 5,
                     buttons.restoreAllInventory(logType, timestamp));
         } else {
             inventory.setItem(
-                    InventoryName.ENDER_CHEST_BACKUP.getSize() - 2,
+                    InventoryName.ENDER_CHEST_BACKUP.getSize() - 5,
                     buttons.restoreAllInventoryDisabled(logType, timestamp));
+        }
+
+
+        List<String> lore = new ArrayList<>();
+        if (pageNumber < pagesRequired) {
+            lore.add("Page " + (pageNumber + 1));
+            ItemStack nextPage = buttons.enderChestNextButton(MessageData.getNextPageButton(), logType, pageNumber + 1, timestamp, lore);
+
+            inventory.setItem(InventoryName.ENDER_CHEST_BACKUP.getSize() - 2, nextPage);
+            lore.clear();
         }
     }
 

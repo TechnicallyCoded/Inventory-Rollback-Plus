@@ -197,6 +197,76 @@ public class Buttons {
         return button;
     }
 
+    public ItemStack enderChestNextButton(String displayName, LogType logType, int page, Long timestamp, List<String> lore) {
+        ItemStack button = new ItemStack(getPageSelectorIcon());
+        BannerMeta meta = (BannerMeta) button.getItemMeta();
+
+        List<Pattern> patterns = new ArrayList<>();
+        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
+        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE));
+        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));
+        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+
+        assert meta != null;
+        meta.setPatterns(patterns);
+
+        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+
+        if (displayName != null) {
+            meta.setDisplayName(displayName);
+        }
+
+        meta.setLore(lore);
+
+        button.setItemMeta(meta);
+
+        NBTWrapper nbt = new NBTWrapper(button);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        nbt.setLong("timestamp", timestamp);
+        nbt.setInt("page", page);
+        button = nbt.setItemData();
+
+        return button;
+    }
+
+    public ItemStack enderChestBackButton(String displayName, LogType logType, int page, Long timestamp, List<String> lore) {
+        ItemStack button = new ItemStack(getPageSelectorIcon());
+        BannerMeta meta = (BannerMeta) button.getItemMeta();
+
+        List<Pattern> patterns = new ArrayList<>();
+        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
+        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE));
+        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
+        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+
+        assert meta != null;
+        meta.setPatterns(patterns);
+
+        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+
+        if (displayName != null) {
+            meta.setDisplayName(displayName);
+        }
+
+        if (lore != null) {
+            meta.setLore(lore);
+        }
+
+        button.setItemMeta(meta);
+
+        NBTWrapper nbt = new NBTWrapper(button);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        nbt.setLong("timestamp", timestamp);
+        nbt.setInt("page", page);
+        button = nbt.setItemData();
+
+        return button;
+    }
+
     public ItemStack mainMenuBackButton(String displayName) {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
@@ -252,6 +322,8 @@ public class Buttons {
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
         nbt.setLong("timestamp", timestamp);
+        nbt.setInt("page", 0);
+
         button = nbt.setItemData();
 
         return button;
