@@ -22,7 +22,7 @@ attribute-restore:
     restored: 'Se restauró el inventario principal de %NAME%.'
     restored-player: 'Tu inventario ha sido restablecido por %NAME% utilizando un backup.'
     not-online: 'No puedes restablecer el inventario de %NAME% mientras que este desconectado.'
-    button-name: '&dRestaurar el Inventario Principal'
+    button-name: '&dRestaurar el Inventario'
     # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
     button-disabled: '&cSingle click restore is disabled\n&cin the config.yml file!'
   ender-chest:
