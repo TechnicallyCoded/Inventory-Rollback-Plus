@@ -114,7 +114,7 @@ public class SaveInventory {
 
                 if (causeAlias != null) data.setDeathReason(causeAlias);
                 else if (deathCause != null) data.setDeathReason(deathCause.name());
-                else data.setDeathReason("UNKNOWN");
+                else if (logType == LogType.DEATH) data.setDeathReason("UNKNOWN");
 
                 // Remove excess saves if limit is reached
                 CompletableFuture<Void> purgeTask = data.purgeExcessSaves();

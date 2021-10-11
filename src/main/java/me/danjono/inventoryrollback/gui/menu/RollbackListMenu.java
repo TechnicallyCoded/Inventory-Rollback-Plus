@@ -79,10 +79,12 @@ public class RollbackListMenu {
             pageNumber = 1;
         }
 
+        int backupsAlreadyPassed = spaceRequired * (pageNumber - 1);
+        int backupsOnCurrentPage = Math.min(backups, Math.min(spaceRequired, backups - backupsAlreadyPassed));
         List<Long> timeStamps = playerData.getSelectedPageTimestamps(pageNumber);
 
         int position = 0;
-        for (int i = 0; i < Math.min(spaceRequired, backups); i++) {
+        for (int i = 0; i < backupsOnCurrentPage; i++) {
             try {
                 Long timestamp = timeStamps.get(i);
                 playerData = new PlayerData(playerUUID, logType, timestamp);
