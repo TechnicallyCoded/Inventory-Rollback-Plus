@@ -177,16 +177,26 @@ public class YAML {
             if (!StringUtils.isNumeric(fileName))
                 continue;
 
-            timeSaved.add(Long.parseLong(fileName));
+            long saveTimeStamp;
+            try {
+                saveTimeStamp = Long.parseLong(fileName);
+            } catch (NumberFormatException ex) {
+                continue;
+            }
+
+            // In the case the backup was created less than a second ago, ignore it to avoid data corruption
+            if (System.currentTimeMillis() - saveTimeStamp < 1000) {
+                continue;
+            }
+
+            timeSaved.add(saveTimeStamp);
         }
 
         for (int i = 0; i < deleteAmount; i++) {
             Long deleteTimestamp = Collections.min(timeSaved);
             timeSaved.remove(deleteTimestamp);
             try {
-                Files.delete(new File (backupFolder, deleteTimestamp + ".yml").toPath());
-            } catch (NoSuchFileException ignore) {
-
+                Files.deleteIfExists(new File (backupFolder, deleteTimestamp + ".yml").toPath());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
