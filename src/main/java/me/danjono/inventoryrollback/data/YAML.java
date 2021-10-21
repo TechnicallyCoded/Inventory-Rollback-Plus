@@ -3,6 +3,7 @@ package me.danjono.inventoryrollback.data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -184,8 +185,10 @@ public class YAML {
             timeSaved.remove(deleteTimestamp);
             try {
                 Files.delete(new File (backupFolder, deleteTimestamp + ".yml").toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (NoSuchFileException ignore) {
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
     }
