@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public class YAML {
 
     private final UUID uuid;
-    private final long timestamp;
+    private final Long timestamp;
     private final File playerBackupFolder;
     private final File backupFile;
     private final YamlConfiguration data;
@@ -117,10 +117,12 @@ public class YAML {
     }
 
     public int getAmountOfBackups() {         
-        if (!playerBackupFolder.exists())
-            return 0;
+        if (!playerBackupFolder.exists()) return 0;
 
-        return playerBackupFolder.list().length;
+        String[] filesArr = playerBackupFolder.list();
+        if (filesArr == null) return 0;
+
+        return filesArr.length;
     }
 
     public List<Long> getSelectedPageTimestamps(int pageNumber) {
