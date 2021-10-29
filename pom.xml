@@ -55,6 +55,11 @@
             <version>1.0.6</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>22.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

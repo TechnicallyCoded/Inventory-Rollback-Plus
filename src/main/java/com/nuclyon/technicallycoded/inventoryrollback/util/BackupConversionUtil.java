@@ -1,7 +1,6 @@
 package com.nuclyon.technicallycoded.inventoryrollback.util;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import com.sun.istack.internal.NotNull;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -13,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -82,9 +82,12 @@ public class BackupConversionUtil {
         // Sanity check files in the folder & add them to a list to process later
         for (File file : availableFiles) {
             String originalFileName = file.getName();
+            System.out.println(originalFileName);
             String[] fileParts = originalFileName.split("\\.");
             String fileUUIDStr = fileParts[0];
+            System.out.println(fileUUIDStr);
             String fileExtension = fileParts[1];
+            System.out.println(fileExtension);
 
             UUID playerUuid;
             try {
@@ -98,7 +101,7 @@ public class BackupConversionUtil {
                 continue;
             }
 
-            if (file.isFile() && fileExtension.equals(".yml")) {
+            if (file.isFile() && fileExtension.equals("yml")) {
                 backupFiles.add(file);
             }
         }
