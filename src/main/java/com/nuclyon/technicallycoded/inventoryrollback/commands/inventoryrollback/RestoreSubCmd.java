@@ -13,9 +13,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Restore extends IRPCommand {
+public class RestoreSubCmd extends IRPCommand {
 
-    public Restore(InventoryRollbackPlus mainIn) {
+    public RestoreSubCmd(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 

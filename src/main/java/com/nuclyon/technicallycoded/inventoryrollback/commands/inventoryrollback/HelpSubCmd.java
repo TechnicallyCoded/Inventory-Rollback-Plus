@@ -7,9 +7,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class Help extends IRPCommand {
+public class HelpSubCmd extends IRPCommand {
 
-    public Help(InventoryRollbackPlus mainIn) {
+    public HelpSubCmd(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 

@@ -9,6 +9,9 @@ commands:
   disable: '&2El plugin ha sido deshabilitado.'
   reload: '&2El plugin ha sido recargado.'
   player-only: '&cEl comando solo lo puede enviar un jugador.'
+  # Translation missing, please contribute by creating an issue here
+  # https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+  import: '&aSuccessfully imported all backup data from the old plugin.'
 
 backup:
   no-backup: 'No existen backups para %NAME% en este momento.'

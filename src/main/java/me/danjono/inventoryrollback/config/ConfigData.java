@@ -114,11 +114,12 @@ public class ConfigData {
                 setFolderLocation(InventoryRollback.getInstance().getDataFolder());
             }
         }
-        setSaveType(SaveType.YAML);
 
         setMySQLEnabled((boolean) getDefaultValue("mysql.enabled", false));
         if (isMySQLEnabled())
-            setSaveType(SaveType.MYSQL);            
+            setSaveType(SaveType.MYSQL);
+        else
+            setSaveType(SaveType.YAML);
 
         setMySQLHost((String) getDefaultValue("mysql.details.host", "127.0.0.1"));
         setMySQLPort((int) getDefaultValue("mysql.details.port", 3306));

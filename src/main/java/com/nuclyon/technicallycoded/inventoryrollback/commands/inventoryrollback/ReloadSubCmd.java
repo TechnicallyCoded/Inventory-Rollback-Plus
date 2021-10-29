@@ -6,9 +6,9 @@ import me.danjono.inventoryrollback.config.MessageData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class Reload extends IRPCommand {
+public class ReloadSubCmd extends IRPCommand {
 
-    public Reload(InventoryRollbackPlus mainIn) {
+    public ReloadSubCmd(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 

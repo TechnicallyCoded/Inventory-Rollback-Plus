@@ -9,6 +9,9 @@ commands:
   disable: '&2已关闭插件'
   reload: '&2插件已重载'
   player-only: '&c只能由玩家运行这个指令'
+  # Translation missing, please contribute by creating an issue here
+  # https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+  import: '&aSuccessfully imported all backup data from the old plugin.'
 
 backup:
   no-backup: '目前没有 %NAME% 的备份'

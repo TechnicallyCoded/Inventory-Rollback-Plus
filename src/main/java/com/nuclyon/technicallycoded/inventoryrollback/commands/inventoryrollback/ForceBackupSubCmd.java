@@ -11,9 +11,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ForceBackup extends IRPCommand {
+public class ForceBackupSubCmd extends IRPCommand {
 
-    public ForceBackup(InventoryRollbackPlus mainIn) {
+    public ForceBackupSubCmd(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 

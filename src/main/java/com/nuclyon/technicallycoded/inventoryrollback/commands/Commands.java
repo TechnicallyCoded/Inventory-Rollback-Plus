@@ -16,20 +16,21 @@ public class Commands implements CommandExecutor, TabCompleter {
 
     private InventoryRollbackPlus main;
 
-    private String[] defaultOptions = new String[] {"restore", "forcebackup", "enable", "disable", "reload", "version", "help"};
+    private String[] defaultOptions = new String[] {"restore", "forcebackup", "enable", "disable", "reload", "version", "import", "help"};
     private String[] backupOptions = new String[] {"all", "player"};
 
     private HashMap<String, IRPCommand> subCommands = new HashMap<>();
 
     public Commands(InventoryRollbackPlus mainIn) {
         this.main = mainIn;
-        this.subCommands.put("restore", new Restore(mainIn));
-        this.subCommands.put("enable", new Enable(mainIn));
-        this.subCommands.put("disable", new Disable(mainIn));
-        this.subCommands.put("reload", new Reload(mainIn));
-        this.subCommands.put("version", new Version(mainIn));
-        this.subCommands.put("forcebackup", new ForceBackup(mainIn));
-        this.subCommands.put("help", new Help(mainIn));
+        this.subCommands.put("restore", new RestoreSubCmd(mainIn));
+        this.subCommands.put("enable", new EnableSubCmd(mainIn));
+        this.subCommands.put("disable", new DisableSubCmd(mainIn));
+        this.subCommands.put("reload", new ReloadSubCmd(mainIn));
+        this.subCommands.put("version", new VersionSubCmd(mainIn));
+        this.subCommands.put("forcebackup", new ForceBackupSubCmd(mainIn));
+        this.subCommands.put("import", new ImportSubCmd(mainIn));
+        this.subCommands.put("help", new HelpSubCmd(mainIn));
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -39,7 +40,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 label.equalsIgnoreCase("inventoryrollbackplus")
         ) {
             if (args.length == 0) {
-                ((Help) this.subCommands.get("help")).sendHelp(sender);
+                ((HelpSubCmd) this.subCommands.get("help")).sendHelp(sender);
                 return true;
             }
             IRPCommand irpCmd = this.subCommands.get(args[0]);

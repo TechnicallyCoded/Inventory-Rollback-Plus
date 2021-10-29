@@ -8,6 +8,7 @@ commands:
   disable: '&2The plugin has been disabled.'
   reload: '&2The plugin has been reloaded successfully.'
   player-only: '&cCommand can only be run by a player.'
+  import: '&aSuccessfully imported all backup data from the old plugin.'
 
 backup:
   no-backup: 'There is currently no backups for %NAME%.'

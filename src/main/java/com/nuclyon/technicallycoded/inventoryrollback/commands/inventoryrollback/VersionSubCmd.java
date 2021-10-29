@@ -8,9 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class Version extends IRPCommand {
+public class VersionSubCmd extends IRPCommand {
 
-    public Version(InventoryRollbackPlus mainIn) {
+    public VersionSubCmd(InventoryRollbackPlus mainIn) {
         super(mainIn);
     }
 

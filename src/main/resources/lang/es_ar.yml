@@ -9,6 +9,9 @@ commands:
   disable: '&2El plugin se desactivó.'
   reload: '&2El plugin se recargó de forma exitosa.'
   player-only: '&cEl comando solo lo puede enviar un jugador.'
+  # Translation missing, please contribute by creating an issue here
+  # https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+  import: '&aSuccessfully imported all backup data from the old plugin.'
 
 backup:
   no-backup: 'Actualmente no hay backups para %NAME%.'
@@ -23,7 +26,8 @@ attribute-restore:
     restored-player: 'Tu inventario fue restablecido por %NAME% usando un backup.'
     not-online: 'No podés restablecer el inventario de %NAME% mientras que este offline.'
     button-name: '&dRestaurar el Inventario'
-    # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
+    # Translation missing, please contribute by creating an issue here
+    # https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
     button-disabled: '&cSingle click restore is disabled\n&cin the config.yml file!'
   ender-chest:
     restored: 'Se restaruo el cofre de ender de %NAME%.'
