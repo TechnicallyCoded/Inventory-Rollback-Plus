@@ -4,6 +4,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import org.apache.commons.lang.Validate;
@@ -82,12 +83,9 @@ public class BackupConversionUtil {
         // Sanity check files in the folder & add them to a list to process later
         for (File file : availableFiles) {
             String originalFileName = file.getName();
-            System.out.println(originalFileName);
             String[] fileParts = originalFileName.split("\\.");
             String fileUUIDStr = fileParts[0];
-            System.out.println(fileUUIDStr);
             String fileExtension = fileParts[1];
-            System.out.println(fileExtension);
 
             UUID playerUuid;
             try {
@@ -143,8 +141,6 @@ public class BackupConversionUtil {
                     continue;
                 }
 
-                YAML loadedYamlBackup = new YAML(uuid, logTypeProcessing, timestamp);
-
                 // ---- Load all data from the old config ----
 
                 String packageVersion = oldBackupDataConfig.getString("data." + timestamp + ".version");
@@ -169,17 +165,19 @@ public class BackupConversionUtil {
 
                 // ---- Process all loaded data ----
 
-                loadedYamlBackup.setMainInventory(mainInvItems);
-                loadedYamlBackup.setArmour(armorItems);
-                loadedYamlBackup.setEnderChest(enderChestItems);
-                loadedYamlBackup.setXP(xp);
-                loadedYamlBackup.setHealth(health);
-                loadedYamlBackup.setFoodLevel(foodLevel);
-                loadedYamlBackup.setSaturation(saturation);
-                loadedYamlBackup.setWorld(worldName);
-                loadedYamlBackup.setX(posX);
-                loadedYamlBackup.setY(posY);
-                loadedYamlBackup.setZ(posZ);
+                PlayerData importedData = new PlayerData(uuid, logTypeProcessing, timestamp);
+
+                importedData.setMainInventory(mainInvItems);
+                importedData.setArmour(armorItems);
+                importedData.setEnderChest(enderChestItems);
+                importedData.setXP(xp);
+                importedData.setHealth(health);
+                importedData.setFoodLevel(foodLevel);
+                importedData.setSaturation(saturation);
+                importedData.setWorld(worldName);
+                importedData.setX(posX);
+                importedData.setY(posY);
+                importedData.setZ(posZ);
 
                 // Sanity check log type
                 if (logTypeStoredString == null) {
@@ -205,12 +203,12 @@ public class BackupConversionUtil {
                 }
 
                 // Apply last data after sanity checks & conversions
-                loadedYamlBackup.setLogType(logTypeStored);
-                loadedYamlBackup.setVersion(packageVersion);
-                if (deathReason != null) loadedYamlBackup.setDeathReason(deathReason);
+                importedData.setLogType(logTypeStored);
+                importedData.setVersion(packageVersion);
+                if (deathReason != null) importedData.setDeathReason(deathReason);
 
                 // Save the data to the new folder location
-                loadedYamlBackup.saveData();
+                importedData.saveData();
             } catch (Exception e) {
                 InventoryRollbackPlus.getPluginLogger().warning(
                         MessageData.getPluginPrefix() + "Error converting backup file at " +
