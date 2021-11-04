@@ -18,6 +18,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
     private String[] defaultOptions = new String[] {"restore", "forcebackup", "enable", "disable", "reload", "version", "import", "help"};
     private String[] backupOptions = new String[] {"all", "player"};
+    private String[] importOptions = new String[] {"confirm"};
 
     private HashMap<String, IRPCommand> subCommands = new HashMap<>();
 
@@ -63,13 +64,21 @@ public class Commands implements CommandExecutor, TabCompleter {
             return suggestions;
         } else if (args.length == 2) {
             String[] opts;
+
             if (args[0].equalsIgnoreCase("forcebackup") ||
                     args[0].equalsIgnoreCase("forcesave")) {
                 opts = this.backupOptions;
+
+            } else if (args[0].equalsIgnoreCase("import") &&
+                    (ImportSubCmd.shouldShowConfirmOption() || args[1].toLowerCase().startsWith("c"))) {
+                opts = this.importOptions;
+
             } else {
                 opts = null;
             }
+
             if (opts == null) return null;
+
             ArrayList<String> suggestions = new ArrayList<>();
             for (String option : opts) {
                 if (option.startsWith(args[1].toLowerCase()))
