@@ -62,7 +62,7 @@ public class RestoreInventory {
         }
         
         if (stacks == null)
-            return stacks;
+            return new ItemStack[]{};
 
         for (int i = 0; i < stacks.length; i++) {
             try {
