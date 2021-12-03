@@ -16,4 +16,10 @@ this project was forked from before forking such repository. Any changes
 from the parent repository which are merged into this project in the future
 are also under the MIT LICENSE (at the time of writing). If the forked
 repository makes changes to the license, any new code from such repository,
-if applicable, is by default under the aforementioned new license.
+if applicable, is by default under the MIT LICENSE.
+
+You may find the license to the code that was not modified in the file
+OLD_LICENSE under the same directory as this one.
+
+THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT WARRANTY OF ANY KIND, USE THIS
+SOFTWARE AT YOUR OWN RISK.
