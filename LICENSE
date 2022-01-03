@@ -7,8 +7,8 @@ Definitions
  who I am is to avoid doxxing myself all while making it possible to verify
  the person who owns the account through an independent 3rd party, which in 
  this case would be Mojang)
-2) Project - refers to the entirety of code files and resources present in
- the github repository https://github.com/TechnicallyCoded/Inventory-Rollback-Plus
+2) Project & The repository - refer to the entirety of code files and resources 
+ present in the github repository https://github.com/TechnicallyCoded/Inventory-Rollback-Plus
  OR any files and resources packaged into the InventoryRollbackPlus plugin I
  authored.
 
@@ -16,8 +16,10 @@ This project is forked from https://github.com/danjono/Inventory-Rollback
 which is under the MIT LICENSE. As per the MIT license, I may sublicense the 
 work, and therefore, I reserve all rights to any modifications I have made 
 to this project's code which were NOT present in the repository this project 
-was forked from. Any changes from the parent repository which are merged into 
-this project in the future are also under the MIT LICENSE (at the time of 
+was forked from. You may fork this repository for the sole purpose of 
+contributing back to the project (such as creating pull requests for feature
+changes and bug fixes). Any changes from the parent repository which are merged 
+into this project in the future are also under the MIT LICENSE (at the time of 
 writing). If the forked repository makes changes to the license, any new code 
 from such repository, if applicable, is by default under their new license. 
 
