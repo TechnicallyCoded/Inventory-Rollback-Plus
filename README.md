@@ -1,9 +1,5 @@
 ![](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/master/icons/inventoryrollbackplus_icon_128.png?raw=true)
 # InventoryRollbackPlus
-
-***WARNING***: This plugin is open source but NOT free to use as you wish. Read the [LICENSE](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/main/LICENSE) before downloading this code.
-*(If I choose to stop maintaining this plugin, the LICENSE may change to allow further development, but that is not a guarantee and will not happen anytime soon since I am still actively developing this plugin)*
-
 ### Introduction
 
 **Description**
