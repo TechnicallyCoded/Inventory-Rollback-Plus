@@ -42,7 +42,7 @@ public class TimeZoneUtil {
         if (timeZone.equals("UTC")) {
             return 0L;
         } else {
-            char signChar = timeZone.length() > 3 ? timeZone.charAt(4) : '+';
+            char signChar = timeZone.length() > 3 ? timeZone.charAt(3) : ' ';
 
             String utcOffsetFormat;
             if (timeZone.length() > 4 &&
