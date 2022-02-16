@@ -34,7 +34,7 @@ public class EventLogs implements Listener {
 		if (!ConfigData.isEnabled()) return;
 
 		Player player = e.getPlayer();
-		if (player.hasPermission("inventoryrollbackplus.joinsave") || player.hasPermission("inventoryrollback.joinsave")) {
+		if (player.hasPermission("inventoryrollbackplus.joinsave")) {
 			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null, player.getInventory(), player.getEnderChest()).createSave();
 		}
 		if (player.hasPermission("inventoryrollbackplus.adminalerts")) {
@@ -48,7 +48,7 @@ public class EventLogs implements Listener {
 
 		Player player = e.getPlayer();
 
-		if (player.hasPermission("inventoryrollbackplus.leavesave") || player.hasPermission("inventoryrollback.leavesave")) {
+		if (player.hasPermission("inventoryrollbackplus.leavesave")) {
 			new SaveInventory(e.getPlayer(), LogType.QUIT, null, null, player.getInventory(), player.getEnderChest()).createSave();
 		}
 	}
@@ -115,7 +115,7 @@ public class EventLogs implements Listener {
 
 		Player player = e.getPlayer();
 
-		if (player.hasPermission("inventoryrollbackplus.worldchangesave") || player.hasPermission("inventoryrollback.worldchangesave")) {
+		if (player.hasPermission("inventoryrollbackplus.worldchangesave")) {
 			new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, null, player.getInventory(), player.getEnderChest()).createSave();
 		}
 	}

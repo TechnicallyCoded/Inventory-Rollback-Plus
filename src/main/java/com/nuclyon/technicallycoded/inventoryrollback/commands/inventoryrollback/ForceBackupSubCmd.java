@@ -19,7 +19,7 @@ public class ForceBackupSubCmd extends IRPCommand {
 
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender.hasPermission("inventoryrollbackplus.forcebackup") || sender.hasPermission("inventoryrollback.forcebackup")) {
+        if (sender.hasPermission("inventoryrollbackplus.forcebackup")) {
             if (args.length == 1 || args.length > 3) {
                 sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
                 return;
