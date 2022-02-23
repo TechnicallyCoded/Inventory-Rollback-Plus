@@ -1,0 +1,64 @@
+general:
+  prefix: '&f[&bInventoryRollbackPlus&f]&r '
+
+commands:
+  no-permission: '&cУ вас нет разрешения!'
+  error: '&cНеизвестная команда.'
+  enable: '&2Плагин был включен.'
+  disable: '&2Плагин был выключен.'
+  reload: '&2Плагин был успешно перезагружен.'
+  player-only: '&cКоманда может быть выполнена толшько игроком.'
+  import: '&aУдачно импортированы все данные прошлой версии.'
+
+backup:
+  no-backup: 'Нет сохранённых инвертарей для %NAME%.'
+  not-online: '%NAME% в данный момент оффлайн.'
+  force-saved-player: 'Инвертарь %NAME% был принудительно сохранён.'
+  force-saved-all: 'Инвертари всех игроков онлайн были сохранены.'
+  not-forced-saved: 'Возникли проблемы сохранения инвертаря %NAME%.'
+
+attribute-restore:
+  main-inventory:
+    restored: 'Тнвертарь %NAME% был восстановлен.'
+    restored-player: 'Ваш инвертарь был восстановлен %NAME% из сохранения.'
+    not-online: 'Вы не можете восстановить инвертарь %NAME% пока игрок оффлайн.'
+    button-name: '&cПерезаписать инвертарь из сохранения'
+    button-disabled: '&cВосстановление инвертаря по нажатию отключено в конфигурации плагина!'
+  ender-chest:
+    restored: 'Эндерчест %NAME% был восстановлен'
+    restored-player: 'Ваш эндерчест был восстановлен %NAME% из сохранения.'
+    not-online: 'Вы не можете восстановить эндерчест %NAME% пока игрок оффлайн.'
+    button-name: '&dВосстановить эндерчест'
+  health:
+    restored: 'Здоровье %NAME% было восстановлено.'
+    restored-player: 'Ваше здоровье было восстановлено %NAME% из сохранения.'
+    not-online: 'Вы не можете восстановить здоровье %NAME% пока игрок оффлайн.'
+    button-name: '&aВосстановить здоровье'
+  hunger:
+    restored: 'Сытость %NAME% была восстановлена.'
+    restored-player: 'Ваша сытость была восстановлена %NAME% из сохранения.'
+    not-online: 'Вы не можете восстановить сытость %NAME% пока игрок оффлайн.'
+    button-name: '&cВосстановить сытость'
+  experience:
+    restored: 'Опыт %NAME% был установлен к %XP%.'
+    restored-player: '%NAME% установил ваш опыт на %XP% из сохранения.'
+    not-online: 'Вы не можете восстановить опыт %NAME% пока он оффлайн.'
+    button-name: '&2Восстановить опыт игрока'
+    button-lore: '&rУровень опыта %XP%'
+
+death-location:  
+  world: '&6Мир: &f%WORLD%'
+  x: '&6X: &f%X%'
+  y: '&6Y: &f%Y%'
+  z: '&6Z: &f%Z%'
+  reason: '&6Причина смерти: &f%REASON%'
+  time: '&6Время: &f%TIME%'
+  teleport-to: '&3Телепортироваться к месту сохранения.'
+  teleport: 'Вы были телепортированы на %LOCATION%'
+  invalid-world: 'Мир %WORLD% пока не загружен на сервере.'
+
+menu-buttons:
+  main-menu: '&fГлавное меню'
+  next-page: '&fСледующая страница'
+  previous-page: '&fПредыдущая страница'
+  back-page: '&fНазад'
