@@ -24,7 +24,22 @@ public class NBTWrapper {
 		if (getTagElementMethodName == null) {
 			getTagElementMethodName = new HashMap<>();
 			setTagElementMethodName = new HashMap<>();
-			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_18_R1)) {
+			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_18_R2)) {
+				getTagMethodName = "t";
+				setTagMethodName = "c";
+
+				getTagElementMethodName.put(String.class, "l");
+				getTagElementMethodName.put(Integer.class, "h");
+				getTagElementMethodName.put(Long.class, "i");
+				getTagElementMethodName.put(Double.class, "k");
+				getTagElementMethodName.put(Float.class, "j");
+
+				setTagElementMethodName.put(String.class, "a");
+				setTagElementMethodName.put(Integer.class, "a");
+				setTagElementMethodName.put(Long.class, "a");
+				setTagElementMethodName.put(Double.class, "a");
+				setTagElementMethodName.put(Float.class, "a");
+			} else if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_18_R1)) {
 				getTagMethodName = "s";
 				setTagMethodName = "c";
 
