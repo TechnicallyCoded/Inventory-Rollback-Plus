@@ -59,7 +59,7 @@ permissions:
     children:
       inventoryrollbackplus.viewbackups: true
       inventoryrollbackplus.restore.teleport:
-        default: true
+        default: op
         description: Allow the staff member to teleport to the location where the backup was saved
   inventoryrollbackplus.forcebackup:
     description: Forces a backup for an online player.

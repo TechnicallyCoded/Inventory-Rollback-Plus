@@ -618,6 +618,12 @@ public class ClickGUI implements Listener {
 
             //Clicked icon to overwrite player ender chest with backup data
             else if (icon.getType().equals(Buttons.getRestoreAllInventoryIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
+
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
 
