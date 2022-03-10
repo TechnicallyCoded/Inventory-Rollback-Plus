@@ -1,9 +1,6 @@
 ![](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/master/icons/inventoryrollbackplus_icon_128.png?raw=true)
 # InventoryRollbackPlus
 
-***WARNING***: This plugin is open source but NOT free to use as you wish. Read the [LICENSE](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/main/LICENSE) before downloading this code.
-*(If I choose to stop maintaining this plugin, the LICENSE may change to allow further development, but that is not a guarantee and will not happen anytime soon since I am still actively developing this plugin)*
-
 ### Introduction
 
 **Description**
@@ -49,16 +46,21 @@ You can change these values in the configuration file.
 
 **Permissions**
 
+ - inventoryrollback.viewbackups - (Default: OP) Allow /ir restore command (without ability to give items back)
  - inventoryrollback.restore - (Default: OP) Allow /ir restore command
+ - inventoryrollback.restore.teleport - (Default: OP) Allow player to teleport to location of backup
  - inventoryrollback.forcebackup - (Default: OP) Allow /ir forcebackup command
  - inventoryrollback.enable - (Default: OP) Allow /ir enable command
  - inventoryrollback.disable - (Default: OP) Allow /ir disable command
  - inventoryrollback.reload - (Default: OP) Allow /ir reload command
+ - inventoryrollback.adminalerts - (Default: OP) Allow viewing important information for admins when they join
 
  - inventoryrollback.deathsave - (Default: All) Allow backup on death
  - inventoryrollback.joinsave - (Default: All) Allow backup on join
  - inventoryrollback.leavesave - (Default: All) Allow backup on leave
  - inventoryrollback.worldchangesave - (Default: All) Allow backup on world change
+ - inventoryrollback.help - (Default: All) Allow viewing the help message of the plugin
+ - inventoryrollback.version - (Default: All) Allow viewing version of the plugin
 
 ## Spigot Link
 [https://www.spigotmc.org/resources/85811/](https://www.spigotmc.org/resources/85811/)

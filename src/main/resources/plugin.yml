@@ -27,88 +27,109 @@ permissions:
       inventoryrollbackplus.version: true
       inventoryrollbackplus.help: true
       inventoryrollbackplus.adminalerts: true
+      inventoryrollbackplus.viewbackups: true
     default: op
   inventoryrollbackplus.cmd:
     description: Allows InventoryRollback commands to work.
     default: true
-    children:
-      inventoryrollback.cmd: true
   inventoryrollbackplus.deathsave:
     description: Player inventories will be saved when they die.
     default: true
-    children:
-      inventoryrollback.deathsave: true
   inventoryrollbackplus.joinsave:
     description: Player inventories will be saved when the join.
     default: true
-    children:
-      inventoryrollback.joinsave: true
   inventoryrollbackplus.leavesave:
     description: Player inventories will be saved when they leave.
     default: true
-    children:
-      inventoryrollback.leavesave: true
   inventoryrollbackplus.worldchangesave:
     description: Player inventories will be saved when they change worlds.
     default: true
-    children:
-      inventoryrollback.worldchangesave: true
   inventoryrollbackplus.enable:
     description: Grants access to enable the plugin globally.
     default: op
-    children:
-      inventoryrollback.enable: true
   inventoryrollbackplus.disable:
     description: Grants access to disable the plugin globally.
     default: op
-    children:
-      inventoryrollback.disable: true
   inventoryrollbackplus.reload:
     description: Grants access to reload the plugin configuration.
     default: op
-    children:
-      inventoryrollback.reload: true
   inventoryrollbackplus.restore:
     description: Grants access to perform player roll backs.
     default: op
     children:
-      inventoryrollback.restore: true
+      inventoryrollbackplus.viewbackups: true
+      inventoryrollbackplus.restore.teleport:
+        default: op
+        description: Allow the staff member to teleport to the location where the backup was saved
   inventoryrollbackplus.forcebackup:
     description: Forces a backup for an online player.
     default: op
-    children:
-      inventoryrollback.forcebackup: true
-  inventoryrollbackplus.version:
-    description: Allows player to see the version the plugin is running on the server.
-    default: true
-    children:
-      inventoryrollback.version: true
+  inventoryrollbackplus.viewbackups:
+    description: Allows player to view player backups but can't take items from the backups or restore the target's inventory
+    default: op
   inventoryrollbackplus.adminalerts:
     description: Allows player to receive extra notifications related to the plugin when joining.
     default: op
+  inventoryrollbackplus.version:
+    description: Allows player to see the version the plugin is running on the server.
+    default: true
   inventoryrollbackplus.help:
     description: Get the list of commands and what they do
     default: true
-  # ---- LEGACY ----
+
+  # ---- LEGACY COMPATIBILITY ----
   inventoryrollback.cmd:
     description: Allows InventoryRollback commands to work.
+    default: false
+    children:
+      inventoryrollbackplus.cmd: true
   inventoryrollback.deathsave:
     description: Player inventories will be saved when they die.
+    default: false
+    children:
+      inventoryrollbackplus.deathsave: true
   inventoryrollback.joinsave:
     description: Player inventories will be saved when the join.
+    default: false
+    children:
+      inventoryrollbackplus.joinsave: true
   inventoryrollback.leavesave:
     description: Player inventories will be saved when they leave.
+    default: false
+    children:
+      inventoryrollbackplus.leavesave: true
   inventoryrollback.worldchangesave:
     description: Player inventories will be saved when they change worlds.
+    default: false
+    children:
+      inventoryrollbackplus.worldchangesave: true
   inventoryrollback.enable:
     description: Grants access to enable the plugin globally.
+    default: false
+    children:
+      inventoryrollbackplus.enable: true
   inventoryrollback.disable:
     description: Grants access to disable the plugin globally.
+    default: false
+    children:
+      inventoryrollbackplus.disable: true
   inventoryrollback.reload:
     description: Grants access to reload the plugin configuration.
+    default: false
+    children:
+      inventoryrollbackplus.reload: true
   inventoryrollback.restore:
     description: Grants access to perform player roll backs.
+    default: false
+    children:
+      inventoryrollbackplus.restore: true
   inventoryrollback.forcebackup:
     description: Forces a backup for an online player.
+    default: false
+    children:
+      inventoryrollbackplus.forcebackup: true
   inventoryrollback.version:
     description: Allows player to see the version the plugin is running on the server.
+    default: false
+    children:
+      inventoryrollbackplus.version: true

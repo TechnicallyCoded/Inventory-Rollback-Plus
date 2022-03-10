@@ -14,7 +14,7 @@ public class ReloadSubCmd extends IRPCommand {
 
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender.hasPermission("inventoryrollbackplus.reload") || sender.hasPermission("inventoryrollback.reload")) {
+        if (sender.hasPermission("inventoryrollbackplus.reload")) {
             main.startupTasks();
 
             sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getPluginReload());

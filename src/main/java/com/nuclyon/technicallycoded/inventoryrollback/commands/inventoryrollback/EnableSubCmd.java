@@ -14,7 +14,7 @@ public class EnableSubCmd extends IRPCommand {
 
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender.hasPermission("inventoryrollbackplus.enable") || sender.hasPermission("inventoryrollback.enable")) {
+        if (sender.hasPermission("inventoryrollbackplus.enable")) {
             main.getConfigData().setEnabled(true);
             main.getConfigData().saveConfig();
 

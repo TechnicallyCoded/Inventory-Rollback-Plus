@@ -80,13 +80,12 @@ public class ClickGUI implements Listener {
                 && !title.equalsIgnoreCase(InventoryName.ENDER_CHEST_BACKUP.getName()))
             return;
 
-        e.setCancelled(true);
-
         //Check if inventory is a virtual one and not one that has the same name on a player chest
         if (this.main.getVersion().isAtLeast(EnumNmsVersion.v1_9_R1) && isLocationAvailable(e.getInventory().getLocation())) {
-            e.setCancelled(false);
             return;
         }
+
+        e.setCancelled(true);
 
         Player staff = (Player) e.getWhoClicked();
         ItemStack icon = e.getCurrentItem();
@@ -282,6 +281,12 @@ public class ClickGUI implements Listener {
 
             //Clicked icon to overwrite player inventory with backup data
             else if (icon.getType().equals(Buttons.getRestoreAllInventoryIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
+
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
 
@@ -339,8 +344,14 @@ public class ClickGUI implements Listener {
                 }
             }
 
-            //Clicked icon to teleport player to backup coordinates
+            // Clicked icon to teleport player to backup coordinates
             else if (icon.getType().equals(Buttons.getTeleportLocationIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore.teleport")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
+
                 String[] location = nbt.getString("location").split(",");			
                 World world = Bukkit.getWorld(location[0]);
 
@@ -356,7 +367,7 @@ public class ClickGUI implements Listener {
                         Math.floor(Double.parseDouble(location[3])))
                         .add(0.5, 0.5, 0.5);				
 
-                //Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
+                // Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
                 Bukkit.getScheduler().runTaskLater(InventoryRollback.getInstance(), () -> {
                     e.getWhoClicked().closeInventory();
                     PaperLib.teleportAsync(staff,loc).thenAccept((result) -> {
@@ -368,7 +379,7 @@ public class ClickGUI implements Listener {
                 }, 1L);
             } 
 
-            //Clicked icon to restore backup players ender chest
+            // Clicked icon to restore backup players ender chest
             else if (icon.getType().equals(Buttons.getEnderChestIcon())) {
 
                 new BukkitRunnable() {
@@ -407,8 +418,13 @@ public class ClickGUI implements Listener {
                 }.runTaskAsynchronously(this.main);
             }
 
-            //Clicked icon to restore backup players health
+            // Clicked icon to restore backup players health
             else if (icon.getType().equals(Buttons.getHealthIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
 
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;	
@@ -429,6 +445,11 @@ public class ClickGUI implements Listener {
 
             //Clicked icon to restore backup players hunger
             else if (icon.getType().equals(Buttons.getHungerIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
 
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;	
@@ -451,6 +472,12 @@ public class ClickGUI implements Listener {
 
             //Clicked icon to restore backup players experience
             else if (icon.getType().equals(Buttons.getExperienceIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
+
                 if (offlinePlayer.isOnline()) {				
                     Player player = (Player) offlinePlayer;	
                     Float xp = nbt.getFloat("xp");
@@ -467,16 +494,27 @@ public class ClickGUI implements Listener {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceNotOnlinePlayer(offlinePlayer.getName()));
                 }
             }
-        } else {             
-            if (
-                    //Allow items to be grabbed in the top inventory except the bottom line AND NOT player inventory items to be shift clicked to top inventory
-                    ((e.getRawSlot() < (e.getInventory().getSize() - 18) || (e.getRawSlot() < (e.getInventory().getSize() - 9) && e.getRawSlot() > (e.getInventory().getSize() - 15)))
-                            || e.getRawSlot() >= e.getInventory().getSize() && !e.isShiftClick())
+        } else {
+            int slotIndex = e.getRawSlot();
+            int topInvSize = e.getView().getTopInventory().getSize();
+            boolean clickIsWithinPlayerInventory = slotIndex >= topInvSize;
 
-                    //Allow items to be grabbed in the top inventory except the bottom line AND allow them to be shift clicked to player inventory
-                    || ((e.getRawSlot() < (e.getInventory().getSize() - 18) || (e.getRawSlot() < (e.getInventory().getSize() - 9) && e.getRawSlot() > (e.getInventory().getSize() - 15)))
-                            && e.isShiftClick())) {
+            boolean clickIsWithinMainBackupInv = slotIndex < topInvSize - 18;
+            boolean notInLastLine = slotIndex < topInvSize - 9;
+            boolean notBeforeArmorSlots = slotIndex > topInvSize - 15;
+
+            boolean clickIsWithinArmorOrOffHandSlots = notInLastLine && notBeforeArmorSlots;
+            boolean isValidBackupMenuInteraction = clickIsWithinMainBackupInv || clickIsWithinArmorOrOffHandSlots;
+
+            //Allow items to be grabbed in the top inventory except the bottom line AND NOT player inventory items to be shift clicked to top inventory
+            if (clickIsWithinPlayerInventory && !e.isShiftClick()) {
                 e.setCancelled(false);
+            } else if (isValidBackupMenuInteraction) {
+                if (staff.hasPermission("inventoryrollbackplus.restore")) {
+                    e.setCancelled(false);
+                } else {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                }
             }
         }
     }
@@ -580,6 +618,12 @@ public class ClickGUI implements Listener {
 
             //Clicked icon to overwrite player ender chest with backup data
             else if (icon.getType().equals(Buttons.getRestoreAllInventoryIcon())) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
+
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
 
@@ -625,9 +669,19 @@ public class ClickGUI implements Listener {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getEnderChestNotOnline(offlinePlayer.getName()));
                 }
             }
-        } else {             
-            if (((e.getRawSlot() < (e.getInventory().getSize() - 9) || e.getRawSlot() >= e.getInventory().getSize()) && !e.isShiftClick())
-                    || (e.getRawSlot() < (e.getInventory().getSize() - 9) && e.isShiftClick())) {
+        } else {
+            int slotIndex = e.getRawSlot();
+            int topInvSize = e.getView().getTopInventory().getSize();
+            boolean clickIsWithinPlayerInventory = slotIndex >= topInvSize;
+
+            if (clickIsWithinPlayerInventory && !e.isShiftClick()) {
+                e.setCancelled(false);
+            } else if (slotIndex < topInvSize - 9) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
                 e.setCancelled(false);
             }
         }

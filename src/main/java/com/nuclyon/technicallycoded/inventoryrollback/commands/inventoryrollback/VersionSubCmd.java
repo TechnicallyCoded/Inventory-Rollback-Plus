@@ -17,7 +17,7 @@ public class VersionSubCmd extends IRPCommand {
     @Override
     public void onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         StringBuilder strb = new StringBuilder(MessageData.getPluginPrefix());
-        boolean hasVersionPerm = sender.hasPermission("inventoryrollbackplus.version") || sender.hasPermission("inventoryrollback.version");
+        boolean hasVersionPerm = sender.hasPermission("inventoryrollbackplus.version");
 
         strb.append("\n")
             .append(ChatColor.WHITE)
