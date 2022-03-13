@@ -5,7 +5,6 @@ import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -131,6 +130,7 @@ public class SaveInventory {
         }.runTaskAsynchronously(main);
 
     }
+
     public static int getPing(Player player) {
         try {
             Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
@@ -140,7 +140,6 @@ public class SaveInventory {
             return -1;
         }
     }
-
 
     //Conversion to Base64 code courtesy of github.com/JustRayz
     public static String toBase64(ItemStack[] contents) {

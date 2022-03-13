@@ -77,18 +77,18 @@ public class MySQL {
 
         synchronized (this) {
             connection = DriverManager.getConnection("jdbc:mysql://" +
-                            ConfigData.getMySQLHost() + ":" +
-                            ConfigData.getMySQLPort() + "/" +
-                            ConfigData.getMySQLDatabase() +
-                            "?connectionTimeout=30000" +
-                            "&socketTimeout=45000" +
-                            "&useSSL=" +
-                            ConfigData.isMySQLUseSSL() +
-                            "&verifyServerCertificate=" +
-                            ConfigData.isMySQLVerifyCertificate() +
-                            "&allowPublicKeyRetrieval=" +
-                            ConfigData.isMySQLPubKeyRetrievalAllowed() +
-                            "&characterEncoding=UTF-8",
+                    ConfigData.getMySQLHost() + ":" +
+                    ConfigData.getMySQLPort() + "/" +
+                    ConfigData.getMySQLDatabase() +
+                    "?connectionTimeout=30000" +
+                    "&socketTimeout=45000" +
+                    "&useSSL=" +
+                    ConfigData.isMySQLUseSSL() +
+                    "&verifyServerCertificate=" +
+                    ConfigData.isMySQLVerifyCertificate() +
+                    "&allowPublicKeyRetrieval=" +
+                    ConfigData.isMySQLPubKeyRetrievalAllowed() +
+                    "&characterEncoding=UTF-8",
                     ConfigData.getMySQLUsername(),
                     ConfigData.getMySQLPassword());
         }

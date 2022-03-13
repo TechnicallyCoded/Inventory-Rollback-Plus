@@ -409,6 +409,7 @@ public class PlayerData {
         return -1;
     }
 
+
     public LogType getSaveType() {
         if (ConfigData.getSaveType() == SaveType.YAML) {
             return yaml.getSaveType();
