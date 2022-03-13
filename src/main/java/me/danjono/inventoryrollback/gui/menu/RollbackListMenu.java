@@ -103,12 +103,14 @@ public class RollbackListMenu {
                 double x = playerData.getX();
                 double y = playerData.getY();
                 double z = playerData.getZ();
+                int ping = playerData.getPing();
                 String location = world + "," + x + "," + y + "," + z;
 
                 lore.add(MessageData.getDeathLocationWorld(world));
                 lore.add(MessageData.getDeathLocationX(x));
                 lore.add(MessageData.getDeathLocationY(y));
                 lore.add(MessageData.getDeathLocationZ(z));
+                lore.add(MessageData.getPing(ping).replace("  ", " ")); // I can't find the double space cause so here's a temporary fix
 
                 ItemStack item = buttons.createInventoryButton(new ItemStack(Material.CHEST), logType, location, timestamp, displayName, lore);
 

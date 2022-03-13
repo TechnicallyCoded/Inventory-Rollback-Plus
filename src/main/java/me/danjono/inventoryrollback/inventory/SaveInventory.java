@@ -5,6 +5,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -16,6 +17,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
 
 public class SaveInventory {
@@ -85,6 +87,8 @@ public class SaveInventory {
         double locY = ((int)(pLoc.getY() * 10)) / 10d;
         double locZ = ((int)(pLoc.getZ() * 10)) / 10d;
 
+        int ping = getPing(player);
+
         // Final vars
         ItemStack[] finalMainInvContents = mainInvContents;
         ItemStack[] finalMainInvArmor = mainInvArmor;
@@ -109,6 +113,8 @@ public class SaveInventory {
                 data.setY(locY);
                 data.setZ(locZ);
 
+                data.setPing(ping);
+
                 data.setLogType(logType);
                 data.setVersion(InventoryRollback.getPackageVersion());
 
@@ -125,6 +131,16 @@ public class SaveInventory {
         }.runTaskAsynchronously(main);
 
     }
+    public static int getPing(Player player) {
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            return (int) entityPlayer.getClass().getField("e").get(entityPlayer);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 
     //Conversion to Base64 code courtesy of github.com/JustRayz
     public static String toBase64(ItemStack[] contents) {
