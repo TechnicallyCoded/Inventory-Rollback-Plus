@@ -24,7 +24,7 @@ public class RollbackListMenu {
     private Player staff;
     private UUID playerUUID;
     private LogType logType;
-    
+
     private Buttons buttons;
     private Inventory inventory;
 
@@ -34,18 +34,18 @@ public class RollbackListMenu {
         this.logType = logType;
         this.pageNumber = pageNumberIn;
         this.buttons = new Buttons(playerUUID);
-        
+
         createInventory();
     }
-    
+
     public void createInventory() {
         inventory = Bukkit.createInventory(staff, InventoryName.ROLLBACK_LIST.getSize(), InventoryName.ROLLBACK_LIST.getName());
-        
-        List<String> lore = new ArrayList<>();  
+
+        List<String> lore = new ArrayList<>();
         if (pageNumber == 1) {
-            ItemStack mainMenu = buttons.backButton(MessageData.getMainMenuButton(), logType, 0, null);                     
+            ItemStack mainMenu = buttons.backButton(MessageData.getMainMenuButton(), logType, 0, null);
             inventory.setItem(InventoryName.ROLLBACK_LIST.getSize() - 8, mainMenu);
-        }       
+        }
 
         if (pageNumber > 1) {
             lore.add("Page " + (pageNumber - 1));
@@ -55,7 +55,7 @@ public class RollbackListMenu {
             lore.clear();
         }
     }
-    
+
     public Inventory getInventory() {
         return this.inventory;
     }
@@ -103,12 +103,14 @@ public class RollbackListMenu {
                 double x = playerData.getX();
                 double y = playerData.getY();
                 double z = playerData.getZ();
+                int ping = playerData.getPing();
                 String location = world + "," + x + "," + y + "," + z;
 
                 lore.add(MessageData.getDeathLocationWorld(world));
                 lore.add(MessageData.getDeathLocationX(x));
                 lore.add(MessageData.getDeathLocationY(y));
                 lore.add(MessageData.getDeathLocationZ(z));
+                lore.add(MessageData.getPing(ping).replace("  ", " ")); // I can't find the double space cause so here's a temporary fix
 
                 ItemStack item = buttons.createInventoryButton(new ItemStack(Material.CHEST), logType, location, timestamp, displayName, lore);
 

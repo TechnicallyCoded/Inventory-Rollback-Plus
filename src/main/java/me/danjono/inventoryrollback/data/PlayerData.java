@@ -26,7 +26,7 @@ public class PlayerData {
 
     private YAML yaml;
     private MySQL mysql;
-    
+
     public PlayerData(OfflinePlayer offlinePlayer, LogType logType, Long timestamp) {
         this.offlinePlayer = offlinePlayer;
         this.logType = logType;
@@ -50,16 +50,16 @@ public class PlayerData {
             mysql = new MySQL(uuid, logType, timestamp);
         }
     }
-        
+
     public OfflinePlayer getOfflinePlayer() {
         return this.offlinePlayer;
-        
+
     }
-    
+
     public LogType getLogType() {
         return this.logType;
     }
-    
+
     public Long getTimestamp() {
         return this.timestamp;
     }
@@ -222,6 +222,14 @@ public class PlayerData {
             yaml.setZ(z);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setZ(z);
+        }
+    }
+
+    public void setPing(int ping) {
+        if(ConfigData.getSaveType() == SaveType.YAML) {
+            yaml.setPing(ping);
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL){
+            mysql.setPing(ping);
         }
     }
 
@@ -391,6 +399,16 @@ public class PlayerData {
         return 0;
     }
 
+    public int getPing() {
+        if(ConfigData.getSaveType() == SaveType.YAML) {
+            return yaml.getPing();
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            return mysql.getPing();
+        }
+
+        return -1;
+    }
+
     public LogType getSaveType() {
         if (ConfigData.getSaveType() == SaveType.YAML) {
             return yaml.getSaveType();
@@ -420,7 +438,7 @@ public class PlayerData {
     }
 
     public void saveData() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> { 
+        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
             if (ConfigData.getSaveType() == SaveType.YAML) {
                 yaml.saveData();
             } else if (ConfigData.getSaveType() == SaveType.MYSQL) {

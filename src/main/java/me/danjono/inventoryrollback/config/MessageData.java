@@ -113,6 +113,7 @@ public class MessageData {
     private static String deathLocationX;
     private static String deathLocationY;
     private static String deathLocationZ;
+    private static String ping;
     private static String deathReason;
     private static String deathTime;
     private static String deathLocationTeleportTo;
@@ -183,6 +184,7 @@ public class MessageData {
         setDeathLocationX(convertColorCodes((String) getDefaultValue("death-location.x", "&6X: &f%X%")));
         setDeathLocationY(convertColorCodes((String) getDefaultValue("death-location.y", "&6Y: &f%Y%")));
         setDeathLocationZ(convertColorCodes((String) getDefaultValue("death-location.z", "&6Z: &f%Z%")));
+        setPing(convertColorCodes((String) getDefaultValue("death-ping.ping", "&6Ping: &f%PING%")));
         setDeathReason(convertColorCodes((String) getDefaultValue("death-location.reason", "&6Death reason: &f%REASON%")));
         setDeathTime(convertColorCodes((String) getDefaultValue("death-location.time", "&6Time: &f%TIME%")));
         setDeathLocation(convertColorCodes((String) getDefaultValue("death-location.teleport-to", "&3Teleport to where this entry was logged.")));
@@ -361,6 +363,8 @@ public class MessageData {
     public static void setDeathLocationZ(String message) {
         deathLocationZ = message;
     }
+
+    public static void setPing(String message) { ping = message; }
     
     public static void setDeathReason(String message) {
         deathReason = message;
@@ -565,6 +569,8 @@ public class MessageData {
     public static String getDeathLocationZ(Double z) {
         return deathLocationZ.replace("%Z%", Math.floor(z) + "");
     }
+
+    public static String getPing(int deathPing) { return ping.replace("%PING%", Integer.toString(deathPing)); }
 
     public static String getDeathReason(String reason) {
         return deathReason.replace("%REASON%", reason);

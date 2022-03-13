@@ -39,6 +39,7 @@ public class YAML {
     private double x;
     private double y;
     private double z;
+    private int ping;
     private LogType logType;
     private String packageVersion;
     private String deathReason;
@@ -54,7 +55,7 @@ public class YAML {
         this.data = YamlConfiguration.loadConfiguration(backupFile);
     }
 
-    public static void createStorageFolders() {        
+    public static void createStorageFolders() {
         //Create folder for where player inventories will be saved
         File savesFolder = new File(ConfigData.getFolderLocation().getAbsoluteFile(), backupFolderName);
         if(!savesFolder.exists())
@@ -116,7 +117,7 @@ public class YAML {
         return getAmountOfBackups() > 0;
     }
 
-    public int getAmountOfBackups() {         
+    public int getAmountOfBackups() {
         if (!playerBackupFolder.exists()) return 0;
 
         String[] filesArr = playerBackupFolder.list();
@@ -159,7 +160,7 @@ public class YAML {
             return allTimeStamps;
 
         List<Long> requiredTimestamps = new ArrayList<>();
-        for (int i = (backups * (pageNumber - 1)); i < ((backups * (pageNumber - 1)) + backups); i++) {            
+        for (int i = (backups * (pageNumber - 1)); i < ((backups * (pageNumber - 1)) + backups); i++) {
             if (i < allTimeStamps.size()) {
                 requiredTimestamps.add(allTimeStamps.get(i));
             } else {
@@ -256,6 +257,8 @@ public class YAML {
         this.z = z;
     }
 
+    public void setPing(int ping) { this.ping = ping; }
+
     public void setLogType(LogType logType) {
         this.logType = logType;
     }
@@ -315,6 +318,8 @@ public class YAML {
         return data.getDouble("location.z");
     }
 
+    public int getPing() { return data.getInt("ping"); }
+
     public LogType getSaveType() {
         LogType logType = null;
 
@@ -347,6 +352,7 @@ public class YAML {
         data.set("location.x", x);
         data.set("location.y", y);
         data.set("location.z", z);
+        data.set("ping", ping);
         data.set("logType", logType.name());
         data.set("version", packageVersion);
         data.set("deathReason", deathReason);
@@ -400,7 +406,7 @@ public class YAML {
 
             for (File backup : backupFiles) {
                 YamlConfiguration data = new YamlConfiguration();
-                
+
                 try {
                     data.load(backup);
                 } catch (InvalidConfigurationException | IOException e) {
@@ -411,7 +417,7 @@ public class YAML {
                 for (String time : data.getConfigurationSection("data").getKeys(false)) {
                     try {
                         Long timestamp = Long.parseLong(time);
-                        UUID uuid = UUID.fromString(backup.getName().substring(0, backup.getName().length() - 4)); 
+                        UUID uuid = UUID.fromString(backup.getName().substring(0, backup.getName().length() - 4));
 
                         YAML yaml = new YAML(uuid, log, timestamp);
 
@@ -419,7 +425,7 @@ public class YAML {
 
                         yaml.setMainInventory(RestoreInventory.getInventoryItems(packageVersion, data.getString("data." + timestamp + ".inventory")));
                         yaml.setArmour(RestoreInventory.getInventoryItems(packageVersion, data.getString("data." + timestamp + ".armour")));
-                        yaml.setEnderChest(RestoreInventory.getInventoryItems(packageVersion, data.getString("data." + timestamp + ".enderchest")));                    
+                        yaml.setEnderChest(RestoreInventory.getInventoryItems(packageVersion, data.getString("data." + timestamp + ".enderchest")));
                         yaml.setXP(Float.parseFloat(data.getString("data." + timestamp + ".xp")));
                         yaml.setHealth(data.getDouble("data." + timestamp + ".health"));
                         yaml.setFoodLevel(data.getInt("data." + timestamp + ".hunger"));
@@ -428,6 +434,7 @@ public class YAML {
                         yaml.setX(data.getDouble("data." + timestamp + ".location.x"));
                         yaml.setY(data.getDouble("data." + timestamp + ".location.y"));
                         yaml.setZ(data.getDouble("data." + timestamp + ".location.z"));
+                        yaml.setPing(data.getInt("data." + timestamp + ".ping"));
 
                         String lt = data.getString("data." + timestamp + ".logType");
                         LogType logType = null;
