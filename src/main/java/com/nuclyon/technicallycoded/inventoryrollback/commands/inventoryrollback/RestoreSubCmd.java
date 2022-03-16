@@ -13,6 +13,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class RestoreSubCmd extends IRPCommand {
 
     public RestoreSubCmd(InventoryRollbackPlus mainIn) {
@@ -37,14 +39,27 @@ public class RestoreSubCmd extends IRPCommand {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void openBackupMenu(CommandSender sender, Player staff, String[] args) {
         if (args.length <= 0 || args.length == 1) {
             try {
                 openMainMenu(staff);
-            } catch (NullPointerException e) {}
+            } catch (NullPointerException ignored) {}
         } else if(args.length == 2) {
-            @SuppressWarnings("deprecation")
-            OfflinePlayer rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
+            OfflinePlayer rollbackPlayer;
+
+            // Handle input of UUID
+            if (args[1].length() == 36) {
+                try {
+                    rollbackPlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[1]));
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
+                    return;
+                }
+            } else {
+                // If not UUID length, assume it's a name
+                rollbackPlayer = Bukkit.getOfflinePlayer(args[1]);
+            }
 
             try {
                 openPlayerMenu(staff, rollbackPlayer);
