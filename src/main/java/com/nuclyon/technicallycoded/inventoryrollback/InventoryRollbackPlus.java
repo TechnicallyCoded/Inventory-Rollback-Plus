@@ -15,6 +15,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 
 import java.util.TimeZone;
@@ -46,7 +47,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
                 .replace(".",  ",").split(",")[3]);
 
         if (!this.isCompatible()) {
-            getLogger().log(Level.WARNING, MessageData.getPluginPrefix() + "\n" + ChatColor.RED +
+            getLogger().warning(MessageData.getPluginPrefix() + "\n" +
                     " ** WARNING... Plugin may not be compatible with this version of Minecraft. **\n" +
                     " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
                     MessageData.getPluginPrefix()
@@ -97,7 +98,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
-            getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
+            getPluginLogger().info(MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
@@ -107,7 +108,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
             switch (result.getType()) {
                 case FAIL_SPIGOT:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
+                    getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
                     break;
                 case UPDATE_LOW:
                     prioLevel = 1;
@@ -124,22 +125,22 @@ public class InventoryRollbackPlus extends InventoryRollback {
                     prioColor = ChatColor.RED.toString();
                     break;
                 case DEV_BUILD:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: You are running an experimental/development build! Proceed with caution.");
+                    getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: You are running an experimental/development build! Proceed with caution.");
                     break;
                 case NO_UPDATE:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.RESET + "You are running the latest version.");
+                    getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.RESET + "You are running the latest version.");
                     break;
                 default:
                     break;
             }
 
             if (prioLevel > 0) {
-                getPluginLogger().log(Level.INFO, "\n" + prioColor +
+                getConsoleSender().sendMessage( "\n" + prioColor +
                         "===============================================================================\n" +
                         "A " + prioLevelName + " update to InventoryRollbackPlus is available!\n" +
                         "Download at https://www.spigotmc.org/resources/inventoryrollbackplus-1-8-1-16-x.85811/\n" +
                         "(current: " + result.getCurrentVer() + ", latest: " + result.getLatestVer() + ")\n" +
-                        "===============================================================================");
+                        "===============================================================================\n");
             }
 
         });
@@ -187,6 +188,10 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public EnumNmsVersion getVersion() {
         return version;
+    }
+
+    public ConsoleCommandSender getConsoleSender() {
+        return this.getServer().getConsoleSender();
     }
 
     public TimeZoneUtil getTimeZoneUtil() {
