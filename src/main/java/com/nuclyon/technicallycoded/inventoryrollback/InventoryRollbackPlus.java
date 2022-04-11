@@ -9,6 +9,8 @@ import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.inventory.SaveInventory;
 import me.danjono.inventoryrollback.listeners.ClickGUI;
 import me.danjono.inventoryrollback.listeners.EventLogs;
 import org.bstats.bukkit.Metrics;
@@ -17,9 +19,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 
-import java.util.TimeZone;
-import java.util.logging.Level;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InventoryRollbackPlus extends InventoryRollback {
 
@@ -29,6 +32,8 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     private ConfigData configData;
     private EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
+
+    private AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     public static InventoryRollbackPlus getInstance() {
         return instancePlus;
@@ -77,8 +82,31 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     @Override
     public void onDisable() {
+        // Signal to the plugin that new tasks cannot be scheduled
+        getLogger().info("Setting shutdown state");
+        shuttingDown.set(true);
+
+        // Save all inventories
+        getLogger().info("Saving player inventories...");
+        for (Player player : this.getServer().getOnlinePlayers()) {
+            if (player.hasPermission("inventoryrollbackplus.leavesave")) {
+                new SaveInventory(player, LogType.QUIT, null, null, player.getInventory(), player.getEnderChest())
+                        .createSave(false);
+            }
+        }
+        getLogger().info("Done saving player inventories!");
+
+        // Unregister event listeners
+        HandlerList.unregisterAll(this);
+
+        // Cancel tasks
+        this.getServer().getScheduler().cancelTasks(this);
+
+        // Clear instance references
         instancePlus = null;
         super.onDisable();
+
+        getLogger().info("Plugin is disabled!");
     }
 
     public void setVersion(EnumNmsVersion versionName) {
@@ -185,6 +213,10 @@ public class InventoryRollbackPlus extends InventoryRollback {
     }
 
     // GETTERS
+
+    public boolean isShuttingDown() {
+        return shuttingDown.get();
+    }
 
     public EnumNmsVersion getVersion() {
         return version;

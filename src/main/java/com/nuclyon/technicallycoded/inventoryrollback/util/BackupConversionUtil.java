@@ -208,7 +208,7 @@ public class BackupConversionUtil {
                 if (deathReason != null) importedData.setDeathReason(deathReason);
 
                 // Save the data to the new folder location
-                importedData.saveData();
+                importedData.saveData(true);
             } catch (Exception e) {
                 InventoryRollbackPlus.getPluginLogger().warning(
                         MessageData.getPluginPrefix() + "Error converting backup file at " +
