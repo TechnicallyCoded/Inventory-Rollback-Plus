@@ -9,16 +9,13 @@ commands:
   disable: '&2已关闭插件'
   reload: '&2插件已重载'
   player-only: '&c只能由玩家运行这个指令'
-  # Translation missing, please contribute by creating an issue here
-  # https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
-  import: '&aSuccessfully imported all backup data from the old plugin.'
+  import: '&a成功导入旧插件中的所有备份数据'
 
 backup:
   no-backup: '目前没有 %NAME% 的备份'
   not-online: '%NAME% 现在不在线'
   force-saved-player: '%NAME% 的背包已被保存'
-  # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
-  force-saved-all: 'All online player inventories have been force saved.'
+  force-saved-all: '所有在线玩家的背包已被强制保存'
   not-forced-saved: '在保存 %NAME% 的背包时出现问题'
 
 attribute-restore:
@@ -28,7 +25,7 @@ attribute-restore:
     not-online: '%NAME% 不在线，因此背包无法回档.'
     button-name: '&d回档背包'
     # Translation missing, please contribute by creating an issue here https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/issues/new/choose
-    button-disabled: '&cSingle click restore is disabled\n&cin the config.yml file!'
+    button-disabled: '&c单次点击恢复在config.yml中被禁用了!'
   ender-chest:
     restored: '%NAME% 的末影箱已被回档.'
     restored-player: '你的末影箱已被 %NAME% 从备份中回档.'
