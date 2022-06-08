@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.InventoryRollback;
