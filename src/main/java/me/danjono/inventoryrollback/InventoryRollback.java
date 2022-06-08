@@ -102,7 +102,7 @@ public abstract class InventoryRollback extends JavaPlugin {
         new MessageData().setMessages();    
         new SoundData().setSounds();
 
-        logger.log(Level.INFO, () -> MessageData.getPluginPrefix() + "Inventory backup data is set to save to: " + ConfigData.getSaveType().getName());
+        InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Inventory backup data is set to save to: " + ConfigData.getSaveType().getName());
 
         if (ConfigData.isUpdateCheckerEnabled())
             getInstance().checkUpdate();

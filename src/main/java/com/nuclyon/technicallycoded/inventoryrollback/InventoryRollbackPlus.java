@@ -9,16 +9,20 @@ import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.inventory.SaveInventory;
 import me.danjono.inventoryrollback.listeners.ClickGUI;
 import me.danjono.inventoryrollback.listeners.EventLogs;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 
-import java.util.TimeZone;
-import java.util.logging.Level;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InventoryRollbackPlus extends InventoryRollback {
 
@@ -28,6 +32,8 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     private ConfigData configData;
     private EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
+
+    private AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     public static InventoryRollbackPlus getInstance() {
         return instancePlus;
@@ -46,7 +52,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
                 .replace(".",  ",").split(",")[3]);
 
         if (!this.isCompatible()) {
-            getLogger().log(Level.WARNING, MessageData.getPluginPrefix() + "\n" + ChatColor.RED +
+            getLogger().warning(MessageData.getPluginPrefix() + "\n" +
                     " ** WARNING... Plugin may not be compatible with this version of Minecraft. **\n" +
                     " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
                     MessageData.getPluginPrefix()
@@ -76,8 +82,31 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     @Override
     public void onDisable() {
+        // Signal to the plugin that new tasks cannot be scheduled
+        getLogger().info("Setting shutdown state");
+        shuttingDown.set(true);
+
+        // Save all inventories
+        getLogger().info("Saving player inventories...");
+        for (Player player : this.getServer().getOnlinePlayers()) {
+            if (player.hasPermission("inventoryrollbackplus.leavesave")) {
+                new SaveInventory(player, LogType.QUIT, null, null, player.getInventory(), player.getEnderChest())
+                        .createSave(false);
+            }
+        }
+        getLogger().info("Done saving player inventories!");
+
+        // Unregister event listeners
+        HandlerList.unregisterAll(this);
+
+        // Cancel tasks
+        this.getServer().getScheduler().cancelTasks(this);
+
+        // Clear instance references
         instancePlus = null;
         super.onDisable();
+
+        getLogger().info("Plugin is disabled!");
     }
 
     public void setVersion(EnumNmsVersion versionName) {
@@ -97,7 +126,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
-            getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
+            InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
@@ -107,7 +136,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
             switch (result.getType()) {
                 case FAIL_SPIGOT:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
+                    getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: Could not contact Spigot to check if an update is available.");
                     break;
                 case UPDATE_LOW:
                     prioLevel = 1;
@@ -124,22 +153,22 @@ public class InventoryRollbackPlus extends InventoryRollback {
                     prioColor = ChatColor.RED.toString();
                     break;
                 case DEV_BUILD:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: You are running an experimental/development build! Proceed with caution.");
+                    getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.GOLD + "Warning: You are running an experimental/development build! Proceed with caution.");
                     break;
                 case NO_UPDATE:
-                    getPluginLogger().log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.RESET + "You are running the latest version.");
+                    getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.RESET + "You are running the latest version.");
                     break;
                 default:
                     break;
             }
 
             if (prioLevel > 0) {
-                getPluginLogger().log(Level.INFO, "\n" + prioColor +
+                getConsoleSender().sendMessage( "\n" + prioColor +
                         "===============================================================================\n" +
                         "A " + prioLevelName + " update to InventoryRollbackPlus is available!\n" +
                         "Download at https://www.spigotmc.org/resources/inventoryrollbackplus-1-8-1-16-x.85811/\n" +
                         "(current: " + result.getCurrentVer() + ", latest: " + result.getLatestVer() + ")\n" +
-                        "===============================================================================");
+                        "===============================================================================\n");
             }
 
         });
@@ -154,7 +183,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         Metrics metrics = new Metrics(this,  	9437);
 
         if (ConfigData.isbStatsEnabled())
-            getPluginLogger().info(MessageData.getPluginPrefix() + "bStats are enabled");
+            InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "bStats are enabled");
 
         metrics.addCustomChart(new SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
 
@@ -185,8 +214,16 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     // GETTERS
 
+    public boolean isShuttingDown() {
+        return shuttingDown.get();
+    }
+
     public EnumNmsVersion getVersion() {
         return version;
+    }
+
+    public ConsoleCommandSender getConsoleSender() {
+        return this.getServer().getConsoleSender();
     }
 
     public TimeZoneUtil getTimeZoneUtil() {

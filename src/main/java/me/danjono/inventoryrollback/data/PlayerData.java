@@ -108,31 +108,34 @@ public class PlayerData {
         return timeStamps;
     }
 
-    public CompletableFuture<Void> purgeExcessSaves() {
+    public CompletableFuture<Void> purgeExcessSaves(boolean shouldSaveAsync) {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        new BukkitRunnable() {
-            public void run() {
-                int maxSaves = getMaxSaves();
-                int currentSaves = getAmountOfBackups();
+        boolean saveAsync = !InventoryRollbackPlus.getInstance().isShuttingDown() && shouldSaveAsync;
+        Runnable purgeTask = () -> {
+            int maxSaves = getMaxSaves();
+            int currentSaves = getAmountOfBackups();
 
-                if((maxSaves >0) && (currentSaves >= maxSaves)) {
-                    int deleteAmount = currentSaves - maxSaves + 1;
+            if((maxSaves >0) && (currentSaves >= maxSaves)) {
+                int deleteAmount = currentSaves - maxSaves + 1;
 
-                    if (ConfigData.getSaveType() == SaveType.YAML) {
-                        yaml.purgeExcessSaves(deleteAmount);
-                    } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
-                        try {
-                            mysql.purgeExcessSaves(deleteAmount);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                if (ConfigData.getSaveType() == SaveType.YAML) {
+                    yaml.purgeExcessSaves(deleteAmount);
+                } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+                    try {
+                        mysql.purgeExcessSaves(deleteAmount);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
                 }
-                future.complete(null);
             }
-        }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
+            future.complete(null);
+        };
+
+        InventoryRollbackPlus instance = InventoryRollbackPlus.getInstance();
+        if (saveAsync) instance.getServer().getScheduler().runTaskAsynchronously(instance, purgeTask);
+        else purgeTask.run();
 
         return future;
     }
@@ -419,8 +422,10 @@ public class PlayerData {
         return null;
     }
 
-    public void saveData() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> { 
+    public void saveData(boolean shouldSaveAsync) {
+        boolean saveAsync = !InventoryRollbackPlus.getInstance().isShuttingDown() && shouldSaveAsync;
+
+        Runnable saveDataTask = () -> {
             if (ConfigData.getSaveType() == SaveType.YAML) {
                 yaml.saveData();
             } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
@@ -430,7 +435,10 @@ public class PlayerData {
                     e.printStackTrace();
                 }
             }
-        });
+        };
+
+        if (saveAsync) Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(),saveDataTask);
+        else saveDataTask.run();
     }
 
     public int getMaxSaves() {

@@ -1,12 +1,14 @@
 package me.danjono.inventoryrollback.data;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.gui.InventoryName;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -140,11 +142,11 @@ public class YAML {
             int pos = file.getName().lastIndexOf('.');
             String fileName = file.getName().substring(0, pos);
 
-            if (!StringUtils.isNumeric(fileName))
+            if (fileName.isEmpty() || !StringUtils.isNumeric(fileName))
                 continue;
 
             long timestamp = Long.parseLong(fileName);
-            // Make sure that the file isn't newer than 1 second: we could still be writing to it
+            // Make sure that the file hasn't been created in the last 1s: we could still be writing to it
             if (currTime - timestamp > 1000) allTimeStamps.add(timestamp);
         }
 
@@ -381,7 +383,7 @@ public class YAML {
 
         for (File backupFolders : backupLocations) {
             if (!backupFolders.exists()) {
-                InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginPrefix() + "Backup folder does not exist at " + backupFolders.getAbsolutePath());
+                InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.RED + "Backup folder does not exist at " + backupFolders.getAbsolutePath());
                 logTypeNumber++;
                 continue;
             }
@@ -396,7 +398,7 @@ public class YAML {
             }
 
             LogType log = logTypeFiles.get(logTypeNumber);
-            InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Converting the backup location " + log.name());
+            InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Converting the backup location " + log.name());
 
             for (File backup : backupFiles) {
                 YamlConfiguration data = new YamlConfiguration();
@@ -404,7 +406,7 @@ public class YAML {
                 try {
                     data.load(backup);
                 } catch (InvalidConfigurationException | IOException e) {
-                    InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginPrefix() + "Error converting backup file at " + backup.getAbsolutePath() + " - Invalid YAML format possibly from corruption.");
+                    InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.RED + "Error converting backup file at " + backup.getAbsolutePath() + " - Invalid YAML format possibly from corruption.");
                     continue;
                 }
 
@@ -443,7 +445,7 @@ public class YAML {
 
                         yaml.saveData();
                     } catch (Exception e) {
-                        InventoryRollback.getPluginLogger().log(Level.WARNING, () -> MessageData.getPluginPrefix() + "Error converting backup file at " + backup.getAbsolutePath() + " on timestamp " + time);
+                        InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.RED + "Error converting backup file at " + backup.getAbsolutePath() + " on timestamp " + time);
                     }
                 }
             }
@@ -452,7 +454,7 @@ public class YAML {
 
         }
 
-        InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Conversion completed!");
+        InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + ChatColor.GREEN + "Conversion completed!");
     }
 
 }

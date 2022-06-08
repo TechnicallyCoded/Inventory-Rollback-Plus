@@ -70,15 +70,15 @@ public class RestoreInventory {
             } catch (IOException | ClassNotFoundException | NullPointerException e) {
                 //Backup generated before InventoryRollback v1.3
                 if (packageVersion == null) {
-                    InventoryRollbackPlus.getPluginLogger().log(Level.SEVERE, ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. This is likely caused by a now incompatible material ID if the backup was originally generated on a different Minecraft server version.");
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. This is likely caused by a now incompatible material ID if the backup was originally generated on a different Minecraft server version.");
                 } 
                 //Backup was not generated on the same server version
                 else if (!packageVersion.equalsIgnoreCase(InventoryRollbackPlus.getPackageVersion())) {
-                    InventoryRollbackPlus.getPluginLogger().log(Level.SEVERE, ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");
                 } 
                 //Unknown error
                 else if (packageVersion.equalsIgnoreCase(InventoryRollbackPlus.getPackageVersion())) {
-                    InventoryRollbackPlus.getPluginLogger().log(Level.SEVERE, ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The data file is likely corrupted since this was saved on the same version the server is currently running on so it should have worked.");
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The data file is likely corrupted since this was saved on the same version the server is currently running on so it should have worked.");
                 }
 
                 try { dataInput.close(); } catch (IOException e1) {}

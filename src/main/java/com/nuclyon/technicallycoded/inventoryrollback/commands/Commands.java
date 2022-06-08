@@ -58,19 +58,23 @@ public class Commands implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             ArrayList<String> suggestions = new ArrayList<>();
             for (String option : this.defaultOptions) {
-                if (option.startsWith(args[0].toLowerCase()))
+                if (option.startsWith(args[0].toLowerCase()) && commandSender.hasPermission("inventoryrollbackplus." + option))
                     suggestions.add(option);
             }
             return suggestions;
         } else if (args.length == 2) {
             String[] opts;
 
-            if (args[0].equalsIgnoreCase("forcebackup") ||
-                    args[0].equalsIgnoreCase("forcesave")) {
+            if ((args[0].equalsIgnoreCase("forcebackup") ||
+                    args[0].equalsIgnoreCase("forcesave")) &&
+                    commandSender.hasPermission("inventoryrollbackplus.forcebackup")
+            ) {
                 opts = this.backupOptions;
 
             } else if (args[0].equalsIgnoreCase("import") &&
-                    (ImportSubCmd.shouldShowConfirmOption() || args[1].toLowerCase().startsWith("c"))) {
+                    (ImportSubCmd.shouldShowConfirmOption() || args[1].toLowerCase().startsWith("c")) &&
+                    commandSender.hasPermission("inventoryrollbackplus.import")
+            ) {
                 opts = this.importOptions;
 
             } else {

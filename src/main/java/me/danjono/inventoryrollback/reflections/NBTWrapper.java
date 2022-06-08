@@ -28,7 +28,9 @@ public class NBTWrapper {
 			EnumNmsVersion nmsVersion = InventoryRollbackPlus.getInstance().getVersion();
 			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
 
-				if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R2)) {
+				if (nmsVersion.isAtLeast(EnumNmsVersion.v1_19_R1)) {
+					getTagMethodName = "u";
+				} else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R2)) {
 					getTagMethodName = "t";
 				} else {
 					getTagMethodName = "s";
