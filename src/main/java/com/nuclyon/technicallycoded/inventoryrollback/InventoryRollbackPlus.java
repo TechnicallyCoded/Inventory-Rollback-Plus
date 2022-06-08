@@ -126,7 +126,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public void checkUpdate() {
         Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
-            getPluginLogger().info(MessageData.getPluginPrefix() + "Checking for updates...");
+            InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
@@ -183,7 +183,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         Metrics metrics = new Metrics(this,  	9437);
 
         if (ConfigData.isbStatsEnabled())
-            getPluginLogger().info(MessageData.getPluginPrefix() + "bStats are enabled");
+            InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "bStats are enabled");
 
         metrics.addCustomChart(new SimplePie("database_type", () -> ConfigData.getSaveType().getName()));
 
