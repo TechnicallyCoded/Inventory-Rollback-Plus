@@ -238,10 +238,16 @@ public class ConfigData {
 
     public static void setTimeZone(String zone) {
         try {
+            // Allow UTC offsets
+            if (zone.length() > 3 && zone.startsWith("UTC")) {
+                zone = "GMT" + zone.substring(3);
+            }
+
             timeZone = TimeZone.getTimeZone(zone);
             timeZoneName = zone;
             timeZoneOffsetMillis = InventoryRollbackPlus.getInstance().getTimeZoneUtil().getMillisOffsetAtTimeZone(zone);
         } catch (IllegalArgumentException | NullPointerException ex) {
+            ex.printStackTrace();
             timeZoneOffsetMillis = 0L;
             InventoryRollback.getInstance().getLogger().log(Level.WARNING, ("Time zone \"" + zone + "\" in config.yml is invalid. Defaulting to \"UTC\""));
         }
