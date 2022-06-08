@@ -48,10 +48,27 @@ public class RestoreSubCmd extends IRPCommand {
         } else if(args.length == 2) {
             OfflinePlayer rollbackPlayer;
 
+            String uuidStr = args[1];
+
             // Handle input of UUID
-            if (args[1].length() == 36) {
+            if (uuidStr.length() == 36 || args[1].length() == 32) {
+
+                // Handle malformed UUID
+                if (args[1].length() == 32) {
+                    String oldUuidStr = uuidStr;
+                    uuidStr = oldUuidStr.substring(0, 8);
+                    uuidStr += "-";
+                    uuidStr += oldUuidStr.substring(8, 12);
+                    uuidStr += "-";
+                    uuidStr += oldUuidStr.substring(12, 16);
+                    uuidStr += "-";
+                    uuidStr += oldUuidStr.substring(16, 20);
+                    uuidStr += "-";
+                    uuidStr += oldUuidStr.substring(20);
+                }
+
                 try {
-                    rollbackPlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[1]));
+                    rollbackPlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuidStr));
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getError());
                     return;
