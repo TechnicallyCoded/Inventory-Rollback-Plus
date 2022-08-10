@@ -1,7 +1,6 @@
 package me.danjono.inventoryrollback.data;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.gui.InventoryName;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class YAML {
 
