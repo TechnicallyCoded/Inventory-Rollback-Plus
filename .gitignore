@@ -2,6 +2,7 @@
 .settings/
 out/
 target/
+lib/
 dependency-reduced-pom.xml
 InventoryRollback.iml
 InventoryRollbackPlus.iml
