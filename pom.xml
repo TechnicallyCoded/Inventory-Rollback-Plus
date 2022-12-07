@@ -41,14 +41,15 @@
             <version>1.19.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.19.3</version>
             <scope>system</scope>
+            <type>jar</type>
             <systemPath>${project.basedir}/lib/spigot-1.19.3.jar</systemPath>
             <optional>true</optional>
-        </dependency>
+        </dependency>-->
         <!-- bStats API -->
         <dependency>
             <groupId>org.bstats</groupId>
