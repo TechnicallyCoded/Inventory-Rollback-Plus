@@ -1,19 +1,48 @@
-Copyright (c) 2020-2021 TechnicallyCoded
+Copyright (c) 2021 TechnicallyCoded
 
 Definitions
-1) I & TechnicallyCoded - both refer to the person who rightfully withheld
+1) I, me & TechnicallyCoded - all refer to the person who rightfully withheld
  ownership of the premium Mojang account under the Minecraft name
- "TechnicallyCoded", the 15th of November 2020
-2) Project - refers to the entirety of code files and resources present in
- the github repository https://github.com/TechnicallyCoded/Inventory-Rollback-Plus
+ "TechnicallyCoded", the 15th of November 2020. (This way of referencing
+ who I am is to avoid doxxing myself all while making it possible to verify
+ the person who owns the account through an independent 3rd party, which in 
+ this case would be Mojang)
+2) Project & The repository - refer to the entirety of code files and resources 
+ present in the github repository https://github.com/TechnicallyCoded/Inventory-Rollback-Plus
  OR any files and resources packaged into the InventoryRollbackPlus plugin I
  authored.
 
 This project is forked from https://github.com/danjono/Inventory-Rollback
-which is under the MIT LICENSE. I reserve all rights to any modifications I
-have made to this project's code which were NOT present in the repository
-this project was forked from before forking such repository. Any changes
-from the parent repository which are merged into this project in the future
-are also under the MIT LICENSE (at the time of writing). If the forked
-repository makes changes to the license, any new code from such repository,
-if applicable, is by default under the aforementioned new license.
+which is under the MIT LICENSE. As per the MIT license, I may sublicense the 
+work, and therefore, I reserve all rights to any modifications I have made 
+to this project's code which were NOT present in the repository this project 
+was forked from. You may fork this repository for the sole purpose of 
+contributing back to the project (such as creating pull requests for feature
+changes and bug fixes). Any changes from the parent repository which are merged 
+into this project in the future are also under the MIT LICENSE (at the time of 
+writing). If the forked repository makes changes to the license, any new code 
+from such repository, if applicable, is by default under their new license. 
+
+You may find the license to the original code in the file OLD_LICENSE under 
+the same directory as this one.
+
+DISCLAIMER: THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT WARRANTY OF ANY KIND.
+UNDER NO CIRCUMSTANCE SHALL I OR OTHER CONTRIBUTING AUTHORS BE LIABLE FOR ANY
+DAMAGES OR OTHER LIABILITY. USE THIS SOFTWARE AT YOUR OWN RISK.
+I reserve the right to change this license at any time for any reason without
+notifying anyone or making anyone aware of such changes in any way. It is up
+to the user to make sure they stay up to date with the changes to this license.
+
+Exceptions & authorizations:
+The following authors have been given the rights to use the modifications I
+have made. More specifically, by the word "use" I mean, that they have been granted 
+a worldwide, non-exclusive license to redistribute, publish, make copies of, 
+transmit, reproduce, or adapt parts of the files, or the entire files, specified. 
+The format is as follows: "<Author's Name (OR Author's Profile URL)> has been granted 
+the rights to use any modifications made to <File Name OR Folder Name>" (I may 
+optionally include a project to which this authorization is bounded, in which 
+case their authorization may not be applied to any other project or works they 
+are part of, contributed to, authored, or a copyright holder of)
+- https://github.com/Aurelien30000 has been granted the rights to use any 
+  modifications made to src/main/java/me/danjono/inventoryrollback/reflections/
+  NBTWrapper.java
