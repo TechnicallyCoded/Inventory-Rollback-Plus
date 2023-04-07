@@ -44,12 +44,12 @@ public class InventoryRollbackPlus extends InventoryRollback {
         instancePlus = this;
         InventoryRollback.setInstance(instancePlus);
 
-        // Load Config
-        configData = new ConfigData();
-        configData.setVariables();
-
         // Load Utils
         this.timeZoneUtil = new TimeZoneUtil();
+
+        // Load Config
+        configData = new ConfigData();
+        configData.setVariables(); // requires TimeZoneUtil
 
         // Init NMS
         InventoryRollback.setPackageVersion(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]);
