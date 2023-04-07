@@ -58,3 +58,6 @@ update-checker: true
 ## Allow bStats to collect anonymous server data.
 ## Please leave enabled as it allows the plugin developer to see statistics about the plugin.
 bStats: true
+
+# Debug mode - Prints extra information to the console.
+debug: false

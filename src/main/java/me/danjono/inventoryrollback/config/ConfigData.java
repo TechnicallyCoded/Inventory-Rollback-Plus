@@ -97,8 +97,8 @@ public class ConfigData {
     private static SimpleDateFormat timeFormat;
 
     private static boolean updateChecker;
-
     private static boolean bStatsEnabled;
+    private static boolean debugEnabled;
 
     public void setVariables() {		
         setEnabled((boolean) getDefaultValue("enabled", true));
@@ -145,6 +145,7 @@ public class ConfigData {
 
         setUpdateChecker((boolean) getDefaultValue("update-checker", true));
         setbStatsEnabled((boolean) getDefaultValue("bStats", true));
+        setDebugEnabled((boolean) getDefaultValue("debug", false));
 
         if (saveChanges())
             saveConfig();
@@ -270,6 +271,10 @@ public class ConfigData {
         bStatsEnabled = enabled;
     }
 
+    public static void setDebugEnabled(boolean enabled) {
+        debugEnabled = enabled;
+    }
+
     public static boolean isEnabled() {
         return pluginEnabled;
     }
@@ -368,6 +373,10 @@ public class ConfigData {
 
     public static boolean isbStatsEnabled() {
         return bStatsEnabled;
+    }
+
+    public static boolean isDebugEnabled() {
+        return debugEnabled;
     }
 
     private boolean saveChanges = false;

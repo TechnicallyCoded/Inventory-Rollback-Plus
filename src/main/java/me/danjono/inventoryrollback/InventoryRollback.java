@@ -27,7 +27,6 @@ public abstract class InventoryRollback extends JavaPlugin {
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static InventoryRollback instance;
     private static String packageVersion;
-    private ConfigData configData;
 
     public static Logger getPluginLogger() {
         return logger;
@@ -51,10 +50,6 @@ public abstract class InventoryRollback extends JavaPlugin {
 
     public static String getPluginVersion() {
         return instance.getDescription().getVersion();  
-    }
-
-    public ConfigData getConfigData() {
-        return configData;
     }
 
     @Override
@@ -85,9 +80,6 @@ public abstract class InventoryRollback extends JavaPlugin {
     }
 
     public void startupTasks() {
-        configData = new ConfigData();
-
-        configData.setVariables();
 
         if (ConfigData.getSaveType() == SaveType.YAML) {
             YAML.createStorageFolders();
