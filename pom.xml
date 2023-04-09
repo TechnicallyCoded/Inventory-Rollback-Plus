@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
-    <version>1.6.6</version>
+    <version>1.6.9</version>
     <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
     <url>https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/</url>
@@ -38,9 +38,18 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.1-R0.1-SNAPSHOT</version>
+            <version>1.19.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.19.3</version>
+            <scope>system</scope>
+            <type>jar</type>
+            <systemPath>${project.basedir}/lib/spigot-1.19.3.jar</systemPath>
+            <optional>true</optional>
+        </dependency>-->
         <!-- bStats API -->
         <dependency>
             <groupId>org.bstats</groupId>
@@ -59,7 +68,16 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>22.0.0</version>
+            <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

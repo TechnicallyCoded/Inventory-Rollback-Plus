@@ -7,7 +7,7 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -208,7 +208,7 @@ public class BackupConversionUtil {
                 if (deathReason != null) importedData.setDeathReason(deathReason);
 
                 // Save the data to the new folder location
-                importedData.saveData();
+                importedData.saveData(true);
             } catch (Exception e) {
                 InventoryRollbackPlus.getPluginLogger().warning(
                         MessageData.getPluginPrefix() + "Error converting backup file at " +

@@ -1,21 +1,20 @@
 package me.danjono.inventoryrollback.config;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-
+import me.danjono.inventoryrollback.InventoryRollback;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.danjono.inventoryrollback.InventoryRollback;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class MessageData {
 
     private File messagesFile;
     private FileConfiguration messages;
-    private static String configurationFileName = "messages.yml";
+    private static final String configurationFileName = "messages.yml";
 
     public MessageData() {
         generateMessagesFile();

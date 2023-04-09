@@ -39,7 +39,7 @@ public class ForceBackupSubCmd extends IRPCommand {
 
     private void forceBackupAll(CommandSender sender) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
+            new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
         }
 
         sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupAll());
@@ -64,7 +64,7 @@ public class ForceBackupSubCmd extends IRPCommand {
         }
 
         Player player = (Player) offlinePlayer;
-        new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave();
+        new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
 
         sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }

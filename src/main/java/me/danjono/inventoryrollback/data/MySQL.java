@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.apache.commons.lang.StringUtils;
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 
 import me.danjono.inventoryrollback.InventoryRollback;
@@ -449,7 +450,7 @@ public class MySQL {
 
         for (File backupType : backupLocations) {
             LogType logType = logTypeFiles.get(logTypeNumber);
-            InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Converting the backup location " + logType.name());
+            InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Converting the backup location " + logType.name());
 
             if (backupType == null) continue;
 
@@ -500,7 +501,7 @@ public class MySQL {
 
         }
 
-        InventoryRollback.getPluginLogger().log(Level.INFO, () -> MessageData.getPluginPrefix() + "Conversion completed!");
+        InventoryRollback.getPluginLogger().info(MessageData.getPluginPrefix() + "Conversion completed!");
 
     }
 

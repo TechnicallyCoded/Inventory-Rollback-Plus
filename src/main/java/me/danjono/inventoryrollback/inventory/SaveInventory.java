@@ -11,7 +11,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
@@ -40,7 +39,7 @@ public class SaveInventory {
         this.enderChestInventory = enderChestInventory;
     }
 
-    public void createSave() {
+    public void createSave(boolean shouldSaveAsync) {
         Long timestamp = System.currentTimeMillis();
 
         ItemStack[] mainInvContents = null;
@@ -90,39 +89,40 @@ public class SaveInventory {
         ItemStack[] finalMainInvArmor = mainInvArmor;
         ItemStack[] finalEnderInvContents = enderInvContents;
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PlayerData data = new PlayerData(player, logType, timestamp);
+        boolean saveAsync = !InventoryRollbackPlus.getInstance().isShuttingDown() && shouldSaveAsync;
+        Runnable saveTask = () -> {
+            PlayerData data = new PlayerData(player, logType, timestamp);
 
-                if (finalMainInvContents != null) data.setMainInventory(finalMainInvContents);
-                if (finalMainInvArmor != null) data.setArmour(finalMainInvArmor);
-                if (finalEnderInvContents != null) data.setEnderChest(finalEnderInvContents);
+            if (finalMainInvContents != null) data.setMainInventory(finalMainInvContents);
+            if (finalMainInvArmor != null) data.setArmour(finalMainInvArmor);
+            if (finalEnderInvContents != null) data.setEnderChest(finalEnderInvContents);
 
-                data.setXP(totalXp);
-                data.setHealth(health);
-                data.setFoodLevel(foodLevel);
-                data.setSaturation(saturation);
-                data.setWorld(worldName);
+            data.setXP(totalXp);
+            data.setHealth(health);
+            data.setFoodLevel(foodLevel);
+            data.setSaturation(saturation);
+            data.setWorld(worldName);
 
-                data.setX(locX);
-                data.setY(locY);
-                data.setZ(locZ);
+            data.setX(locX);
+            data.setY(locY);
+            data.setZ(locZ);
 
-                data.setLogType(logType);
-                data.setVersion(InventoryRollback.getPackageVersion());
+            data.setLogType(logType);
+            data.setVersion(InventoryRollback.getPackageVersion());
 
-                if (causeAlias != null) data.setDeathReason(causeAlias);
-                else if (deathCause != null) data.setDeathReason(deathCause.name());
-                else if (logType == LogType.DEATH) data.setDeathReason("UNKNOWN");
+            if (causeAlias != null) data.setDeathReason(causeAlias);
+            else if (deathCause != null) data.setDeathReason(deathCause.name());
+            else if (logType == LogType.DEATH) data.setDeathReason("UNKNOWN");
 
-                // Remove excess saves if limit is reached
-                CompletableFuture<Void> purgeTask = data.purgeExcessSaves();
+            // Remove excess saves if limit is reached
+            CompletableFuture<Void> purgeTask = data.purgeExcessSaves(saveAsync);
 
-                // Save new data
-                purgeTask.thenRun(data::saveData);
-            }
-        }.runTaskAsynchronously(main);
+            // Save new data
+            purgeTask.thenRun(() -> data.saveData(saveAsync));
+        };
+
+        if (saveAsync) main.getServer().getScheduler().runTaskAsynchronously(main, saveTask);
+        else saveTask.run();
 
     }
 

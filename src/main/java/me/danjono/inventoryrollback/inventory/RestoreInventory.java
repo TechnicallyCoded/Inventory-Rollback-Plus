@@ -22,7 +22,7 @@ import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.MessageData;
 
 public class RestoreInventory {
-    
+
     private RestoreInventory() {
         throw new IllegalStateException("Restore inventory class");
     }
@@ -40,17 +40,17 @@ public class RestoreInventory {
     }
 
     private static ItemStack[] stacksFromBase64(String packageVersion, String data) {
-        if (data == null) 
+        if (data == null)
             return new ItemStack[]{};
 
-        ByteArrayInputStream inputStream = null; 
-                
+        ByteArrayInputStream inputStream = null;
+
         try {
             inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
         } catch (IllegalArgumentException e) {
             return new ItemStack[]{};
         }
-        
+
         BukkitObjectInputStream dataInput = null;
         ItemStack[] stacks = null;
 
@@ -60,7 +60,7 @@ public class RestoreInventory {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        
+
         if (stacks == null)
             return new ItemStack[]{};
 
@@ -70,23 +70,31 @@ public class RestoreInventory {
             } catch (IOException | ClassNotFoundException | NullPointerException e) {
                 //Backup generated before InventoryRollback v1.3
                 if (packageVersion == null) {
-                    InventoryRollbackPlus.getPluginLogger().log(Level.SEVERE, ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. This is likely caused by a now incompatible material ID if the backup was originally generated on a different Minecraft server version.");
-                } 
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. This is likely caused by a now incompatible material ID if the backup was originally generated on a different Minecraft server version.");
+                }
                 //Backup was not generated on the same server version
                 else if (!packageVersion.equalsIgnoreCase(InventoryRollbackPlus.getPackageVersion())) {
-                    InventoryRollbackPlus.getPluginLogger().log(Level.SEVERE, ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");
-                } 
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The backup was generated on a " + packageVersion + " version server whereas you are now running a " + InventoryRollback.getPackageVersion() + " version server. It is likely a material ID inside the backup is no longer valid on this Minecraft server version and cannot be convereted.");
+                }
                 //Unknown error
                 else if (packageVersion.equalsIgnoreCase(InventoryRollbackPlus.getPackageVersion())) {
-                    InventoryRollbackPlus.getPluginLogger().log(Level.SEVERE, ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The data file is likely corrupted since this was saved on the same version the server is currently running on so it should have worked.");
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error deserializing the material data. The data file is likely corrupted since this was saved on the same version the server is currently running on so it should have worked.");
                 }
 
-                try { dataInput.close(); } catch (IOException e1) {}
+                try {
+                    dataInput.close();
+                } catch (IOException e1) {
+                    InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error while terminating read of backup data after an error already occurred.");
+                }
                 return null;
             }
         }
 
-        try { dataInput.close(); } catch (IOException e1) {}
+        try {
+            dataInput.close();
+        } catch (IOException e1) {
+            InventoryRollbackPlus.getPluginLogger().severe(ChatColor.stripColor(MessageData.getPluginPrefix()) + "There was an error while terminating read of backup data after normal read.");
+        }
 
         return stacks;
     }
@@ -99,8 +107,8 @@ public class RestoreInventory {
         //Levels 0 through 15
         if (xp >= 0 && xp <= 351) {
             //Calculate Everything
-            int a = 1; 
-            int b = 6; 
+            int a = 1;
+            int b = 6;
             int c = -xp;
             int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int xpForLevel = (int) (Math.pow(level, 2) + (6 * level));
@@ -169,7 +177,9 @@ public class RestoreInventory {
             //Levels 16 through 30
         } else if (xp >= 352 && xp < 1507) {
             //Calculate Everything
-            double a = 2.5; double b = -40.5; int c = -xp + 360;
+            double a = 2.5;
+            double b = -40.5;
+            int c = -xp + 360;
             double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
             int level = (int) Math.floor(dLevel);
             int xpForLevel = (int) (2.5 * Math.pow(level, 2) - (40.5 * level) + 360);

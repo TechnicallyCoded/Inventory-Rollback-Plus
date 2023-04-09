@@ -11,14 +11,14 @@ import java.net.URLConnection;
 
 public class UpdateChecker {
 		
-    private JavaPlugin plugin;
+    private final JavaPlugin plugin;
     private URL checkURL;
 
-    private String currentVersion;
-    private String[] currVersionSections;
+    private final String currentVersion;
+    private final String[] currVersionSections;
     private String availableVersion;
    
-    private UpdateResult result;
+    private final UpdateResult result;
    
     public static class UpdateResult {
 

@@ -35,7 +35,7 @@ public class EventLogs implements Listener {
 
 		Player player = e.getPlayer();
 		if (player.hasPermission("inventoryrollbackplus.joinsave")) {
-			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null, player.getInventory(), player.getEnderChest()).createSave();
+			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
 		}
 		if (player.hasPermission("inventoryrollbackplus.adminalerts")) {
 			// can send info to admins here
@@ -49,7 +49,7 @@ public class EventLogs implements Listener {
 		Player player = e.getPlayer();
 
 		if (player.hasPermission("inventoryrollbackplus.leavesave")) {
-			new SaveInventory(e.getPlayer(), LogType.QUIT, null, null, player.getInventory(), player.getEnderChest()).createSave();
+			new SaveInventory(e.getPlayer(), LogType.QUIT, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
 		}
 	}
 
@@ -67,9 +67,7 @@ public class EventLogs implements Listener {
 		Player player = (Player) event.getEntity();
 
 		// Check that the player actually died from the damage & that the player has the permission for inventory saves
-		if (player.getHealth() - event.getFinalDamage() <= 0 && (
-				player.hasPermission("inventoryrollbackplus.deathsave") ||
-						player.hasPermission("inventoryrollback.deathsave"))) {
+		if (player.getHealth() - event.getFinalDamage() <= 0 && player.hasPermission("inventoryrollbackplus.deathsave")) {
 
 			// Detailed reason for the death that can be applied given certain conditions
 			String reason = null;
@@ -105,7 +103,7 @@ public class EventLogs implements Listener {
 			}
 
 			// After all checks, create the save with data provided above
-			new SaveInventory(player, LogType.DEATH, event.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave();
+			new SaveInventory(player, LogType.DEATH, event.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave(true);
 		}
 	}
 
@@ -116,7 +114,7 @@ public class EventLogs implements Listener {
 		Player player = e.getPlayer();
 
 		if (player.hasPermission("inventoryrollbackplus.worldchangesave")) {
-			new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, null, player.getInventory(), player.getEnderChest()).createSave();
+			new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
 		}
 	}
 
