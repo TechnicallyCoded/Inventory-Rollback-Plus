@@ -33,7 +33,9 @@ public class NBTWrapper {
 			if (ConfigData.isDebugEnabled()) irp.getLogger().info("Using NMS Version: " + nmsVersion.toString());
 			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
 
-				if (nmsVersion.isAtLeast(EnumNmsVersion.v1_19_R1)) {
+				if (nmsVersion.isAtLeast(EnumNmsVersion.v1_20_R1)) {
+					getTagMethodName = "v";
+				} else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_19_R1)) {
 					getTagMethodName = "u";
 				} else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R2)) {
 					getTagMethodName = "t";
