@@ -487,9 +487,10 @@ public class ClickGUI implements Listener {
                     if (SoundData.isExperienceRestoredEnabled())
                         player.playSound(player.getLocation(), SoundData.getExperienceSound(), 1, 1);
 
-                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestoredPlayer(staff.getName(), xp.intValue()));
+                    int level = (int) RestoreInventory.getLevel(xp);
+                    player.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestoredPlayer(staff.getName(), level));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
-                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestored(player.getName(), (int) RestoreInventory.getLevel(xp)));
+                        staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestored(player.getName(), level));
                 } else {				    
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceNotOnlinePlayer(offlinePlayer.getName()));
                 }
