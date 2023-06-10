@@ -11,14 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 public class MainInventoryBackupMenu {
 
@@ -47,6 +43,7 @@ public class MainInventoryBackupMenu {
 		this.playerUUID = data.getOfflinePlayer().getUniqueId();
 		this.logType = data.getLogType();
 		this.timestamp = data.getTimestamp();
+
 		if (data.getArmour().length > 0) {
 			this.mainInventory = data.getMainInventory();
 			this.armour = data.getArmour();
@@ -90,9 +87,9 @@ public class MainInventoryBackupMenu {
 					task.cancel();
 					return;
 				}
-				ItemStack itemStack = mainInventory[position.get()];
+				ItemStack itemStack = mainInventory[position.getAndIncrement()];
 				if (itemStack == null) continue;
-				inventory.setItem(position.getAndIncrement(), itemStack);
+				inventory.setItem(position.get() - 1, itemStack);
 			}
 		}, 1, 1);
 

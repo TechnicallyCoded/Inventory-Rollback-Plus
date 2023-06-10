@@ -3,6 +3,7 @@ package me.danjono.inventoryrollback.gui.menu;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.Bukkit;
@@ -16,7 +17,6 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class EnderChestBackupMenu {
 
@@ -81,41 +81,21 @@ public class EnderChestBackupMenu {
             pageNumber = 1;
         }
 
+        final int pageDelta = (pageNumber - 1) * 27;
+        final AtomicInteger position = new AtomicInteger(0);
+        final int length = Math.max(0, pageDelta + Math.min(enderchest.length - pageDelta, 27));
         //If the backup file is invalid it will return null, we want to catch it here
-        try {
-
-            // Add items, 5 per tick
-            new BukkitRunnable() {
-
-                int invPosition = 0;
-                int itemPos = (pageNumber - 1) * 27;
-                final int max = Math.max(0, itemPos + Math.min(enderchest.length - itemPos, 27)); // excluded but starts from 0
-
-                @Override
-                public void run() {
-                    for (int i = 0; i < 6; i++) {
-                        // If hit max item position, stop
-                        if (itemPos >= max) {
-                            this.cancel();
-                            return;
-                        }
-
-
-                        ItemStack itemStack = enderchest[itemPos];
-                        if (itemStack != null) {
-                            inventory.setItem(invPosition, itemStack);
-                            // Don't change inv position if there was nothing to place
-                            invPosition++;
-                        }
-                        // Move to next item stack
-                        itemPos++;
-                    }
+        InventoryRollbackPlus.getInstance().getScheduler().runAtGlobalRate(task -> {
+            for (int i = 0; i < 5; i++) {
+                if (position.get() >= length) {
+                    task.cancel();
+                    return;
                 }
-            }.runTaskTimer(InventoryRollbackPlus.getInstance(), 0, 1);
-        } catch (NullPointerException e) {
-            staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
-            return;
-        }
+                ItemStack itemStack = enderchest[pageDelta + position.getAndIncrement()];
+                if (itemStack == null) continue;
+                inventory.setItem(position.get() - 1, itemStack);
+            }
+        }, 1, 1);
 
         // Add restore all player inventory button
         if (ConfigData.isRestoreToPlayerButton()) {

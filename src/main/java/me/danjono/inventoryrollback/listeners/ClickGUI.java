@@ -20,13 +20,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class ClickGUI implements Listener {
 
@@ -280,47 +277,43 @@ public class ClickGUI implements Listener {
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
 
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            // Init from MySQL or, if YAML, init & load config file
-                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+                    main.getScheduler().runAsync(() -> {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                            // Get data if using MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
-                                try {
-                                    data.getAllBackupData().get();
-                                } catch (ExecutionException | InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
+                        // Get data if using MySQL
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
                             }
-
-                            ItemStack[] inventory = data.getMainInventory();
-                            ItemStack[] armour = data.getArmour();
-
-                            // Place inventory items sync (compressed code)
-                            main.getScheduler().runAtEntity(player, () -> player.getInventory().setContents(inventory));
-
-                            // If 1.8, place armor contents separately
-                            if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
-                                // Place items sync (compressed code)
-                                main.getScheduler().runAtEntity(player, () -> player.getInventory().setArmorContents(armour));
-                            }
-
-                            // Play sound effect is enabled
-                            if (SoundData.isInventoryRestoreEnabled()) {
-                                // Play sound sync (compressed code)
-                                main.getScheduler().runAtEntity(player, () ->
-                                        player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1));
-                            }
-
-                            // Send player & staff feedback
-                            player.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
-                            if (!staff.getUniqueId().equals(player.getUniqueId()))
-                                staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));
                         }
-                    }.runTaskAsynchronously(main);
 
+                        ItemStack[] inventory = data.getMainInventory();
+                        ItemStack[] armour = data.getArmour();
+
+                        // Place inventory items sync (compressed code)
+                        main.getScheduler().runAtEntity(player, () -> player.getInventory().setContents(inventory));
+
+                        // If 1.8, place armor contents separately
+                        if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
+                            // Place items sync (compressed code)
+                            main.getScheduler().runAtEntity(player, () -> player.getInventory().setArmorContents(armour));
+                        }
+
+                        // Play sound effect is enabled
+                        if (SoundData.isInventoryRestoreEnabled()) {
+                            // Play sound sync (compressed code)
+                            main.getScheduler().runAtEntity(player, () ->
+                                    player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1));
+                        }
+
+                        // Send player & staff feedback
+                        player.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
+                        if (!staff.getUniqueId().equals(player.getUniqueId()))
+                            staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));
+                    });
                 } else {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryNotOnline(offlinePlayer.getName()));
                 }
@@ -363,32 +356,28 @@ public class ClickGUI implements Listener {
 
             // Clicked icon to restore backup players ender chest
             else if (icon.getType().equals(Buttons.getEnderChestIcon())) {
+                main.getScheduler().runAsync(() -> {
+                    // Init from MySQL or, if YAML, init & load config file
+                    PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        // Init from MySQL or, if YAML, init & load config file
-                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
-
-                        // Get data if using MySQL
-                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
-                            try {
-                                data.getAllBackupData().get();
-                            } catch (ExecutionException | InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
+                    // Get data if using MySQL
+                    if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                        try {
+                            data.getAllBackupData().get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
                         }
-
-                        // Create Inventory
-                        EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, 1);
-
-                        // Open inventory sync (compressed code)
-                        main.getScheduler().runAtEntity(staff, () -> staff.openInventory(menu.getInventory()));
-
-                        // Place items async
-                        menu.showEnderChestItems();
                     }
-                }.runTaskAsynchronously(this.main);
+
+                    // Create Inventory
+                    EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, 1);
+
+                    // Open inventory sync (compressed code)
+                    main.getScheduler().runAtEntity(staff, () -> staff.openInventory(menu.getInventory()));
+
+                    // Place items async
+                    menu.showEnderChestItems();
+                });
             }
 
             // Clicked icon to restore backup players health
@@ -577,25 +566,22 @@ public class ClickGUI implements Listener {
                     Player player = (Player) offlinePlayer;
 
                     // Run all data retrieval operations async to avoid tick lag
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            // Init from MySQL or, if YAML, init & load config file
-                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+                    main.getScheduler().runAsync(() -> {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                            // Get from MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
-                                try {
-                                    data.getAllBackupData().get();
-                                } catch (ExecutionException | InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
+                        // Get from MySQL
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
                             }
-
-                            // Display inventory to player
-                            main.getScheduler().runAtEntity(player, () -> player.getEnderChest().setContents(data.getEnderChest()));
                         }
-                    }.runTaskAsynchronously(main);
+
+                        // Display inventory to player
+                        main.getScheduler().runAtEntity(player, () -> player.getEnderChest().setContents(data.getEnderChest()));
+                    });
 
                     if (SoundData.isInventoryRestoreEnabled())
                         player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); 

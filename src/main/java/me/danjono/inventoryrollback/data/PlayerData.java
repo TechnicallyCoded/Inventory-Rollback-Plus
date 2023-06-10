@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.ConfigData.SaveType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerData {
 
@@ -263,17 +262,14 @@ public class PlayerData {
     public CompletableFuture<Void> getAllBackupData() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         if (ConfigData.getSaveType() == SaveType.MYSQL) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    try {
-                        mysql.getAllBackupData();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    future.complete(null);
+            InventoryRollbackPlus.getInstance().getScheduler().runAsync(() -> {
+                try {
+                    mysql.getAllBackupData();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
+                future.complete(null);
+            });
         }
         return future;
     }
