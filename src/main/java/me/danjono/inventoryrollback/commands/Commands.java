@@ -123,14 +123,14 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         MainMenu menu = new MainMenu(staff, 1);
 
         staff.openInventory(menu.getInventory());
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+        InventoryRollback.getInstance().getScheduler().runAsync(menu::getMainMenu);
     }
 
     private void openPlayerMenu(Player staff, OfflinePlayer offlinePlayer) {
         PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
 
         staff.openInventory(menu.getInventory());
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+        InventoryRollback.getInstance().getScheduler().runAsync(menu::getPlayerMenu);
     }
 
     private void forceBackupCommand(CommandSender sender, String[] args) {
@@ -227,13 +227,13 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void convertMySQL(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender && sender.isOp()) {
-            Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), MySQL::convertYAMLToMySQL);
+            InventoryRollback.getInstance().getScheduler().runAsync(MySQL::convertYAMLToMySQL);
         }
     }
 
     private void convertYAML(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender && sender.isOp()) {
-            Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), YAML::convertOldBackupData);
+            InventoryRollback.getInstance().getScheduler().runAsync(YAML::convertOldBackupData);
         }
     }
 

@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import me.danjono.inventoryrollback.scheduler.SchedulerAdapter;
+import me.danjono.inventoryrollback.scheduler.impl.BukkitSchedulerAdapter;
+import me.danjono.inventoryrollback.scheduler.impl.FoliaSchedulerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +30,8 @@ public abstract class InventoryRollback extends JavaPlugin {
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static InventoryRollback instance;
     private static String packageVersion;
+    private final SchedulerAdapter scheduler = FoliaSchedulerAdapter.isSupported() ?
+            new FoliaSchedulerAdapter(this) : new BukkitSchedulerAdapter(this);
 
     public static Logger getPluginLogger() {
         return logger;
@@ -50,6 +55,10 @@ public abstract class InventoryRollback extends JavaPlugin {
 
     public static String getPluginVersion() {
         return instance.getDescription().getVersion();  
+    }
+
+    public SchedulerAdapter getScheduler() {
+        return scheduler;
     }
 
     @Override
@@ -167,26 +176,26 @@ public abstract class InventoryRollback extends JavaPlugin {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        getScheduler().runAsync(() -> {
             logger.log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
 
             switch (result) {
-            case FAIL_SPIGOT:
-                logger.log(Level.INFO, MessageData.getPluginPrefix() + "Could not contact Spigot to check if an update is available.");
-                break;
-            case UPDATE_AVAILABLE:		
-                logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
-                logger.log(Level.INFO, ChatColor.AQUA + "An update to InventoryRollbackPlus is available!");
-                logger.log(Level.INFO, ChatColor.AQUA + "Download at https://www.spigotmc.org/resources/inventoryrollback-plus-1-8-1-16-x.85811/");
-                logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
-                break;
-            case NO_UPDATE:
-                logger.log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.AQUA + "You are running the latest version.");
-                break;
-            default:
-                break;
+                case FAIL_SPIGOT:
+                    logger.log(Level.INFO, MessageData.getPluginPrefix() + "Could not contact Spigot to check if an update is available.");
+                    break;
+                case UPDATE_AVAILABLE:
+                    logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
+                    logger.log(Level.INFO, ChatColor.AQUA + "An update to InventoryRollbackPlus is available!");
+                    logger.log(Level.INFO, ChatColor.AQUA + "Download at https://www.spigotmc.org/resources/inventoryrollback-plus-1-8-1-16-x.85811/");
+                    logger.log(Level.INFO, ChatColor.AQUA + "======================================================================================");
+                    break;
+                case NO_UPDATE:
+                    logger.log(Level.INFO, MessageData.getPluginPrefix() + ChatColor.AQUA + "You are running the latest version.");
+                    break;
+                default:
+                    break;
             }
         });
     }

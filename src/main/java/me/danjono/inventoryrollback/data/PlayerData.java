@@ -134,7 +134,7 @@ public class PlayerData {
         };
 
         InventoryRollbackPlus instance = InventoryRollbackPlus.getInstance();
-        if (saveAsync) instance.getServer().getScheduler().runTaskAsynchronously(instance, purgeTask);
+        if (saveAsync) instance.getScheduler().runAsync(purgeTask);
         else purgeTask.run();
 
         return future;
@@ -437,7 +437,7 @@ public class PlayerData {
             }
         };
 
-        if (saveAsync) Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(),saveDataTask);
+        if (saveAsync) InventoryRollback.getInstance().getScheduler().runAsync(saveDataTask);
         else saveDataTask.run();
     }
 

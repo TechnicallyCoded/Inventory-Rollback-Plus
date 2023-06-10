@@ -104,7 +104,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         HandlerList.unregisterAll(this);
 
         // Cancel tasks
-        this.getServer().getScheduler().cancelTasks(this);
+        this.getScheduler().cancelTasks();
 
         // Clear instance references
         instancePlus = null;
@@ -129,7 +129,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        this.getScheduler().runAsync(() -> {
             InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();

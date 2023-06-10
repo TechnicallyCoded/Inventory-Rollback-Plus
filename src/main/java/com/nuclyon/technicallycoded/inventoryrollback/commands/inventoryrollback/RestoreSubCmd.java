@@ -90,14 +90,14 @@ public class RestoreSubCmd extends IRPCommand {
         MainMenu menu = new MainMenu(staff, 1);
 
         staff.openInventory(menu.getInventory());
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+        InventoryRollback.getInstance().getScheduler().runAsync(menu::getMainMenu);
     }
 
     private void openPlayerMenu(Player staff, OfflinePlayer offlinePlayer) {
         PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
 
         staff.openInventory(menu.getInventory());
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+        InventoryRollback.getInstance().getScheduler().runAsync(menu::getPlayerMenu);
     }
 
 }

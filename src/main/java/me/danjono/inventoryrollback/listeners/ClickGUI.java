@@ -134,7 +134,7 @@ public class ClickGUI implements Listener {
                 MainMenu menu = new MainMenu(staff, page);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+                InventoryRollback.getInstance().getScheduler().runAsync(menu::getMainMenu);
             } 
             //Clicked a player head
             else {
@@ -142,7 +142,7 @@ public class ClickGUI implements Listener {
                 PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+                InventoryRollback.getInstance().getScheduler().runAsync(menu::getPlayerMenu);
             }
         } else {
             if (e.getRawSlot() >= e.getInventory().getSize() && !e.isShiftClick()) {
@@ -168,13 +168,13 @@ public class ClickGUI implements Listener {
                 MainMenu menu = new MainMenu(staff, 1);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+                InventoryRollback.getInstance().getScheduler().runAsync(menu::getMainMenu);
             } else {
                 LogType logType = LogType.valueOf(nbt.getString("logType"));
                 RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                InventoryRollback.getInstance().getScheduler().runAsync(menu::showBackups);
             }
 
         } else {
@@ -198,38 +198,28 @@ public class ClickGUI implements Listener {
                 String location = nbt.getString("location");
 
                 // Run all data retrieval operations async to avoid tick lag
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        // Init from MySQL or, if YAML, init & load config file
-                        PlayerData data = new PlayerData(uuid, logType, timestamp);
+                main.getScheduler().runAsync(() -> {
+                    // Init from MySQL or, if YAML, init & load config file
+                    PlayerData data = new PlayerData(uuid, logType, timestamp);
 
-                        // Get from MySQL
-                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
-                            try {
-                                data.getAllBackupData().get();
-                            } catch (ExecutionException | InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-
-                        // Create inventory
-                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
-
-                        // Display inventory to player
-                        Future<InventoryView> inventoryViewFuture =
-                                main.getServer().getScheduler().callSyncMethod(main,
-                                        () -> staff.openInventory(menu.getInventory()));
-                        //If the backup file is invalid it will return null, we want to catch it here
+                    // Get from MySQL
+                    if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
                         try {
-                            inventoryViewFuture.get();
-                            // Start placing items in the inventory async
-                            menu.showBackupItems();
-                        } catch (NullPointerException | ExecutionException | InterruptedException ex) {
+                            data.getAllBackupData().get();
+                        } catch (ExecutionException | InterruptedException ex) {
                             ex.printStackTrace();
                         }
                     }
-                }.runTaskAsynchronously(main);
+
+                    // Create inventory
+                    MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+
+                    // Display inventory to player
+                    main.getScheduler().runAtEntity(staff, () -> staff.openInventory(menu.getInventory()));
+
+                    // Start placing items in the inventory async
+                    menu.showBackupItems();
+                });
             } 
 
             //Player has selected a page icon
@@ -242,13 +232,13 @@ public class ClickGUI implements Listener {
                     PlayerMenu menu = new PlayerMenu(staff, player);
 
                     staff.openInventory(menu.getInventory());
-                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+                    InventoryRollback.getInstance().getScheduler().runAsync(menu::getPlayerMenu);
                 } else {
                     LogType logType = LogType.valueOf(nbt.getString("logType"));
                     RollbackListMenu menu = new RollbackListMenu(staff, player, logType, page);
 
                     staff.openInventory(menu.getInventory());
-                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                    InventoryRollback.getInstance().getScheduler().runAsync(menu::showBackups);
                 }
             }	
         } else {
@@ -276,7 +266,7 @@ public class ClickGUI implements Listener {
                 RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                InventoryRollback.getInstance().getScheduler().runAsync(menu::showBackups);
             }
 
             //Clicked icon to overwrite player inventory with backup data
@@ -309,27 +299,19 @@ public class ClickGUI implements Listener {
                             ItemStack[] armour = data.getArmour();
 
                             // Place inventory items sync (compressed code)
-                            Future<Void> futureSetInv = main.getServer().getScheduler().callSyncMethod(main,
-                                    () -> { player.getInventory().setContents(inventory); return null; });
-                            try { futureSetInv.get(); }
-                            catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
+                            main.getScheduler().runAtEntity(player, () -> player.getInventory().setContents(inventory));
 
                             // If 1.8, place armor contents separately
                             if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                                 // Place items sync (compressed code)
-                                Future<Void> futureSetArmor = main.getServer().getScheduler().callSyncMethod(main,
-                                        () -> { player.getInventory().setArmorContents(armour); return null; });
-                                try { futureSetArmor.get(); }
-                                catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
+                                main.getScheduler().runAtEntity(player, () -> player.getInventory().setArmorContents(armour));
                             }
 
                             // Play sound effect is enabled
                             if (SoundData.isInventoryRestoreEnabled()) {
                                 // Play sound sync (compressed code)
-                                Future<Void> futurePlaySound = main.getServer().getScheduler().callSyncMethod(main,
-                                        () -> { player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); return null; });
-                                try { futurePlaySound.get(); }
-                                catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
+                                main.getScheduler().runAtEntity(player, () ->
+                                        player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1));
                             }
 
                             // Send player & staff feedback
@@ -368,7 +350,7 @@ public class ClickGUI implements Listener {
                         .add(0.5, 0.5, 0.5);				
 
                 // Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
-                Bukkit.getScheduler().runTaskLater(InventoryRollback.getInstance(), () -> {
+                InventoryRollback.getInstance().getScheduler().runAtEntityDelayed(staff, () -> {
                     e.getWhoClicked().closeInventory();
                     PaperLib.teleportAsync(staff,loc).thenAccept((result) -> {
                         if (SoundData.isTeleportEnabled())
@@ -401,16 +383,7 @@ public class ClickGUI implements Listener {
                         EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, 1);
 
                         // Open inventory sync (compressed code)
-                        Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
-                                () -> {
-                                    staff.openInventory(menu.getInventory());
-                                    return null;
-                                });
-                        try {
-                            futureOpenInv.get();
-                        } catch (ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
+                        main.getScheduler().runAtEntity(staff, () -> staff.openInventory(menu.getInventory()));
 
                         // Place items async
                         menu.showEnderChestItems();
@@ -540,79 +513,55 @@ public class ClickGUI implements Listener {
 
                 //Selected to go back to main menu
                 if (page == 0) {
-
                     // Run all data retrieval operations async to avoid tick lag
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            // Init from MySQL or, if YAML, init & load config file
-                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+                    main.getScheduler().runAsync(() -> {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
-                            // Get data if using MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
-                                try {
-                                    data.getAllBackupData().get();
-                                } catch (ExecutionException | InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
-                            }
-
-                            // Get location of where the backup was made from data
-                            String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
-
-                            // Create inventory
-                            MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
-
-                            // Display inventory to player
-                            Future<InventoryView> inventoryViewFuture = main.getServer().getScheduler().callSyncMethod(main,
-                                    () -> staff.openInventory(menu.getInventory()));
-                            //If the backup file is invalid it will return null, we want to catch it here
+                        // Get data if using MySQL
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
                             try {
-                                inventoryViewFuture.get();
-                                // Start placing items in the inventory async
-                                menu.showBackupItems();
-                            } catch (NullPointerException | ExecutionException | InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }.runTaskAsynchronously(main);
-
-                } else {
-
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            // Init from MySQL or, if YAML, init & load config file
-                            PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
-
-                            // Get data if using MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
-                                try {
-                                    data.getAllBackupData().get();
-                                } catch (ExecutionException | InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
-                            }
-
-                            // Create Inventory
-                            EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, page);
-
-                            // Open inventory sync (compressed code)
-                            Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
-                                    () -> {
-                                        staff.openInventory(menu.getInventory());
-                                        return null;
-                                    });
-                            try {
-                                futureOpenInv.get();
+                                data.getAllBackupData().get();
                             } catch (ExecutionException | InterruptedException ex) {
                                 ex.printStackTrace();
                             }
-
-                            // Place items async
-                            menu.showEnderChestItems();
                         }
-                    }.runTaskAsynchronously(this.main);
+
+                        // Get location of where the backup was made from data
+                        String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
+
+                        // Create inventory
+                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+
+                        // Display inventory to player
+                        main.getScheduler().runAtEntity(staff, () -> staff.openInventory(menu.getInventory()));
+
+                        // Start placing items in the inventory async
+                        menu.showBackupItems();
+                    });
+                } else {
+                    main.getScheduler().runAsync(() -> {
+                        // Init from MySQL or, if YAML, init & load config file
+                        PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+
+                        // Get data if using MySQL
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            try {
+                                data.getAllBackupData().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                        // Create Inventory
+                        EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, page);
+
+                        // Open inventory sync (compressed code)
+                        main.getScheduler().runAtEntity(staff, () -> staff.openInventory(menu.getInventory()));
+
+                        // Place items async
+                        menu.showEnderChestItems();
+                    });
                 }
             }
 
@@ -644,18 +593,7 @@ public class ClickGUI implements Listener {
                             }
 
                             // Display inventory to player
-                            Future<Void> inventoryReplaceFuture = main.getServer().getScheduler().callSyncMethod(main,
-                                    () -> {
-                                        player.getEnderChest().setContents(data.getEnderChest());
-                                        return null;
-                                    });
-
-                            //If the backup file is invalid it will return null, we want to catch it here
-                            try {
-                                inventoryReplaceFuture.get();
-                            } catch (NullPointerException | ExecutionException | InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
+                            main.getScheduler().runAtEntity(player, () -> player.getEnderChest().setContents(data.getEnderChest()));
                         }
                     }.runTaskAsynchronously(main);
 
