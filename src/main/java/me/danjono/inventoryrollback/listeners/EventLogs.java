@@ -64,9 +64,8 @@ public class EventLogs implements Listener {
 
         Player player = event.getEntity();
 
-        // Check that the player actually died from the damage & that the player has the permission for inventory saves
-        if (player.hasPermission("inventoryrollbackplus.deathsave") ||
-                player.hasPermission("inventoryrollback.deathsave")) {
+        // Check that the player has the permission for inventory saves
+        if (player.hasPermission("inventoryrollbackplus.deathsave")) {
 
             EntityDamageEvent damageEvent = event.getEntity().getLastDamageCause();
             EntityDamageEvent.DamageCause damageCause;
