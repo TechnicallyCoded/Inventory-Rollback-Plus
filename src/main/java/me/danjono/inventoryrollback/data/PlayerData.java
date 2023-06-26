@@ -132,8 +132,7 @@ public class PlayerData {
             future.complete(null);
         };
 
-        InventoryRollbackPlus instance = InventoryRollbackPlus.getInstance();
-        if (saveAsync) instance.getServer().getScheduler().runTaskAsynchronously(instance, purgeTask);
+        if (saveAsync) InventoryRollbackPlus.getScheduler().runTaskAsynchronously(purgeTask);
         else purgeTask.run();
 
         return future;

@@ -121,7 +121,7 @@ public class SaveInventory {
             purgeTask.thenRun(() -> data.saveData(saveAsync));
         };
 
-        if (saveAsync) main.getServer().getScheduler().runTaskAsynchronously(main, saveTask);
+        if (saveAsync) InventoryRollbackPlus.getScheduler().runTaskAsynchronously(saveTask);
         else saveTask.run();
 
     }

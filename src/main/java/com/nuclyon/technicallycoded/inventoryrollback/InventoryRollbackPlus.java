@@ -108,7 +108,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         HandlerList.unregisterAll(this);
 
         // Cancel tasks
-        this.getServer().getScheduler().cancelTasks(this);
+        getScheduler().cancelTasks(this);
 
         // Clear instance references
         instancePlus = null;
