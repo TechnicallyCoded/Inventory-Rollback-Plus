@@ -1,5 +1,6 @@
 package me.danjono.inventoryrollback.gui.menu;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
@@ -11,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -79,7 +79,7 @@ public class MainInventoryBackupMenu {
 		//If the backup file is invalid it will return null, we want to catch it here
 		try {
     		// Add items, 5 per tick
-			new BukkitRunnable() {
+			new UniversalRunnable() {
 
 				int invPosition = 0;
 				int itemPos = 0;

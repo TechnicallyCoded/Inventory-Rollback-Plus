@@ -1,5 +1,6 @@
 package me.danjono.inventoryrollback.listeners;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import io.papermc.lib.PaperLib;
@@ -22,7 +23,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -134,7 +134,7 @@ public class ClickGUI implements Listener {
                 MainMenu menu = new MainMenu(staff, page);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+                InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::getMainMenu);
             } 
             //Clicked a player head
             else {
@@ -142,7 +142,7 @@ public class ClickGUI implements Listener {
                 PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+                InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::getPlayerMenu);
             }
         } else {
             if (e.getRawSlot() >= e.getInventory().getSize() && !e.isShiftClick()) {
@@ -168,13 +168,13 @@ public class ClickGUI implements Listener {
                 MainMenu menu = new MainMenu(staff, 1);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+                InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::getMainMenu);
             } else {
                 LogType logType = LogType.valueOf(nbt.getString("logType"));
                 RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::showBackups);
             }
 
         } else {
@@ -198,7 +198,7 @@ public class ClickGUI implements Listener {
                 String location = nbt.getString("location");
 
                 // Run all data retrieval operations async to avoid tick lag
-                new BukkitRunnable() {
+                new UniversalRunnable() {
                     @Override
                     public void run() {
                         // Init from MySQL or, if YAML, init & load config file
@@ -242,13 +242,13 @@ public class ClickGUI implements Listener {
                     PlayerMenu menu = new PlayerMenu(staff, player);
 
                     staff.openInventory(menu.getInventory());
-                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+                    InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::getPlayerMenu);
                 } else {
                     LogType logType = LogType.valueOf(nbt.getString("logType"));
                     RollbackListMenu menu = new RollbackListMenu(staff, player, logType, page);
 
                     staff.openInventory(menu.getInventory());
-                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                    InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::showBackups);
                 }
             }	
         } else {
@@ -276,7 +276,7 @@ public class ClickGUI implements Listener {
                 RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
 
                 staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                InventoryRollbackPlus.getScheduler().runTaskAsynchronously(menu::showBackups);
             }
 
             //Clicked icon to overwrite player inventory with backup data
@@ -290,7 +290,7 @@ public class ClickGUI implements Listener {
                 if (offlinePlayer.isOnline()) {
                     Player player = (Player) offlinePlayer;
 
-                    new BukkitRunnable() {
+                    new UniversalRunnable() {
                         @Override
                         public void run() {
                             // Init from MySQL or, if YAML, init & load config file
@@ -382,7 +382,7 @@ public class ClickGUI implements Listener {
             // Clicked icon to restore backup players ender chest
             else if (icon.getType().equals(Buttons.getEnderChestIcon())) {
 
-                new BukkitRunnable() {
+                new UniversalRunnable() {
                     @Override
                     public void run() {
                         // Init from MySQL or, if YAML, init & load config file
@@ -542,7 +542,7 @@ public class ClickGUI implements Listener {
                 if (page == 0) {
 
                     // Run all data retrieval operations async to avoid tick lag
-                    new BukkitRunnable() {
+                    new UniversalRunnable() {
                         @Override
                         public void run() {
                             // Init from MySQL or, if YAML, init & load config file
@@ -579,7 +579,7 @@ public class ClickGUI implements Listener {
 
                 } else {
 
-                    new BukkitRunnable() {
+                    new UniversalRunnable() {
                         @Override
                         public void run() {
                             // Init from MySQL or, if YAML, init & load config file
@@ -628,7 +628,7 @@ public class ClickGUI implements Listener {
                     Player player = (Player) offlinePlayer;
 
                     // Run all data retrieval operations async to avoid tick lag
-                    new BukkitRunnable() {
+                    new UniversalRunnable() {
                         @Override
                         public void run() {
                             // Init from MySQL or, if YAML, init & load config file

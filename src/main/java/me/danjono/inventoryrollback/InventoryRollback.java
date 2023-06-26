@@ -167,7 +167,7 @@ public abstract class InventoryRollback extends JavaPlugin {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        InventoryRollbackPlus.getScheduler().runTaskAsynchronously(() -> {
             logger.log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
