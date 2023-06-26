@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,7 +17,6 @@ import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class EnderChestBackupMenu {
 
@@ -85,7 +85,7 @@ public class EnderChestBackupMenu {
         try {
 
             // Add items, 5 per tick
-            new BukkitRunnable() {
+            new UniversalRunnable() {
 
                 int invPosition = 0;
                 int itemPos = (pageNumber - 1) * 27;
