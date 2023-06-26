@@ -218,7 +218,7 @@ public class ClickGUI implements Listener {
 
                         // Display inventory to player
                         Future<InventoryView> inventoryViewFuture =
-                                main.getServer().getScheduler().callSyncMethod(main,
+                                InventoryRollbackPlus.getScheduler().callSyncMethod(
                                         () -> staff.openInventory(menu.getInventory()));
                         //If the backup file is invalid it will return null, we want to catch it here
                         try {
@@ -309,7 +309,7 @@ public class ClickGUI implements Listener {
                             ItemStack[] armour = data.getArmour();
 
                             // Place inventory items sync (compressed code)
-                            Future<Void> futureSetInv = main.getServer().getScheduler().callSyncMethod(main,
+                            Future<Void> futureSetInv = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                     () -> { player.getInventory().setContents(inventory); return null; });
                             try { futureSetInv.get(); }
                             catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
@@ -317,7 +317,7 @@ public class ClickGUI implements Listener {
                             // If 1.8, place armor contents separately
                             if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
                                 // Place items sync (compressed code)
-                                Future<Void> futureSetArmor = main.getServer().getScheduler().callSyncMethod(main,
+                                Future<Void> futureSetArmor = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                         () -> { player.getInventory().setArmorContents(armour); return null; });
                                 try { futureSetArmor.get(); }
                                 catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
@@ -326,7 +326,7 @@ public class ClickGUI implements Listener {
                             // Play sound effect is enabled
                             if (SoundData.isInventoryRestoreEnabled()) {
                                 // Play sound sync (compressed code)
-                                Future<Void> futurePlaySound = main.getServer().getScheduler().callSyncMethod(main,
+                                Future<Void> futurePlaySound = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                         () -> { player.playSound(player.getLocation(), SoundData.getInventoryRestored(), 1, 1); return null; });
                                 try { futurePlaySound.get(); }
                                 catch (ExecutionException | InterruptedException ex) { ex.printStackTrace(); }
@@ -401,7 +401,7 @@ public class ClickGUI implements Listener {
                         EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, 1);
 
                         // Open inventory sync (compressed code)
-                        Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
+                        Future<Void> futureOpenInv = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                 () -> {
                                     staff.openInventory(menu.getInventory());
                                     return null;
@@ -565,7 +565,7 @@ public class ClickGUI implements Listener {
                             MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
 
                             // Display inventory to player
-                            Future<InventoryView> inventoryViewFuture = main.getServer().getScheduler().callSyncMethod(main,
+                            Future<InventoryView> inventoryViewFuture = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                     () -> staff.openInventory(menu.getInventory()));
                             //If the backup file is invalid it will return null, we want to catch it here
                             try {
@@ -599,7 +599,7 @@ public class ClickGUI implements Listener {
                             EnderChestBackupMenu menu = new EnderChestBackupMenu(staff, data, page);
 
                             // Open inventory sync (compressed code)
-                            Future<Void> futureOpenInv = main.getServer().getScheduler().callSyncMethod(main,
+                            Future<Void> futureOpenInv = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                     () -> {
                                         staff.openInventory(menu.getInventory());
                                         return null;
@@ -645,7 +645,7 @@ public class ClickGUI implements Listener {
                             }
 
                             // Display inventory to player
-                            Future<Void> inventoryReplaceFuture = main.getServer().getScheduler().callSyncMethod(main,
+                            Future<Void> inventoryReplaceFuture = InventoryRollbackPlus.getScheduler().callSyncMethod(
                                     () -> {
                                         player.getEnderChest().setContents(data.getEnderChest());
                                         return null;

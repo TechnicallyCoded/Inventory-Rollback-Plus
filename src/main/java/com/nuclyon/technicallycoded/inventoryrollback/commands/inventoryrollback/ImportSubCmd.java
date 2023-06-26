@@ -32,7 +32,7 @@ public class ImportSubCmd extends IRPCommand {
                 suggestConfirm.set(true);
 
                 // Reset suggestion availability after 10 seconds
-                this.main.getServer().getScheduler().runTaskLaterAsynchronously(this.main, () -> {
+                InventoryRollbackPlus.getScheduler().runTaskLaterAsynchronously(() -> {
                     suggestConfirm.set(false);
                 }, 10 * 20);
 
