@@ -104,7 +104,7 @@ public class MainInventoryBackupMenu {
 						itemPos++;
 					}
 				}
-			}.runTaskTimer(main, 0, 1);
+			}.runTaskTimer(main, 1, 1);
 		} catch (NullPointerException e) {
 		    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
 		    return;

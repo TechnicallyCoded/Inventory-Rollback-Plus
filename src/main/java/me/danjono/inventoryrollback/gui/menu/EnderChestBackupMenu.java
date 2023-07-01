@@ -111,7 +111,7 @@ public class EnderChestBackupMenu {
                         itemPos++;
                     }
                 }
-            }.runTaskTimer(InventoryRollbackPlus.getInstance(), 0, 1);
+            }.runTaskTimer(InventoryRollbackPlus.getInstance(), 1, 1);
         } catch (NullPointerException e) {
             staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
             return;
