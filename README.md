@@ -1,5 +1,5 @@
 ![](https://github.com/TechnicallyCoded/Inventory-Rollback/blob/master/icons/inventoryrollbackplus_icon_128.png?raw=true)
-# InventoryRollbackPlus
+# InventoryRollbackPlus (Folia support)
 
 ### Introduction
 
