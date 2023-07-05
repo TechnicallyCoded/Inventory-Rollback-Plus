@@ -368,7 +368,7 @@ public class ClickGUI implements Listener {
                         .add(0.5, 0.5, 0.5);				
 
                 // Teleport player on a slight delay to block the teleport icon glitching out into the player inventory
-                Bukkit.getScheduler().runTaskLater(InventoryRollback.getInstance(), () -> {
+                InventoryRollbackPlus.getScheduler().runTaskLater(() -> {
                     e.getWhoClicked().closeInventory();
                     PaperLib.teleportAsync(staff,loc).thenAccept((result) -> {
                         if (SoundData.isTeleportEnabled())
