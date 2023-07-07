@@ -3,7 +3,6 @@ package me.danjono.inventoryrollback.listeners;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
-import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.entity.Entity;
@@ -15,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -57,55 +57,59 @@ public class EventLogs implements Listener {
 	 * Handle saving the player's inventory on death.
 	 * @param event Bukkit damage event
 	 */
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void playerDeath(EntityDamageEvent event) {
-		// Sanity checks to prevent unwanted saves
-		if (!ConfigData.isEnabled()) return;
-		if (!(event.getEntity() instanceof Player)) return;
-		if (event.isCancelled()) return;
+    @EventHandler(priority = EventPriority.MONITOR)
+    private void playerDeath(PlayerDeathEvent event) {
+        // Sanity checks to prevent unwanted saves
+        if (!ConfigData.isEnabled()) return;
 
-		Player player = (Player) event.getEntity();
+        Player player = event.getEntity();
 
-		// Check that the player actually died from the damage & that the player has the permission for inventory saves
-		if (player.getHealth() - event.getFinalDamage() <= 0 && player.hasPermission("inventoryrollbackplus.deathsave")) {
+        // Check that the player has the permission for inventory saves
+        if (player.hasPermission("inventoryrollbackplus.deathsave")) {
 
-			// Detailed reason for the death that can be applied given certain conditions
-			String reason = null;
+            EntityDamageEvent damageEvent = event.getEntity().getLastDamageCause();
+            EntityDamageEvent.DamageCause damageCause;
 
-			// Handler the case where the death is caused by an entity
-			if (isEntityCause(event.getCause()) && event instanceof EntityDamageByEntityEvent) {
-				EntityDamageByEntityEvent damageByEntityEvent = (EntityDamageByEntityEvent) event;
-				Entity damager = damageByEntityEvent.getDamager();
+            if (damageEvent == null) damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+            else damageCause = damageEvent.getCause();
 
-				// Get the shooter's name if the killing entity is a projectile
-				String shooterName = "";
-				if (damager instanceof Projectile) {
+            // Detailed reason for the death that can be applied given certain conditions
+            String reason = null;
 
-					Projectile proj = (Projectile) damager;
-					ProjectileSource shooter = proj.getShooter();
+            // Handler the case where the death is caused by an entity
+            if (isEntityCause(damageCause) && damageEvent instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent damageByEntityEvent = (EntityDamageByEntityEvent) damageEvent;
+                Entity damager = damageByEntityEvent.getDamager();
 
-					// Show shooter name if it's a living entity
-					if (shooter instanceof LivingEntity) {
-						LivingEntity shooterEntity = (LivingEntity) shooter;
-						shooterName = ", " + shooterEntity.getName();
-					}
-					// Show shooter block type if it's a block projectile source
-					else if (shooter instanceof BlockProjectileSource) {
-						BlockProjectileSource shooterBlock = (BlockProjectileSource) shooter;
-						shooterName = ", " + shooterBlock.getBlock().getType().name();
+                // Get the shooter's name if the killing entity is a projectile
+                String shooterName = "";
+                if (damager instanceof Projectile) {
 
-					}
-					// In all other cases, don't show projectile detailed shooter info
-				}
+                    Projectile proj = (Projectile) damager;
+                    ProjectileSource shooter = proj.getShooter();
 
-				// Create a more specific reason given the data above
-				reason = event.getCause().name() + " (" + damageByEntityEvent.getDamager().getName() + shooterName + ")";
-			}
+                    // Show shooter name if it's a living entity
+                    if (shooter instanceof LivingEntity) {
+                        LivingEntity shooterEntity = (LivingEntity) shooter;
+                        shooterName = ", " + shooterEntity.getName();
+                    }
+                    // Show shooter block type if it's a block projectile source
+                    else if (shooter instanceof BlockProjectileSource) {
+                        BlockProjectileSource shooterBlock = (BlockProjectileSource) shooter;
+                        shooterName = ", " + shooterBlock.getBlock().getType().name();
 
-			// After all checks, create the save with data provided above
-			new SaveInventory(player, LogType.DEATH, event.getCause(), reason, player.getInventory(), player.getEnderChest()).createSave(true);
-		}
-	}
+                    }
+                    // In all other cases, don't show projectile detailed shooter info
+                }
+
+                // Create a more specific reason given the data above
+                reason = damageCause.name() + " (" + damageByEntityEvent.getDamager().getName() + shooterName + ")";
+            }
+
+            // After all checks, create the save with data provided above
+            new SaveInventory(player, LogType.DEATH, damageCause, reason, player.getInventory(), player.getEnderChest()).createSave(true);
+        }
+    }
 
 	@EventHandler
 	private void playerChangeWorld(PlayerChangedWorldEvent e) {
