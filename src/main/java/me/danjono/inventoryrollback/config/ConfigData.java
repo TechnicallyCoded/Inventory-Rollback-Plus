@@ -21,7 +21,7 @@ public class ConfigData {
         generateConfigFile();
     }
 
-    private void generateConfigFile() {
+    public void generateConfigFile() {
         getConfigurationFile();
         if(!configurationFile.exists()) {
             InventoryRollback.getInstance().saveResource(configurationFileName, false);
