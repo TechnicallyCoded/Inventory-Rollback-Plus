@@ -131,7 +131,7 @@ public class ConfigData {
         setMySQLVerifyCertificate((boolean) getDefaultValue("mysql.details.verifyCertificate", true));
         setMysqlPubKeyRetrievalAllowed((boolean) getDefaultValue("mysql.details.allowPubKeyRetrieval", false));
 
-        setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", false));
+        setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", true));
         setBackupLinesVisible((int) getDefaultValue("backup-lines-visible", 1));
 
         setMaxSavesJoin((int) getDefaultValue("max-saves.join", 10));
