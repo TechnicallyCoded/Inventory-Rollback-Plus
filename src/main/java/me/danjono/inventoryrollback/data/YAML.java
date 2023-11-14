@@ -201,9 +201,13 @@ public class YAML {
             timeSaved.add(saveTimeStamp);
         }
 
+
         for (int i = 0; i < deleteAmount; i++) {
+            if (timeSaved.isEmpty()) break;
+
             Long deleteTimestamp = Collections.min(timeSaved);
             timeSaved.remove(deleteTimestamp);
+
             try {
                 Files.deleteIfExists(new File (playerBackupFolder, deleteTimestamp + ".yml").toPath());
             } catch (IOException ex) {

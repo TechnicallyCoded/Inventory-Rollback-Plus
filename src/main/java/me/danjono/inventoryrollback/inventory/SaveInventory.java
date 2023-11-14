@@ -2,6 +2,7 @@ package me.danjono.inventoryrollback.inventory;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.nuclyon.technicallycoded.inventoryrollback.util.UserLogRateLimiter;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
@@ -15,9 +16,13 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class SaveInventory {
+
+    private static final HashMap<UUID, UserLogRateLimiter> rateLimiters = new HashMap<>();
 
     private final InventoryRollbackPlus main;
     private final Player player;
@@ -41,6 +46,20 @@ public class SaveInventory {
 
     public void createSave(boolean shouldSaveAsync) {
         Long timestamp = System.currentTimeMillis();
+        UUID uuid = player.getUniqueId();
+
+        // Rate limiter
+        UserLogRateLimiter userLogRateLimiter = rateLimiters.get(uuid);
+        if (userLogRateLimiter == null) {
+            userLogRateLimiter = new UserLogRateLimiter();
+            rateLimiters.put(uuid, userLogRateLimiter);
+        }
+        userLogRateLimiter.log(logType, timestamp);
+        if (userLogRateLimiter.isRateLimitExceeded(logType)) {
+            main.getLogger().warning("Player " + player.getName() + " is being rate limited! This means that something is causing this log to be created FASTER than even once per tick! Log type: " + logType.name());
+            new IllegalStateException("Rate limiting reached! This should never happen under normal operation!").printStackTrace();
+            return;
+        }
 
         ItemStack[] mainInvContents = null;
         ItemStack[] mainInvArmor = null;
@@ -180,6 +199,10 @@ public class SaveInventory {
         experience += Math.ceil(currentExp * requiredExperience);
 
         return experience;
+    }
+
+    public static void cleanup(UUID uuid) {
+        rateLimiters.remove(uuid);
     }
 
 }
