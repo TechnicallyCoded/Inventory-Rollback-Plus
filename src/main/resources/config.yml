@@ -44,7 +44,9 @@ sounds:
     enabled: true
     
 ## Set how the time is displayed on the backups.
+## Your time zone (EST, PST, GMT, ...) or a UTC offset (UTC+1, UTC-5, ...) can be used.
 time-zone: 'GMT'
+## For more information on how to format the time, see: https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
 time-format: 'dd/MM/yyyy hh:mm:ss a z'
 
 ## Enabling this option will show a button to restore a player's backup fully to their character when online.
