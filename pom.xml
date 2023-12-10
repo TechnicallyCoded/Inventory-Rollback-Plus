@@ -5,7 +5,7 @@
 
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
-    <version>1.6.13</version>
+    <version>1.6.14</version>
     <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
     <url>https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/</url>
