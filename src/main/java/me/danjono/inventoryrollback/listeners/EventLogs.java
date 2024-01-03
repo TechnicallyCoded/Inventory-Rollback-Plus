@@ -59,7 +59,7 @@ public class EventLogs implements Listener {
 		// Run the cleanup 1 tick later in case the rate limiter should need to provide debug data.
 		// If the cleanup would run and the event is being spammed, this cleanup would delete the rate limiter's data
 		// before it has a chance to act.
-		main.getServer().getScheduler().runTaskLater(main, () -> {
+		InventoryRollbackPlus.getScheduler().runTaskLater(() -> {
 			// Double check that the player is offline
 			if (main.getServer().getPlayer(uuid) != null) return;
 			// Cleanup the player's data
