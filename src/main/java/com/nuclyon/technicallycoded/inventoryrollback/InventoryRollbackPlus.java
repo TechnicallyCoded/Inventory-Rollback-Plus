@@ -1,8 +1,7 @@
 package com.nuclyon.technicallycoded.inventoryrollback;
 
-import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
-
+import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
 import io.papermc.lib.PaperLib;
@@ -213,6 +212,10 @@ public class InventoryRollbackPlus extends InventoryRollback {
             } else {
                 return "YAML";
             }
+        }));
+
+        metrics.addCustomChart(new SimplePie("time_zone", () -> {
+            return ConfigData.getTimeZone().getID();
         }));
     }
 

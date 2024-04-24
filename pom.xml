@@ -5,7 +5,7 @@
 
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
-    <version>1.6.14</version>
+    <version>1.6.15</version>
     <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
     <url>https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/</url>
@@ -32,6 +32,15 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>devmart-bukkit</id>
+            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
+        </repository>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -39,7 +48,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19.3-R0.1-SNAPSHOT</version>
+            <version>1.20.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--<dependency>
@@ -51,11 +60,18 @@
             <systemPath>${project.basedir}/lib/spigot-1.19.3.jar</systemPath>
             <optional>true</optional>
         </dependency>-->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.20.5-R0.1-SNAPSHOT</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
         <!-- bStats API -->
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>2.2.1</version>
+            <version>3.0.2</version>
             <scope>compile</scope>
         </dependency>
         <!-- Paper-Lib -->
@@ -68,14 +84,14 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>22.0.0</version>
+            <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>3.14.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -107,7 +123,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.5.3</version>
                 <configuration>
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                     <filters>
