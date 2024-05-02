@@ -1,16 +1,7 @@
 package me.danjono.inventoryrollback;
 
-import java.sql.SQLException;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import me.danjono.inventoryrollback.UpdateChecker.UpdateResult;
 import me.danjono.inventoryrollback.commands.Commands;
 import me.danjono.inventoryrollback.config.ConfigData;
@@ -21,6 +12,14 @@ import me.danjono.inventoryrollback.data.MySQL;
 import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.listeners.ClickGUI;
 import me.danjono.inventoryrollback.listeners.EventLogs;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.SQLException;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class InventoryRollback extends JavaPlugin {
 
@@ -58,10 +57,10 @@ public abstract class InventoryRollback extends JavaPlugin {
         setInstance(this);
         setPackageVersion(Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3]);
 
-        if (!isCompatible()) {        
-            logger.log(Level.WARNING, MessageData.getPluginPrefix() + ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **");
-            logger.log(Level.WARNING, MessageData.getPluginPrefix() + ChatColor.RED + " ** Please fully test the plugin before using on your server as features may be broken. **");
-        }
+//        if (!isCompatibleCb()) {
+//            logger.log(Level.WARNING, MessageData.getPluginPrefix() + ChatColor.RED + " ** WARNING... Plugin may not be compatible with this version of Minecraft. **");
+//            logger.log(Level.WARNING, MessageData.getPluginPrefix() + ChatColor.RED + " ** Please fully test the plugin before using on your server as features may be broken. **");
+//        }
 
         startupTasks();
 
@@ -136,7 +135,7 @@ public abstract class InventoryRollback extends JavaPlugin {
         return version;
     }*/
 
-    public abstract boolean isCompatible();
+    public abstract boolean isCompatibleCb(String cbVersion);
     /* {
         for (CompatibleVersions v : CompatibleVersions.values()) {
             if (v.name().equalsIgnoreCase(packageVersion)) {

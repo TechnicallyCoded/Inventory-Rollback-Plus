@@ -134,7 +134,8 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -163,7 +164,8 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -194,7 +196,8 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -224,7 +227,8 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -256,7 +260,9 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+//        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -281,7 +287,8 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);

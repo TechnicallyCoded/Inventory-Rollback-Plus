@@ -1,6 +1,9 @@
 package me.danjono.inventoryrollback.reflections;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
+import org.bukkit.Bukkit;
 
 public class NMSHandler {
 
@@ -8,7 +11,11 @@ public class NMSHandler {
         Class<?> c = null;
 
         try {
-            c = Class.forName("net.minecraft.server." + InventoryRollback.getPackageVersion() + "." + name);
+            if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_17_R1)) {
+                c = Class.forName("net.minecraft." + name);
+            } else {
+                c = Class.forName("net.minecraft.server." + InventoryRollback.getPackageVersion() + "." + name);
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -20,7 +27,7 @@ public class NMSHandler {
         Class<?> c = null;
 
         try {
-            c = Class.forName("org.bukkit.craftbukkit." + InventoryRollback.getPackageVersion() + "." + name);
+            c = Class.forName(Bukkit.getServer().getClass().getPackage().getName() + "." + name);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

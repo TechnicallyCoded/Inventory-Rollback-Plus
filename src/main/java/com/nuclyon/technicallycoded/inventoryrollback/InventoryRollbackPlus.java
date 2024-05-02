@@ -51,10 +51,27 @@ public class InventoryRollbackPlus extends InventoryRollback {
         configData.setVariables(); // requires TimeZoneUtil
 
         // Init NMS
-        InventoryRollback.setPackageVersion(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]);
-        if (ConfigData.isDebugEnabled()) getLogger().info("Found NMS Package Version: " + getPackageVersion());
+        boolean compatible = false;
+        String cbPackage = Bukkit.getServer().getClass().getPackage().getName();
+        String[] packageParts = cbPackage.split("\\.");
+        String versionPart = packageParts[packageParts.length - 1];
+        if (versionPart.startsWith("v1_")) {
+            InventoryRollback.setPackageVersion(versionPart);
+            compatible = this.isCompatibleCb(versionPart);
+        } else {
+            String serverVersion = this.getServer().getBukkitVersion();
+            getLogger().info("Attempting Paper support for version: " + serverVersion);
+            String mcVersion = serverVersion.split("-")[0];
+            EnumNmsVersion cbVersion = EnumNmsVersion.fromMcVersion(mcVersion);
+            if (cbVersion != null) {
+                setVersion(cbVersion);
+                InventoryRollback.setPackageVersion(cbVersion.name());
+                compatible = true;
+            }
+        }
+        getLogger().info("Found CraftBukkit Package Version: " + getPackageVersion());
 
-        if (!this.isCompatible()) {
+        if (!compatible) {
             getLogger().warning(MessageData.getPluginPrefix() + "\n" +
                     " ** WARNING... Plugin may not be compatible with this version of Minecraft. **\n" +
                     " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
@@ -116,9 +133,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
         version = versionName;
     }
 
-    public boolean isCompatible() {
+    public boolean isCompatibleCb(String cbVersion) {
         for (EnumNmsVersion v : EnumNmsVersion.values()) {
-            if (v.name().equalsIgnoreCase(getPackageVersion())) {
+            if (v.name().equalsIgnoreCase(cbVersion)) {
                 this.setVersion(v);
                 return true;
             }

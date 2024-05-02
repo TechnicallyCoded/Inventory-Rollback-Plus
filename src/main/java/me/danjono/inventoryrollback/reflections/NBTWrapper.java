@@ -205,6 +205,7 @@ public class NBTWrapper {
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Object compMap = getDataComponentMapMethod.invoke(nmsItem);
 		Object customData = getDataComponentValueMethod.invoke(compMap, customDataComponentMapKey);
+		if (customData == null) return null;
 		Object nbtComp = getCustomDataNBTCopyMethod.invoke(customData);
 		return this.readNbtValue(key, mapType, nbtComp);
 	}
@@ -270,7 +271,11 @@ public class NBTWrapper {
 		Object comp = nmsItem.getClass().getMethod(getTagMethodName).invoke(nmsItem);
 
 		if (comp == null) {
-			comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
+			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_17_R1)) {
+				comp = nmsHandler.getNMSClass("nbt.NBTTagCompound").newInstance();
+			} else {
+				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
+			}
 		}
 
 		writeNbtValue(comp, key, dataType, data);
