@@ -1,19 +1,12 @@
 package me.danjono.inventoryrollback.gui;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import me.danjono.inventoryrollback.config.MessageData;
+import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.inventory.RestoreInventory;
+import me.danjono.inventoryrollback.reflections.NBTWrapper;
+import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemFlag;
@@ -21,11 +14,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
-import me.danjono.inventoryrollback.config.MessageData;
-import me.danjono.inventoryrollback.data.LogType;
-import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import me.danjono.inventoryrollback.reflections.NBTWrapper;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Buttons {
 
@@ -133,16 +129,13 @@ public class Buttons {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
 
-        List<Pattern> patterns = new ArrayList<>();
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE)); 
-        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE)); 
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));
-        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        List<Pattern> patterns = createBannerPatterns(true);
 
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -166,16 +159,13 @@ public class Buttons {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
 
-        List<Pattern> patterns = new ArrayList<>();
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));  
-        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE)); 
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
-        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        List<Pattern> patterns = createBannerPatterns(false);
 
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -201,16 +191,13 @@ public class Buttons {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
 
-        List<Pattern> patterns = new ArrayList<>();
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
-        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE));
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));
-        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        List<Pattern> patterns = createBannerPatterns(true);
 
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -235,16 +222,13 @@ public class Buttons {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
 
-        List<Pattern> patterns = new ArrayList<>();
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
-        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE));
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
-        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        List<Pattern> patterns = createBannerPatterns(false);
 
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -271,16 +255,14 @@ public class Buttons {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
 
-        List<Pattern> patterns = new ArrayList<>();
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));  
-        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE)); 
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
-        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        List<Pattern> patterns = createBannerPatterns(false);
 
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+//        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -300,16 +282,13 @@ public class Buttons {
         ItemStack button = new ItemStack(getPageSelectorIcon());
         BannerMeta meta = (BannerMeta) button.getItemMeta();
 
-        List<Pattern> patterns = new ArrayList<>();
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE)); 
-        patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE)); 
-        patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR));
-        patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        List<Pattern> patterns = createBannerPatterns(false);
 
         assert meta != null;
         meta.setPatterns(patterns);
 
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
             meta.setDisplayName(displayName);
@@ -685,6 +664,25 @@ public class Buttons {
         item = nbt.setItemData();
 
         return item;
+    }
+
+    private static @NotNull List<Pattern> createBannerPatterns(boolean isNext) {
+        List<Pattern> patterns = new ArrayList<>();
+        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) {
+            patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
+            patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS));
+            if (isNext) patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));
+            else patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_RIGHT));
+            patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+
+        } else {
+            patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
+            patterns.add(new Pattern(DyeColor.WHITE, PatternType.valueOf("RHOMBUS_MIDDLE")));
+            if (isNext) patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));
+            else patterns.add(new Pattern(DyeColor.BLACK, PatternType.valueOf("HALF_VERTICAL_MIRROR")));
+            patterns.add(new Pattern(DyeColor.GRAY, PatternType.BORDER));
+        }
+        return patterns;
     }
 
 }

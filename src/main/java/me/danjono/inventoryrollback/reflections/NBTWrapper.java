@@ -4,77 +4,132 @@ import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class NBTWrapper {
-	
+
 	private ItemStack item;
 	private final NMSHandler nmsHandler;
 
+	private static HashMap<Class<?>, String> getTagElementMethodNames;
+	private static HashMap<Class<?>, String> setTagElementMethodNames;
+
+	// 1.8 - 1.20.4
 	private static String getTagMethodName;
 	private static String setTagMethodName;
 
-	private static HashMap<Class<?>, String> getTagElementMethodName;
-	private static HashMap<Class<?>, String> setTagElementMethodName;
+    private static Method getDataComponentMapMethod;
+
+	private static Object customDataComponentMapKey; // custom_data key
+	private static Method getDataComponentValueMethod;
+	private static Method getCustomDataNBTCopyMethod;
+	private static Method updateCustomDataNBTStaticMethod;
 
 	public NBTWrapper(ItemStack item) {
 		this.nmsHandler = new NMSHandler();
 		this.item = item;
 		
-		if (getTagElementMethodName == null) {
+		if (getTagElementMethodNames == null) {
 			InventoryRollbackPlus irp = InventoryRollbackPlus.getInstance();
-			if (ConfigData.isDebugEnabled()) irp.getLogger().info("NBTWrapper created for the first time since startup!");
-
-			getTagElementMethodName = new HashMap<>();
-			setTagElementMethodName = new HashMap<>();
+			if (ConfigData.isDebugEnabled())
+				irp.getLogger().info("NBTWrapper created for the first time since startup!");
 
 			EnumNmsVersion nmsVersion = irp.getVersion();
 			if (ConfigData.isDebugEnabled()) irp.getLogger().info("Using NMS Version: " + nmsVersion.toString());
-			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
 
-				if (nmsVersion.isAtLeast(EnumNmsVersion.v1_20_R1)) {
-					getTagMethodName = "v";
-				} else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_19_R1)) {
-					getTagMethodName = "u";
-				} else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R2)) {
-					getTagMethodName = "t";
-				} else {
-					getTagMethodName = "s";
-				}
-				setTagMethodName = "c";
-
-				getTagElementMethodName.put(String.class, "l");
-				getTagElementMethodName.put(Integer.class, "h");
-				getTagElementMethodName.put(Long.class, "i");
-				getTagElementMethodName.put(Double.class, "k");
-				getTagElementMethodName.put(Float.class, "j");
-
-				setTagElementMethodName.put(String.class, "a");
-				setTagElementMethodName.put(Integer.class, "a");
-				setTagElementMethodName.put(Long.class, "a");
-				setTagElementMethodName.put(Double.class, "a");
-				setTagElementMethodName.put(Float.class, "a");
-
+			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_20_R4)) {
+				resolve1_20_5OrHigherReflectionNames(nmsVersion);
 			} else {
-				getTagMethodName = "getTag";
-				setTagMethodName = "setTag";
-
-				getTagElementMethodName.put(String.class, "getString");
-				getTagElementMethodName.put(Integer.class, "getInt");
-				getTagElementMethodName.put(Long.class, "getLong");
-				getTagElementMethodName.put(Double.class, "getDouble");
-				getTagElementMethodName.put(Float.class, "getFloat");
-
-				setTagElementMethodName.put(String.class, "setString");
-				setTagElementMethodName.put(Integer.class, "setInt");
-				setTagElementMethodName.put(Long.class, "setLong");
-				setTagElementMethodName.put(Double.class, "setDouble");
-				setTagElementMethodName.put(Float.class, "setFloat");
+				resolvePre1_20_5ReflectionNames(nmsVersion);
 			}
+			
+			resolveNbtTagCompoundReflectionNames(nmsVersion);
+		}
+	}
+
+	private static void resolve1_20_5OrHigherReflectionNames(EnumNmsVersion nmsVersion) {
+		try {
+            // 1.20.5 or higher (1.20.5 now places custom NBT in a custom_data component)
+            String getDataComponentMapMethodName = "a";
+
+			Class<?> dataComponentsClass = Class.forName("net.minecraft.core.component.DataComponents");
+			customDataComponentMapKey = dataComponentsClass.getField("b").get(null);
+
+			Class<?> nmsItemStackClass = Class.forName("net.minecraft.world.item.ItemStack");
+			getDataComponentMapMethod = nmsItemStackClass.getMethod(getDataComponentMapMethodName);
+
+			Class<?> dataComponentMapClass = Class.forName("net.minecraft.core.component.DataComponentMap");
+			Class<?> dataComponentTypeClass = Class.forName("net.minecraft.core.component.DataComponentType");
+			getDataComponentValueMethod = dataComponentMapClass.getMethod("a", dataComponentTypeClass);
+			
+			Class<?> customDataClass = Class.forName("net.minecraft.world.item.component.CustomData");
+			Class<?> itemStackClass = Class.forName("net.minecraft.world.item.ItemStack");
+			getCustomDataNBTCopyMethod = customDataClass.getMethod("c");
+			updateCustomDataNBTStaticMethod = customDataClass.getMethod("a", dataComponentTypeClass, itemStackClass, Consumer.class);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	private static void resolvePre1_20_5ReflectionNames(EnumNmsVersion nmsVersion) {
+		if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
+
+			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_20_R1)) {
+				getTagMethodName = "v";
+			}
+			else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_19_R1)) {
+				getTagMethodName = "u";
+			}
+			else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R2)) {
+				getTagMethodName = "t";
+			}
+			else {
+				getTagMethodName = "s";
+			}
+
+			setTagMethodName = "c";
+		} else {
+			getTagMethodName = "getTag";
+			setTagMethodName = "setTag";
 		}
 	}
 	
+	private void resolveNbtTagCompoundReflectionNames(EnumNmsVersion nmsVersion) {
+		getTagElementMethodNames = new HashMap<>();
+		setTagElementMethodNames = new HashMap<>();
+		
+		if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
+			getTagElementMethodNames.put(Integer.class, "h");
+			getTagElementMethodNames.put(Long.class, "i");
+			getTagElementMethodNames.put(Float.class, "j");
+			getTagElementMethodNames.put(Double.class, "k");
+			getTagElementMethodNames.put(String.class, "l");
+
+			setTagElementMethodNames.put(Integer.class, "a");
+			setTagElementMethodNames.put(Long.class, "a");
+			setTagElementMethodNames.put(Float.class, "a");
+			setTagElementMethodNames.put(Double.class, "a");
+			setTagElementMethodNames.put(String.class, "a");
+		} else {
+			getTagElementMethodNames.put(Integer.class, "getInt");
+			getTagElementMethodNames.put(Long.class, "getLong");
+			getTagElementMethodNames.put(Float.class, "getFloat");
+			getTagElementMethodNames.put(Double.class, "getDouble");
+			getTagElementMethodNames.put(String.class, "getString");
+
+			setTagElementMethodNames.put(Integer.class, "setInt");
+			setTagElementMethodNames.put(Long.class, "setLong");
+			setTagElementMethodNames.put(Float.class, "setFloat");
+			setTagElementMethodNames.put(Double.class, "setDouble");
+			setTagElementMethodNames.put(String.class, "setString");
+		}
+	}
+
 	public ItemStack setItemData() {
 		return item;
 	}
@@ -85,181 +140,152 @@ public class NBTWrapper {
 		return (uuid != null && !uuid.isEmpty());
 	}
 		
-	public ItemStack setString(String key, String data) {        
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			if (comp == null) {
-				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
-			}
-			
-			comp.getClass().getMethod(setTagElementMethodName.get(data.getClass()), String.class, String.class).invoke(comp, key, data);
-			
-			itemstack.getClass().getMethod(setTagMethodName, comp.getClass()).invoke(itemstack, comp);
-			item = (ItemStack) nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return item;
+	public ItemStack setString(String key, String data) {
+		return writeDataToBukkitItem(key, String.class, data);
 	}
-	
+
 	public ItemStack setInt(String key, Integer data) {
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			if (comp == null) {
-				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
-			}
-			
-			comp.getClass().getMethod(setTagElementMethodName.get(data.getClass()), String.class, int.class).invoke(comp, key, data);
-			
-			itemstack.getClass().getMethod(setTagMethodName, comp.getClass()).invoke(itemstack, comp);
-			item = (ItemStack) nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        
-        return item;
+		return writeDataToBukkitItem(key, int.class, data);
 	}
 	
 	public ItemStack setLong(String key, Long data) {
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			if (comp == null) {
-				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
-			}
-			
-			comp.getClass().getMethod(setTagElementMethodName.get(data.getClass()), String.class, long.class).invoke(comp, key, data);
-			
-			itemstack.getClass().getMethod(setTagMethodName, comp.getClass()).invoke(itemstack, comp);
-			item = (ItemStack) nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return item;
+		return writeDataToBukkitItem(key, long.class, data);
 	}
 	
 	public ItemStack setDouble(String key, Double data) {
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			if (comp == null) {
-				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
-			}
-			
-			comp.getClass().getMethod(setTagElementMethodName.get(data.getClass()), String.class, double.class).invoke(comp, key, data);
-			
-			itemstack.getClass().getMethod(setTagMethodName, comp.getClass()).invoke(itemstack, comp);
-			item = (ItemStack) nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return item;
+		return writeDataToBukkitItem(key, double.class, data);
 	}
 	
 	public ItemStack setFloat(String key, Float data) {
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			if (comp == null) {
-				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
-			}
-			
-			comp.getClass().getMethod(setTagElementMethodName.get(data.getClass()), String.class, float.class).invoke(comp, key, data);
-			
-			itemstack.getClass().getMethod(setTagMethodName, comp.getClass()).invoke(itemstack, comp);
-			item = (ItemStack) nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", itemstack.getClass()).invoke(null, itemstack);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return item;
+		return writeDataToBukkitItem(key, float.class, data);
 	}
 							
 	public String getString(String key) {
-		Object result = null;
-		Object comp = null;
-		
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			try { comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack); } catch (NullPointerException e) { return null; }
-			
-			try { result = comp.getClass().getMethod(getTagElementMethodName.get(String.class), String.class).invoke(comp, key); } catch (NullPointerException e) { return null; }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return (String) result;
+		return readDataFromBukkitItem(key, String.class, String.class);
 	}
-	
-	public int getInt(String key) {
-		Object result = null;
-		
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
 
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			try { result = comp.getClass().getMethod(getTagElementMethodName.get(Integer.class), String.class).invoke(comp, key); } catch (NullPointerException e) {}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return (int) result;
+	public int getInt(String key) {
+		return readDataFromBukkitItem(key, int.class, Integer.class);
 	}
 	
 	public Long getLong(String key) {
-		Object result = null;
-		
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			try { result = comp.getClass().getMethod(getTagElementMethodName.get(Long.class), String.class).invoke(comp, key); } catch (NullPointerException e) {}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return (long) result;
+		return readDataFromBukkitItem(key, long.class, Long.class);
 	}
 	
 	public double getDouble(String key) {
-		Object result = null;
-		
-		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			try { result = comp.getClass().getMethod(getTagElementMethodName.get(Double.class), String.class).invoke(comp, key); } catch (NullPointerException e) {}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return (double) result;
+		return readDataFromBukkitItem(key, double.class, Double.class);
 	}
 	
 	public Float getFloat(String key) {
-		Object result = null;
-		
+		return readDataFromBukkitItem(key, float.class, Float.class);
+	}
+
+	private @Nullable <T> T readDataFromBukkitItem(String key, Class<T> dataType, Class<?> mapType) {
+		T result = null;
+
 		try {
-			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-			Object comp = itemstack.getClass().getMethod(getTagMethodName).invoke(itemstack);
-			
-			try { result = comp.getClass().getMethod(getTagElementMethodName.get(Float.class), String.class).invoke(comp, key); } catch (NullPointerException e) {}
+			Object itemstack = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack")
+					.getMethod("asNMSCopy", ItemStack.class)
+					.invoke(null, item);
+
+			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) {
+				result = readCustomDataFromNmsItem(itemstack, key, dataType, mapType);
+			} else {
+				result = readNbtFromNmsItem(itemstack, key, dataType, mapType);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return (float) result;
+
+        // noinspection ReassignedVariable
+        return result;
 	}
-				
+
+	private <T> T readCustomDataFromNmsItem(Object nmsItem, String key, Class<T> dataType, Class<?> mapType)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Object compMap = getDataComponentMapMethod.invoke(nmsItem);
+		Object customData = getDataComponentValueMethod.invoke(compMap, customDataComponentMapKey);
+		if (customData == null) return null;
+		Object nbtComp = getCustomDataNBTCopyMethod.invoke(customData);
+		return this.readNbtValue(key, mapType, nbtComp);
+	}
+
+	private <T> T readNbtFromNmsItem(Object nmsItem, String key, Class<T> dataType, Class<?> mapType)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Object comp = null;
+		try {
+			comp = nmsItem.getClass().getMethod(getTagMethodName).invoke(nmsItem);
+		} catch (NullPointerException e) {
+			return null;
+		}
+
+		return readNbtValue(key, mapType, comp);
+	}
+
+	private <T> @Nullable T readNbtValue(String key, Class<?> mapType, Object nbtComponent) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		try {
+            // noinspection unchecked
+			return (T) nbtComponent.getClass().getMethod(getTagElementMethodNames.get(mapType), String.class)
+					.invoke(nbtComponent, key);
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	private ItemStack writeDataToBukkitItem(String key, Class<?> dataType, Object data) {
+		try {
+			Object nmsItem = nmsHandler.getCraftBukkitClass("inventory.CraftItemStack")
+					.getMethod("asNMSCopy", ItemStack.class)
+					.invoke(null, item);
+
+			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) {
+				writeCustomDataToNmsItem(nmsItem, key, dataType, data);
+			} else {
+				writeNbtToNmsItem(nmsItem, key, dataType, data);
+			}
+
+			item = (ItemStack) nmsHandler.getCraftBukkitClass("inventory.CraftItemStack")
+					.getMethod("asBukkitCopy", nmsItem.getClass())
+					.invoke(null, nmsItem);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return item;
+	}
+
+	private void writeCustomDataToNmsItem(Object nmsItem, String key, Class<?> dataType, Object data)
+			throws InvocationTargetException, IllegalAccessException {
+		updateCustomDataNBTStaticMethod.invoke(null, customDataComponentMapKey, nmsItem, (Consumer<Object>) (comp) -> {
+            try {
+                writeNbtValue(comp, key, dataType, data);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+                ex.printStackTrace();
+            }
+        });
+	}
+
+	private void writeNbtToNmsItem(Object nmsItem, String key, Class<?> dataType, Object data)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+		Object comp = nmsItem.getClass().getMethod(getTagMethodName).invoke(nmsItem);
+
+		if (comp == null) {
+			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_17_R1)) {
+				comp = nmsHandler.getNMSClass("nbt.NBTTagCompound").newInstance();
+			} else {
+				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();
+			}
+		}
+
+		writeNbtValue(comp, key, dataType, data);
+
+		nmsItem.getClass().getMethod(setTagMethodName, comp.getClass()).invoke(nmsItem, comp);
+	}
+
+	private static void writeNbtValue(Object nbtComponent, String key, Class<?> dataType, Object data) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		nbtComponent.getClass().getMethod(setTagElementMethodNames.get(data.getClass()), String.class, dataType)
+				.invoke(nbtComponent, key, data);
+	}
+
 }
