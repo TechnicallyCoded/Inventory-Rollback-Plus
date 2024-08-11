@@ -24,7 +24,8 @@ public enum EnumNmsVersion {
     v1_20_R2("1.20.2"),
     v1_20_R3("1.20.4"),
     v1_20_R4("1.20.5", "1.20.6"),
-    v1_21_R1("1.21")
+    v1_21_R1("1.21"),
+    v1_21_1_R1("1.21.1")
     ;
 
     public static EnumNmsVersion fromMcVersion(String mcVersion) {
