@@ -33,10 +33,6 @@
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>devmart-bukkit</id>
-            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
-        </repository>
-        <repository>
             <id>maven_central</id>
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
@@ -101,7 +97,7 @@
         <dependency>
             <groupId>com.github.lightlibs</groupId>
             <artifactId>BukkitVersion</artifactId>
-            <version>0.0.6</version>
+            <version>0.0.7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
