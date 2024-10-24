@@ -41,6 +41,10 @@
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -94,7 +98,12 @@
             <version>3.14.0</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.lightlibs</groupId>
+            <artifactId>BukkitVersion</artifactId>
+            <version>0.0.6</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -160,6 +169,10 @@
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
                             <shadedPattern>${project.groupId}.paperlib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.tcoded.lightlibs.bukkitversion</pattern>
+                            <shadedPattern>${project.groupId}.bukkitversion</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
