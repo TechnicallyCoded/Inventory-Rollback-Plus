@@ -97,7 +97,13 @@ public class InventoryRollbackPlus extends InventoryRollback {
         getServer().getPluginManager().registerEvents(new EventLogs(), this);
 
         // PaperLib
-        PaperLib.suggestPaper(this);
+        if (!PaperLib.isPaper()) {
+            this.getLogger().info("----------------------------------------");
+            this.getLogger().info("We recommend updating your server to use Paper :)");
+            this.getLogger().info("Paper significantly reduces lag spikes among other benefits.");
+            this.getLogger().info("Learn more at: https://papermc.io/");
+            this.getLogger().info("----------------------------------------");
+        }
     }
 
     @Override
