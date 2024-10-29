@@ -2,8 +2,9 @@ package com.nuclyon.technicallycoded.inventoryrollback;
 
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
-import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
+import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
+import com.tcoded.lightlibs.bukkitversion.MCVersion;
 import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
@@ -30,7 +31,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
     private TimeZoneUtil timeZoneUtil = null;
 
     private ConfigData configData;
-    private EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
+    private BukkitVersion version = BukkitVersion.v1_13_R1;
 
     private AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
@@ -51,33 +52,22 @@ public class InventoryRollbackPlus extends InventoryRollback {
         configData.setVariables(); // requires TimeZoneUtil
 
         // Init NMS
-        boolean compatible = false;
-        String cbPackage = Bukkit.getServer().getClass().getPackage().getName();
-        String[] packageParts = cbPackage.split("\\.");
-        String versionPart = packageParts[packageParts.length - 1];
-        if (versionPart.startsWith("v1_")) {
-            InventoryRollback.setPackageVersion(versionPart);
-            compatible = this.isCompatibleCb(versionPart);
-        } else {
-            String serverVersion = this.getServer().getBukkitVersion();
-            getLogger().info("Attempting Paper support for version: " + serverVersion);
-            String mcVersion = serverVersion.split("-")[0];
-            EnumNmsVersion cbVersion = EnumNmsVersion.fromMcVersion(mcVersion);
-            if (cbVersion != null) {
-                setVersion(cbVersion);
-                InventoryRollback.setPackageVersion(cbVersion.name());
-                compatible = true;
-            }
-        }
-        getLogger().info("Found CraftBukkit Package Version: " + getPackageVersion());
-
-        if (!compatible) {
-            getLogger().warning(MessageData.getPluginPrefix() + "\n" +
-                    " ** WARNING... Plugin may not be compatible with this version of Minecraft. **\n" +
+        String serverVersion = this.getServer().getVersion();
+        getLogger().info("Attempting support for version: " + serverVersion);
+        MCVersion mcVersion = MCVersion.fromServerVersion(serverVersion);
+        BukkitVersion nmsVersion = mcVersion.toBukkitVersion();
+        if (nmsVersion == null) {
+            getLogger().severe(MessageData.getPluginPrefix() + "\n" +
+                    " ** WARNING! IRP may not be compatible with this version of Minecraft. **\n" +
                     " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
                     MessageData.getPluginPrefix()
             );
+            setPackageVersion(BukkitVersion.getLatest().name());
+        } else {
+            setVersion(nmsVersion);
+            InventoryRollback.setPackageVersion(nmsVersion.name());
         }
+        getLogger().info("Using CraftBukkit version: " + getPackageVersion());
 
         // Storage Init & Update checker
         super.startupTasks();
@@ -135,12 +125,12 @@ public class InventoryRollbackPlus extends InventoryRollback {
         getLogger().info("Plugin is disabled!");
     }
 
-    public void setVersion(EnumNmsVersion versionName) {
+    public void setVersion(BukkitVersion versionName) {
         version = versionName;
     }
 
     public boolean isCompatibleCb(String cbVersion) {
-        for (EnumNmsVersion v : EnumNmsVersion.values()) {
+        for (BukkitVersion v : BukkitVersion.values()) {
             if (v.name().equalsIgnoreCase(cbVersion)) {
                 this.setVersion(v);
                 return true;
@@ -248,7 +238,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         return shuttingDown.get();
     }
 
-    public EnumNmsVersion getVersion() {
+    public BukkitVersion getVersion() {
         return version;
     }
 

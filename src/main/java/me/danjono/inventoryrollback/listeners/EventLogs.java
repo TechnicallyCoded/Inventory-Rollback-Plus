@@ -1,7 +1,7 @@
 package me.danjono.inventoryrollback.listeners;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
@@ -139,7 +139,7 @@ public class EventLogs implements Listener {
 	public boolean isEntityCause(EntityDamageEvent.DamageCause cause) {
 		if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) ||
 				cause.equals(EntityDamageEvent.DamageCause.PROJECTILE)) return true;
-		if (this.main.getVersion().isAtLeast(EnumNmsVersion.v1_11_R1)) {
+		if (this.main.getVersion().greaterOrEqThan(BukkitVersion.v1_11_R1)) {
 			if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) return true;
 		}
 		return false;

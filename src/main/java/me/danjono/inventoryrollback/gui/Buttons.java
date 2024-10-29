@@ -1,7 +1,7 @@
 package me.danjono.inventoryrollback.gui;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
@@ -30,11 +30,11 @@ public class Buttons {
     private static final Material death = Material.BONE;
 
     private static final Material join =
-            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+            InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1) ?
                     Material.OAK_SAPLING : Material.getMaterial("SAPLING");
 
     private static final Material quit =
-            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+            InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1) ?
                     Material.RED_BED : Material.getMaterial("BED");
 
     private static final Material worldChange = Material.COMPASS;
@@ -43,7 +43,7 @@ public class Buttons {
 
 
     private static final Material pageSelector =
-            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+            InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1) ?
                     Material.WHITE_BANNER : Material.getMaterial("BANNER");
 
     private static final Material teleport = Material.ENDER_PEARL;
@@ -51,13 +51,13 @@ public class Buttons {
     private static final Material enderChest = Material.ENDER_CHEST;
 
     private static final Material health =
-            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+            InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1) ?
                     Material.MELON_SLICE : Material.getMaterial("MELON");
 
     private static final Material hunger = Material.ROTTEN_FLESH;
 
     private static final Material experience =
-            InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1) ?
+            InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1) ?
                     Material.EXPERIENCE_BOTTLE : Material.getMaterial("EXP_BOTTLE");
 
     private static final Material restoreAllInventory = Material.NETHER_STAR;
@@ -134,7 +134,7 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
@@ -164,7 +164,7 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
@@ -196,7 +196,7 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
@@ -227,7 +227,7 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
@@ -261,7 +261,7 @@ public class Buttons {
         meta.setPatterns(patterns);
 
 //        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
@@ -287,7 +287,7 @@ public class Buttons {
         assert meta != null;
         meta.setPatterns(patterns);
 
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
 
         if (displayName != null) {
@@ -448,7 +448,7 @@ public class Buttons {
         ItemStack skull = null;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1)) {
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1)) {
             skull = new ItemStack(Material.PLAYER_HEAD);
         } else {
             Constructor<?> itemStackConstructor;
@@ -468,7 +468,7 @@ public class Buttons {
         assert skullMeta != null;
         if (setSkin) {
             try {
-                if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_13_R1)) {
+                if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1)) {
                     skullMeta.setOwningPlayer(player);
                 } else {
                     Method method = skullMeta.getClass().getMethod("setOwner", String.class);
@@ -668,7 +668,7 @@ public class Buttons {
 
     private static @NotNull List<Pattern> createBannerPatterns(boolean isNext) {
         List<Pattern> patterns = new ArrayList<>();
-        if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) {
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) {
             patterns.add(new Pattern(DyeColor.BLACK, PatternType.BASE));
             patterns.add(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS));
             if (isNext) patterns.add(new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL));

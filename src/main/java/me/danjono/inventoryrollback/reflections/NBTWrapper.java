@@ -1,7 +1,7 @@
 package me.danjono.inventoryrollback.reflections;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -39,10 +39,10 @@ public class NBTWrapper {
 			if (ConfigData.isDebugEnabled())
 				irp.getLogger().info("NBTWrapper created for the first time since startup!");
 
-			EnumNmsVersion nmsVersion = irp.getVersion();
+			BukkitVersion nmsVersion = irp.getVersion();
 			if (ConfigData.isDebugEnabled()) irp.getLogger().info("Using NMS Version: " + nmsVersion.toString());
 
-			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_20_R4)) {
+			if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_20_R4)) {
 				resolve1_20_5OrHigherReflectionNames(nmsVersion);
 			} else {
 				resolvePre1_20_5ReflectionNames(nmsVersion);
@@ -52,7 +52,7 @@ public class NBTWrapper {
 		}
 	}
 
-	private static void resolve1_20_5OrHigherReflectionNames(EnumNmsVersion nmsVersion) {
+	private static void resolve1_20_5OrHigherReflectionNames(BukkitVersion nmsVersion) {
 		try {
             // 1.20.5 or higher (1.20.5 now places custom NBT in a custom_data component)
             String getDataComponentMapMethodName = "a";
@@ -76,16 +76,16 @@ public class NBTWrapper {
 		}
 	}
 
-	private static void resolvePre1_20_5ReflectionNames(EnumNmsVersion nmsVersion) {
-		if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
+	private static void resolvePre1_20_5ReflectionNames(BukkitVersion nmsVersion) {
+		if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_18_R1)) {
 
-			if (nmsVersion.isAtLeast(EnumNmsVersion.v1_20_R1)) {
+			if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_20_R1)) {
 				getTagMethodName = "v";
 			}
-			else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_19_R1)) {
+			else if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_19_R1)) {
 				getTagMethodName = "u";
 			}
-			else if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R2)) {
+			else if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_18_R2)) {
 				getTagMethodName = "t";
 			}
 			else {
@@ -99,11 +99,11 @@ public class NBTWrapper {
 		}
 	}
 	
-	private void resolveNbtTagCompoundReflectionNames(EnumNmsVersion nmsVersion) {
+	private void resolveNbtTagCompoundReflectionNames(BukkitVersion nmsVersion) {
 		getTagElementMethodNames = new HashMap<>();
 		setTagElementMethodNames = new HashMap<>();
 		
-		if (nmsVersion.isAtLeast(EnumNmsVersion.v1_18_R1)) {
+		if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_18_R1)) {
 			getTagElementMethodNames.put(Integer.class, "h");
 			getTagElementMethodNames.put(Long.class, "i");
 			getTagElementMethodNames.put(Float.class, "j");
@@ -188,7 +188,7 @@ public class NBTWrapper {
 					.getMethod("asNMSCopy", ItemStack.class)
 					.invoke(null, item);
 
-			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) {
+			if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) {
 				result = readCustomDataFromNmsItem(itemstack, key, dataType, mapType);
 			} else {
 				result = readNbtFromNmsItem(itemstack, key, dataType, mapType);
@@ -239,7 +239,7 @@ public class NBTWrapper {
 					.getMethod("asNMSCopy", ItemStack.class)
 					.invoke(null, item);
 
-			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_20_R4)) {
+			if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) {
 				writeCustomDataToNmsItem(nmsItem, key, dataType, data);
 			} else {
 				writeNbtToNmsItem(nmsItem, key, dataType, data);
@@ -271,7 +271,7 @@ public class NBTWrapper {
 		Object comp = nmsItem.getClass().getMethod(getTagMethodName).invoke(nmsItem);
 
 		if (comp == null) {
-			if (InventoryRollbackPlus.getInstance().getVersion().isAtLeast(EnumNmsVersion.v1_17_R1)) {
+			if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_17_R1)) {
 				comp = nmsHandler.getNMSClass("nbt.NBTTagCompound").newInstance();
 			} else {
 				comp = nmsHandler.getNMSClass("NBTTagCompound").newInstance();

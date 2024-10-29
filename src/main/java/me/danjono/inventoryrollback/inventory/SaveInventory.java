@@ -1,8 +1,8 @@
 package me.danjono.inventoryrollback.inventory;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import com.nuclyon.technicallycoded.inventoryrollback.util.UserLogRateLimiter;
+import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
@@ -72,7 +72,7 @@ public class SaveInventory {
             }
         }
 
-        if (main.getVersion().isNoHigherThan(EnumNmsVersion.v1_8_R3)) {
+        if (main.getVersion().lessOrEqThan(BukkitVersion.v1_8_R3)) {
             for (ItemStack item : mainInventory.getArmorContents()) {
                 if (item != null) {
                     mainInvArmor = mainInventory.getArmorContents();
