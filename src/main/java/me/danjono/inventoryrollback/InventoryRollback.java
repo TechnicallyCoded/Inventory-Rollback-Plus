@@ -1,7 +1,6 @@
 package me.danjono.inventoryrollback;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
 import me.danjono.inventoryrollback.UpdateChecker.UpdateResult;
 import me.danjono.inventoryrollback.commands.Commands;
 import me.danjono.inventoryrollback.config.ConfigData;
@@ -130,14 +129,14 @@ public abstract class InventoryRollback extends JavaPlugin {
         V1_13_PLUS
     }*/
 
-    private static EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
+//    private static EnumNmsVersion version = EnumNmsVersion.v1_13_R1;
 
-    public abstract void setVersion(EnumNmsVersion versionName);
+//    public abstract void setVersion(EnumNmsVersion versionName);
     /*{
         version = versionName;
     }*/
 
-    public abstract EnumNmsVersion getVersion();
+//    public abstract EnumNmsVersion getVersion();
     /*{
         return version;
     }*/
