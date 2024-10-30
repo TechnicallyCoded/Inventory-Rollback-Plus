@@ -40,6 +40,7 @@ public class RestoreInventory {
     }
 
     private static ItemStack[] stacksFromBase64(String packageVersion, String data) {
+
         if (data == null)
             return new ItemStack[]{};
 
@@ -61,8 +62,10 @@ public class RestoreInventory {
             e1.printStackTrace();
         }
 
-        if (stacks == null)
+        if (stacks == null) {
             return new ItemStack[]{};
+        }
+
 
         for (int i = 0; i < stacks.length; i++) {
             try {

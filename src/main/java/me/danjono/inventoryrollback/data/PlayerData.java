@@ -26,6 +26,7 @@ public class PlayerData {
 
     private YAML yaml;
     private MySQL mysql;
+    private SQLite sqlite;
     
     public PlayerData(OfflinePlayer offlinePlayer, LogType logType, Long timestamp) {
         this.offlinePlayer = offlinePlayer;
@@ -36,6 +37,8 @@ public class PlayerData {
             yaml = new YAML(offlinePlayer.getUniqueId(), logType, timestamp);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql = new MySQL(offlinePlayer.getUniqueId(), logType, timestamp);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite = new SQLite(offlinePlayer.getUniqueId(), logType, timestamp);
         }
     }
 
@@ -48,6 +51,8 @@ public class PlayerData {
             yaml = new YAML(uuid, logType, timestamp);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql = new MySQL(uuid, logType, timestamp);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite = new SQLite(uuid, logType, timestamp);
         }
     }
         
@@ -73,6 +78,12 @@ public class PlayerData {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE){
+            try {
+                return sqlite.doesBackupTypeExist();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
         }
 
         return false;
@@ -84,6 +95,12 @@ public class PlayerData {
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             try {
                 return mysql.getAmountOfBackups();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            try {
+                return sqlite.getAmountOfBackups();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -100,6 +117,12 @@ public class PlayerData {
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             try {
                 timeStamps = mysql.getSelectedPageTimestamps(pageNumber);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            try {
+                timeStamps = sqlite.getSelectedPageTimestamps(pageNumber);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -128,6 +151,12 @@ public class PlayerData {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
+                } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+                    try {
+                        sqlite.purgeExcessSaves(deleteAmount);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             future.complete(null);
@@ -145,6 +174,8 @@ public class PlayerData {
             yaml.setMainInventory(items);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setMainInventory(items);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setMainInventory(items);
         }
     }
 
@@ -153,6 +184,8 @@ public class PlayerData {
             yaml.setArmour(items);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setArmour(items);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setArmour(items);
         }
     }
 
@@ -161,6 +194,8 @@ public class PlayerData {
             yaml.setEnderChest(items);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setEnderChest(items);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setEnderChest(items);
         }
     }
 
@@ -169,6 +204,8 @@ public class PlayerData {
             yaml.setXP(xp);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setXP(xp);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setXP(xp);
         }
     }
 
@@ -177,6 +214,8 @@ public class PlayerData {
             yaml.setHealth(health);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setHealth(health);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setHealth(health);
         }
     }
 
@@ -185,6 +224,8 @@ public class PlayerData {
             yaml.setFoodLevel(foodLevel);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setFoodLevel(foodLevel);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setFoodLevel(foodLevel);
         }
     }
 
@@ -193,6 +234,8 @@ public class PlayerData {
             yaml.setSaturation(saturation);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setSaturation(saturation);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setSaturation(saturation);
         }
     }
 
@@ -201,6 +244,8 @@ public class PlayerData {
             yaml.setWorld(world);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setWorld(world);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setWorld(world);
         }
     }
 
@@ -209,6 +254,8 @@ public class PlayerData {
             yaml.setX(x);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setX(x);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setX(x);
         }
     }
 
@@ -217,6 +264,8 @@ public class PlayerData {
             yaml.setY(y);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setY(y);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setY(y);
         }
     }
 
@@ -225,6 +274,8 @@ public class PlayerData {
             yaml.setZ(z);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setZ(z);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setZ(z);
         }
     }
 
@@ -239,6 +290,8 @@ public class PlayerData {
             yaml.setVersion(packageVersion);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setVersion(packageVersion);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setVersion(packageVersion);
         }
     }
 
@@ -247,6 +300,8 @@ public class PlayerData {
             yaml.setDeathReason(deathReason);
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             mysql.setDeathReason(deathReason);
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            sqlite.setDeathReason(deathReason);
         }
     }
 
@@ -254,6 +309,12 @@ public class PlayerData {
         if (ConfigData.getSaveType() == SaveType.MYSQL) {
             try {
                 mysql.getRollbackMenuData();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            try {
+                sqlite.getRollbackMenuData();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -275,6 +336,19 @@ public class PlayerData {
                 }
             }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
         }
+        else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        sqlite.getAllBackupData();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    future.complete(null);
+                }
+            }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
+        }
         return future;
     }
 
@@ -285,6 +359,8 @@ public class PlayerData {
             items = yaml.getMainInventory();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             items = mysql.getMainInventory();
+        }  else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            items = sqlite.getMainInventory();
         }
 
         return items;
@@ -297,6 +373,8 @@ public class PlayerData {
             items = yaml.getArmour();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             items = mysql.getArmour();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            items = sqlite.getArmour();
         }
 
         return items;
@@ -309,6 +387,8 @@ public class PlayerData {
             items = yaml.getEnderChest();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             items = mysql.getEnderChest();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            items = sqlite.getEnderChest();
         }
 
         return items;
@@ -319,6 +399,8 @@ public class PlayerData {
             return yaml.getXP();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getXP();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getXP();
         }
 
         return 0;
@@ -329,6 +411,8 @@ public class PlayerData {
             return yaml.getHealth();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getHealth();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getHealth();
         }
 
         return 0;
@@ -339,6 +423,8 @@ public class PlayerData {
             return yaml.getFoodLevel();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getFoodLevel();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getFoodLevel();
         }
 
         return 0;
@@ -349,6 +435,8 @@ public class PlayerData {
             return yaml.getSaturation();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getSaturation();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getSaturation();
         }
 
         return 0;
@@ -359,6 +447,8 @@ public class PlayerData {
             return yaml.getWorld();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getWorld();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getWorld();
         }
 
         return null;
@@ -369,6 +459,8 @@ public class PlayerData {
             return yaml.getX();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getX();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getX();
         }
 
         return 0;
@@ -379,6 +471,8 @@ public class PlayerData {
             return yaml.getY();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getY();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getY();
         }
 
         return 0;
@@ -389,6 +483,8 @@ public class PlayerData {
             return yaml.getZ();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getZ();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getZ();
         }
 
         return 0;
@@ -407,6 +503,8 @@ public class PlayerData {
             return yaml.getVersion();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getVersion();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getVersion();
         }
 
         return null;
@@ -417,6 +515,8 @@ public class PlayerData {
             return yaml.getDeathReason();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             return mysql.getDeathReason();
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            return sqlite.getDeathReason();
         }
 
         return null;
@@ -431,6 +531,12 @@ public class PlayerData {
             } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
                 try {
                     mysql.saveData();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+                try {
+                    sqlite.saveData();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

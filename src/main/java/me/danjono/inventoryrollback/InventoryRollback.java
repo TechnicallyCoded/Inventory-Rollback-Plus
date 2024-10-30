@@ -8,6 +8,7 @@ import me.danjono.inventoryrollback.config.ConfigData.SaveType;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
 import me.danjono.inventoryrollback.data.MySQL;
+import me.danjono.inventoryrollback.data.SQLite;
 import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.listeners.ClickGUI;
 import me.danjono.inventoryrollback.listeners.EventLogs;
@@ -84,6 +85,12 @@ public abstract class InventoryRollback extends JavaPlugin {
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             try {
                 new MySQL(null, null, (long) 0).createTables();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else if (ConfigData.getSaveType() == SaveType.SQLITE) {
+            try {
+                new SQLite(null, null, (long) 0).createTables();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

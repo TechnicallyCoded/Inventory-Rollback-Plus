@@ -205,7 +205,7 @@ public class ClickGUI implements Listener {
                         PlayerData data = new PlayerData(uuid, logType, timestamp);
 
                         // Get from MySQL
-                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL || ConfigData.getSaveType() == ConfigData.SaveType.SQLITE) {
                             try {
                                 data.getAllBackupData().get();
                             } catch (ExecutionException | InterruptedException ex) {
@@ -297,7 +297,7 @@ public class ClickGUI implements Listener {
                             PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                             // Get data if using MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL || ConfigData.getSaveType() == ConfigData.SaveType.SQLITE) {
                                 try {
                                     data.getAllBackupData().get();
                                 } catch (ExecutionException | InterruptedException ex) {
@@ -389,7 +389,7 @@ public class ClickGUI implements Listener {
                         PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                         // Get data if using MySQL
-                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                        if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL || ConfigData.getSaveType() == ConfigData.SaveType.SQLITE) {
                             try {
                                 data.getAllBackupData().get();
                             } catch (ExecutionException | InterruptedException ex) {
@@ -550,7 +550,7 @@ public class ClickGUI implements Listener {
                             PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                             // Get data if using MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL || ConfigData.getSaveType() == ConfigData.SaveType.SQLITE) {
                                 try {
                                     data.getAllBackupData().get();
                                 } catch (ExecutionException | InterruptedException ex) {
@@ -587,7 +587,7 @@ public class ClickGUI implements Listener {
                             PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                             // Get data if using MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL || ConfigData.getSaveType() == ConfigData.SaveType.SQLITE) {
                                 try {
                                     data.getAllBackupData().get();
                                 } catch (ExecutionException | InterruptedException ex) {
@@ -636,13 +636,14 @@ public class ClickGUI implements Listener {
                             PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
 
                             // Get from MySQL
-                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL || ConfigData.getSaveType() == ConfigData.SaveType.SQLITE) {
                                 try {
                                     data.getAllBackupData().get();
                                 } catch (ExecutionException | InterruptedException ex) {
                                     ex.printStackTrace();
                                 }
                             }
+
 
                             // Display inventory to player
                             Future<Void> inventoryReplaceFuture = main.getServer().getScheduler().callSyncMethod(main,
