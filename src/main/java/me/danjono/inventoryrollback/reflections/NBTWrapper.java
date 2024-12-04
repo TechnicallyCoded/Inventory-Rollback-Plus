@@ -69,7 +69,10 @@ public class NBTWrapper {
 			
 			Class<?> customDataClass = Class.forName("net.minecraft.world.item.component.CustomData");
 			Class<?> itemStackClass = Class.forName("net.minecraft.world.item.ItemStack");
-			getCustomDataNBTCopyMethod = customDataClass.getMethod("c");
+
+			if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_21_R3)) getCustomDataNBTCopyMethod = customDataClass.getMethod("d");
+			else getCustomDataNBTCopyMethod = customDataClass.getMethod("c");
+
 			updateCustomDataNBTStaticMethod = customDataClass.getMethod("a", dataComponentTypeClass, itemStackClass, Consumer.class);
 		} catch (Exception ex) {
 			ex.printStackTrace();
