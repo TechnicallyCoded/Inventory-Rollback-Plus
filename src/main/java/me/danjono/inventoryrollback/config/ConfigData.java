@@ -53,7 +53,8 @@ public class ConfigData {
 
     public enum SaveType {
         YAML("YAML"),
-        MYSQL("MySQL");
+        MYSQL("MySQL"),
+        SQLITE("SQLite");
         
         private final String name;
 
@@ -115,11 +116,7 @@ public class ConfigData {
             }
         }
 
-        setMySQLEnabled((boolean) getDefaultValue("mysql.enabled", false));
-        if (isMySQLEnabled())
-            setSaveType(SaveType.MYSQL);
-        else
-            setSaveType(SaveType.YAML);
+        setSaveType((String) getDefaultValue("storage-type", "YAML"));
 
         setMySQLHost((String) getDefaultValue("mysql.details.host", "127.0.0.1"));
         setMySQLPort((int) getDefaultValue("mysql.details.port", 3306));
@@ -155,8 +152,20 @@ public class ConfigData {
         pluginEnabled = enabled;
     }
 
-    public static void setSaveType(SaveType value) {
-        saveType = value;
+    public static void setSaveType(String value) {
+        if(value.equalsIgnoreCase("YAML")){
+            saveType = SaveType.YAML;
+        }
+        else if(value.equalsIgnoreCase("MySQL")){
+            saveType = SaveType.MYSQL;
+            setMySQLEnabled(saveType == SaveType.MYSQL);
+        }
+        else if(value.equalsIgnoreCase("SQLite")){
+            saveType = SaveType.SQLITE;
+        }
+        else{
+            saveType = SaveType.YAML; // Default to YAML
+        }
     }
 
     public static void setFolderLocation(File folder) {

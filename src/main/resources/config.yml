@@ -15,10 +15,11 @@ backup-lines-visible: 4
 ## Set folder path where the data is saved to. Set as "DEFAULT" to keep it in the plugin folder.
 folder-location: 'DEFAULT'
 
-## If enabled, this will disable YAML file backups in favour of MySQL storage.
-## Requires a MySQL server.
+# The following storage types are possible: YAML, MySQL, SQLite
+storage-type: YAML
+
+# If you are using MySQL for the storage type, you will need to feel in your database credentials
 mysql:
-  enabled: false
   details:
     host: 'localhost'
     port: 3306
