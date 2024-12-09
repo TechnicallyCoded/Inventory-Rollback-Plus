@@ -82,6 +82,7 @@ public class ConfigData {
     private static boolean mysqlVerifyCertificate;
     private static boolean mysqlPubKeyRetrieval;
 
+    private static boolean allowOtherPluginEditDeathInventory;
     private static boolean restoreToPlayerButton;
     private static int backupLinesVisible;
 
@@ -131,6 +132,7 @@ public class ConfigData {
         setMySQLVerifyCertificate((boolean) getDefaultValue("mysql.details.verifyCertificate", true));
         setMysqlPubKeyRetrievalAllowed((boolean) getDefaultValue("mysql.details.allowPubKeyRetrieval", false));
 
+        setAllowOtherPluginEditDeathInventory((boolean) getDefaultValue("allow-other-plugins-edit-death-inventory", false));
         setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", true));
         setBackupLinesVisible((int) getDefaultValue("backup-lines-visible", 1));
 
@@ -205,6 +207,10 @@ public class ConfigData {
 
     public static void setRestoreToPlayerButton(boolean value) {
         restoreToPlayerButton = value;
+    }
+
+    public static void setAllowOtherPluginEditDeathInventory(boolean value) {
+        allowOtherPluginEditDeathInventory = value;
     }
 
     public static void setBackupLinesVisible(int value) {
@@ -329,6 +335,10 @@ public class ConfigData {
 
     public static boolean isRestoreToPlayerButton() {
         return restoreToPlayerButton;
+    }
+
+    public static boolean isAllowOtherPluginEditDeathInventory() {
+        return allowOtherPluginEditDeathInventory;
     }
 
     public static int getBackupLinesVisible() {

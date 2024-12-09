@@ -49,6 +49,15 @@ time-zone: 'GMT'
 ## For more information on how to format the time, see: https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
 time-format: 'dd/MM/yyyy hh:mm:ss a z'
 
+## Choose if we should wait until other plugins handle the player's death.
+## If set to false, the plugin will handle the death event immediately. (before most plugins)
+## If set to true, the plugin will wait for other plugins to handle the death event first. (after most plugins)
+## --
+## NOTE #1: There are some plugins who also attempt to be the first to handle a player death.
+##          If so, these plugins may still overwrite the player's inventory before this plugin can save it.
+## NOTE #2: If you rely on the ability to edit a player's inventory on death, you should set this to true.
+allow-other-plugins-edit-death-inventory: false
+
 ## Enabling this option will show a button to restore a player's backup fully to their character when online.
 ## This will overwrite their current inventory completely and wipe what they currently have without backing it up first.
 restore-to-player-button: true

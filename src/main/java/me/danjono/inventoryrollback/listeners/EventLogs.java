@@ -68,11 +68,30 @@ public class EventLogs implements Listener {
 	}
 
 	/**
-	 * Handle saving the player's inventory on death.
+	 * Handle saving the player's inventory on death. (Early event listen)
+	 * @param event Bukkit damage event
+	 */
+    @EventHandler(priority = EventPriority.LOWEST)
+	public void playerDeathEarly(PlayerDeathEvent event) {
+		// Only run if other plugins are not allowed to edit the death inventory (early event listen)
+		if (ConfigData.isAllowOtherPluginEditDeathInventory()) return;
+
+		playerDeathHandle(event);
+	}
+
+	/**
+	 * Handle saving the player's inventory on death. (Late event listen)
 	 * @param event Bukkit damage event
 	 */
     @EventHandler(priority = EventPriority.MONITOR)
-    private void playerDeath(PlayerDeathEvent event) {
+	public void playerDeathLate(PlayerDeathEvent event) {
+		// Only run if other plugins are allowed to edit the death inventory (late event listen)
+		if (!ConfigData.isAllowOtherPluginEditDeathInventory()) return;
+
+		playerDeathHandle(event);
+	}
+
+	public void playerDeathHandle(PlayerDeathEvent event) {
         // Sanity checks to prevent unwanted saves
         if (!ConfigData.isEnabled()) return;
 
