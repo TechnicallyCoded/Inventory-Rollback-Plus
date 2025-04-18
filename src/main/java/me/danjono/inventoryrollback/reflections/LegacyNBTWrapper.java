@@ -1,6 +1,7 @@
 package me.danjono.inventoryrollback.reflections;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.customdata.CustomDataItemEditor;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +12,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-public class NBTWrapper {
+public class LegacyNBTWrapper implements CustomDataItemEditor {
 
 	private ItemStack item;
 	private final NMSHandler nmsHandler;
@@ -30,7 +31,7 @@ public class NBTWrapper {
 	private static Method getCustomDataNBTCopyMethod;
 	private static Method updateCustomDataNBTStaticMethod;
 
-	public NBTWrapper(ItemStack item) {
+	public LegacyNBTWrapper(ItemStack item) {
 		this.nmsHandler = new NMSHandler();
 		this.item = item;
 		
