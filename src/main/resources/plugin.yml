@@ -7,6 +7,7 @@ authors: [${project.organization.name}, danjono]
 api-version: 1.13
 
 load-before:
+  - DeluxeCombat
   - DeadChest
   - AngelChest
   - SavageDeathChest

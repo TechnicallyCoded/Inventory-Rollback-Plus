@@ -2,6 +2,7 @@ package me.danjono.inventoryrollback.inventory;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.util.UserLogRateLimiter;
+import com.nuclyon.technicallycoded.inventoryrollback.util.serialization.ItemStackSerialization;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.data.LogType;
@@ -12,10 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -147,34 +145,7 @@ public class SaveInventory {
 
     //Conversion to Base64 code courtesy of github.com/JustRayz
     public static String toBase64(ItemStack[] contents) {
-        boolean convert = false;
-
-        for (ItemStack item : contents) {
-            if (item != null) {
-                convert = true;
-                break;
-            }
-        }
-
-        if (convert) {
-            try {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-
-                dataOutput.writeInt(contents.length);
-
-                for (ItemStack stack : contents) {
-                    dataOutput.writeObject(stack);
-                }
-                dataOutput.close();
-                byte[] byteArr = outputStream.toByteArray();
-                return Base64Coder.encodeLines(byteArr);
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to save item stacks.", e);
-            }
-        }
-
-        return null;
+        return ItemStackSerialization.serialize(contents);
     }
 
     //Credits to Dev_Richard (https://www.spigotmc.org/members/dev_richard.38792/)

@@ -186,6 +186,8 @@ public class ClickGUI implements Listener {
 
     private void rollbackMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if (e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.ROLLBACK_LIST.getSize()) {
+            if (icon == null) return;
+
             CustomDataItemEditor nbt = CustomDataItemEditor.editItem(icon);
             if (!nbt.hasUUID())
                 return;
@@ -647,7 +649,9 @@ public class ClickGUI implements Listener {
                             // Display inventory to player
                             Future<Void> inventoryReplaceFuture = main.getServer().getScheduler().callSyncMethod(main,
                                     () -> {
-                                        player.getEnderChest().setContents(data.getEnderChest());
+                                        ItemStack[] enderChest = data.getEnderChest();
+                                        if (enderChest == null) enderChest = new ItemStack[0];
+                                        player.getEnderChest().setContents(enderChest);
                                         return null;
                                     });
 

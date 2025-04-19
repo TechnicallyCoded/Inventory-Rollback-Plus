@@ -538,7 +538,7 @@ public class Buttons {
 
         List<String> lore = new ArrayList<>();
 
-        if (enderChest.length > 1)
+        if (enderChest != null && enderChest.length > 1)
             lore.add(ChatColor.WHITE + "Items in Ender Chest");
         else {
             lore.add(ChatColor.WHITE + "Empty");

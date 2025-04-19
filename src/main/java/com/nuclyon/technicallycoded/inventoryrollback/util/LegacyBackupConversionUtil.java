@@ -5,7 +5,6 @@ import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
-import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class BackupConversionUtil {
+public class LegacyBackupConversionUtil {
 
     public static Map<String, LogType> oldLogTypesMap = new HashMap<>();
 

@@ -1,22 +1,21 @@
 package me.danjono.inventoryrollback.gui.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class EnderChestBackupMenu {
 
@@ -66,6 +65,7 @@ public class EnderChestBackupMenu {
 
     public void showEnderChestItems() {
         //Check how many items there are in total
+        if (enderchest == null) enderchest = new ItemStack[0];
         int itemsToDisplay = enderchest.length;
 
         // How many rows are available

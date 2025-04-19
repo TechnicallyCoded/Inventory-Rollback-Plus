@@ -3,6 +3,7 @@ package com.nuclyon.technicallycoded.inventoryrollback;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
+import com.nuclyon.technicallycoded.inventoryrollback.util.test.SelfTestSerialization;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import com.tcoded.lightlibs.bukkitversion.MCVersion;
 import io.papermc.lib.PaperLib;
@@ -96,6 +97,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
             this.getLogger().info("Learn more at: https://papermc.io/");
             this.getLogger().info("----------------------------------------");
         }
+
+        // Run self-tests
+        SelfTestSerialization.runTests();
     }
 
     @Override
