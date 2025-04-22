@@ -5,11 +5,18 @@ description: ${project.description}
 author: ${project.organization.name}
 authors: [${project.organization.name}, danjono]
 api-version: 1.13
+
+load-before:
+  - DeadChest
+  - AngelChest
+  - SavageDeathChest
+
 commands:
   inventoryrollbackplus:
     description: ${project.description}
     usage: /irp <subcommand>
     aliases: [ir, irp, inventoryrollback]
+
 permissions:
   inventoryrollbackplus.*:
     description: Gives access to all InventoryRollbackPlus commands.
