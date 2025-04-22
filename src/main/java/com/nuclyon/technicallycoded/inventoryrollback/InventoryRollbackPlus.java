@@ -88,6 +88,8 @@ public class InventoryRollbackPlus extends InventoryRollback {
         // Events
         getServer().getPluginManager().registerEvents(new ClickGUI(), this);
         getServer().getPluginManager().registerEvents(new EventLogs(), this);
+        // Run after all plugin enable
+        getServer().getScheduler().runTask(this, EventLogs::patchLowestHandlers);
 
         // PaperLib
         if (!PaperLib.isPaper()) {
@@ -112,8 +114,8 @@ public class InventoryRollbackPlus extends InventoryRollback {
         getLogger().info("Saving player inventories...");
         for (Player player : this.getServer().getOnlinePlayers()) {
             if (player.hasPermission("inventoryrollbackplus.leavesave")) {
-                new SaveInventory(player, LogType.QUIT, null, null, player.getInventory(), player.getEnderChest())
-                        .createSave(false);
+                new SaveInventory(player, LogType.QUIT, null, null)
+                        .snapshotAndSave(player.getInventory(), player.getEnderChest(), false);
             }
         }
         getLogger().info("Done saving player inventories!");

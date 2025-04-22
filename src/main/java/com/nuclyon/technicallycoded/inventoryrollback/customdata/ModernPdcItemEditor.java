@@ -83,6 +83,8 @@ public class ModernPdcItemEditor implements CustomDataItemEditor {
     }
 
     private <T> T getData(String key, PersistentDataType<T, T> type) {
+        if (item == null) return null;
+
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
@@ -93,9 +95,12 @@ public class ModernPdcItemEditor implements CustomDataItemEditor {
     }
 
     private <T> void setData(String key, PersistentDataType<T, T> type, T data) {
+        if (item == null) return;
+
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
         pdc.set(getNamespacedKey(key), type, data);
+
         item.setItemMeta(itemMeta);
     }
 
