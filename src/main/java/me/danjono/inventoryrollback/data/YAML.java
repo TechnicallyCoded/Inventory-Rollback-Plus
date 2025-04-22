@@ -154,7 +154,7 @@ public class YAML {
         //Number of backups that will be on the page
         int backups = InventoryName.ROLLBACK_LIST.getSize() - 9;
 
-        //Return all timestamps if list if the same size or less than the page max size
+        //Return all timestamps if list is the same size or less than the page max size
         if (allTimeStamps.size() <= backups)
             return allTimeStamps;
 

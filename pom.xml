@@ -5,7 +5,7 @@
 
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
-    <version>1.6.22</version>
+    <version>1.7.0</version>
     <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
     <url>https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/</url>
@@ -30,7 +30,7 @@
         </repository>
         <repository>
             <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>maven_central</id>
@@ -97,8 +97,14 @@
         <dependency>
             <groupId>com.github.lightlibs</groupId>
             <artifactId>BukkitVersion</artifactId>
-            <version>0.0.9</version>
+            <version>0.0.11</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

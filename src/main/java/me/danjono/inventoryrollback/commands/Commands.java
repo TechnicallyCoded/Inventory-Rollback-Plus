@@ -1,21 +1,5 @@
 package me.danjono.inventoryrollback.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
-
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
@@ -25,6 +9,13 @@ import me.danjono.inventoryrollback.data.YAML;
 import me.danjono.inventoryrollback.gui.menu.MainMenu;
 import me.danjono.inventoryrollback.gui.menu.PlayerMenu;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.*;
+import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
+
+import java.util.*;
 
 public class Commands extends ConfigData implements CommandExecutor, TabCompleter {
 
@@ -154,7 +145,8 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void forceBackupAll(CommandSender sender) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
+            new SaveInventory(player, LogType.FORCE, null, null)
+                    .snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
         }
 
         sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupAll());
@@ -179,7 +171,8 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         }
 
         Player player = (Player) offlinePlayer;
-        new SaveInventory(player, LogType.FORCE, null, null, player.getInventory(), player.getEnderChest()).createSave(true);
+        new SaveInventory(player, LogType.FORCE, null, null)
+                .snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
 
         sender.sendMessage(MessageData.getPluginPrefix() + MessageData.getForceBackupPlayer(offlinePlayer.getName()));
     }

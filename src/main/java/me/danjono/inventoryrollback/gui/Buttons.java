@@ -1,11 +1,11 @@
 package me.danjono.inventoryrollback.gui;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.customdata.CustomDataItemEditor;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import me.danjono.inventoryrollback.reflections.NBTWrapper;
 import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -145,12 +145,12 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(button);
+        CustomDataItemEditor editor = CustomDataItemEditor.editItem(button);
 
-        nbt.setString("uuid", uuid.toString());
-        nbt.setString("logType", logType.name());
-        nbt.setInt("page", page);
-        button = nbt.setItemData();   
+        editor.setString("uuid", uuid.toString());
+        editor.setString("logType", logType.name());
+        editor.setInt("page", page);
+        button = editor.setItemData();
 
         return button;
     }
@@ -177,7 +177,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(button);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -207,7 +207,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(button);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -240,7 +240,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(button);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -270,7 +270,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(button);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
 
         nbt.setString("uuid", uuid.toString());
         button = nbt.setItemData();
@@ -296,7 +296,7 @@ public class Buttons {
 
         button.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(button);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -320,7 +320,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -344,7 +344,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -366,7 +366,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -388,7 +388,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -410,7 +410,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -432,7 +432,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -489,7 +489,7 @@ public class Buttons {
 
         skull.setItemMeta(skullMeta);
         
-        NBTWrapper nbt = new NBTWrapper(skull);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(skull);
         
         nbt.setString("uuid", uuid + "");
         skull = nbt.setItemData();
@@ -519,7 +519,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -538,7 +538,7 @@ public class Buttons {
 
         List<String> lore = new ArrayList<>();
 
-        if (enderChest.length > 1)
+        if (enderChest != null && enderChest.length > 1)
             lore.add(ChatColor.WHITE + "Items in Ender Chest");
         else {
             lore.add(ChatColor.WHITE + "Empty");
@@ -547,7 +547,7 @@ public class Buttons {
         meta.setLore(lore);
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -566,7 +566,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -585,7 +585,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -609,7 +609,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -628,7 +628,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());
@@ -656,7 +656,7 @@ public class Buttons {
 
         item.setItemMeta(meta);
 
-        NBTWrapper nbt = new NBTWrapper(item);
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
 
         nbt.setString("uuid", uuid.toString());
         nbt.setString("logType", logType.name());

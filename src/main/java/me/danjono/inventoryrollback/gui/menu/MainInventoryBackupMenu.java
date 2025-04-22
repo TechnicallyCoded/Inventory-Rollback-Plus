@@ -105,8 +105,9 @@ public class MainInventoryBackupMenu {
 					}
 				}
 			}.runTaskTimer(main, 0, 1);
-		} catch (NullPointerException e) {
-		    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
 		    return;
 		}
 
@@ -114,7 +115,7 @@ public class MainInventoryBackupMenu {
 		position = 44;
 		
 		//Add armour
-		if (armour.length > 0) {
+		if (armour != null && armour.length > 0) {
 			try {
 				for (int i = 0; i < armour.length; i++) {
 					// Place item safely

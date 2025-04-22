@@ -1,6 +1,7 @@
 package me.danjono.inventoryrollback.listeners;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.customdata.CustomDataItemEditor;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
@@ -13,7 +14,6 @@ import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
 import me.danjono.inventoryrollback.gui.menu.*;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
-import me.danjono.inventoryrollback.reflections.NBTWrapper;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -122,7 +122,7 @@ public class ClickGUI implements Listener {
 
     private void mainMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.MAIN_MENU.getSize())) {                
-            NBTWrapper nbt = new NBTWrapper(icon);
+            CustomDataItemEditor nbt = CustomDataItemEditor.editItem(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -157,7 +157,7 @@ public class ClickGUI implements Listener {
             return;
 
         if ((e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.PLAYER_MENU.getSize())) {				
-            NBTWrapper nbt = new NBTWrapper(icon);
+            CustomDataItemEditor nbt = CustomDataItemEditor.editItem(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -186,7 +186,9 @@ public class ClickGUI implements Listener {
 
     private void rollbackMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
         if (e.getRawSlot() >= 0 && e.getRawSlot() < InventoryName.ROLLBACK_LIST.getSize()) {
-            NBTWrapper nbt = new NBTWrapper(icon);
+            if (icon == null) return;
+
+            CustomDataItemEditor nbt = CustomDataItemEditor.editItem(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -263,7 +265,7 @@ public class ClickGUI implements Listener {
             return;
 
         if (e.getRawSlot() >= (InventoryName.MAIN_BACKUP.getSize() - 9) && e.getRawSlot() < InventoryName.MAIN_BACKUP.getSize()) {
-            NBTWrapper nbt = new NBTWrapper(icon);
+            CustomDataItemEditor nbt = CustomDataItemEditor.editItem(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -525,7 +527,7 @@ public class ClickGUI implements Listener {
             return;
 
         if (e.getRawSlot() >= (InventoryName.ENDER_CHEST_BACKUP.getSize() - 9) && e.getRawSlot() < InventoryName.ENDER_CHEST_BACKUP.getSize()) {
-            NBTWrapper nbt = new NBTWrapper(icon);
+            CustomDataItemEditor nbt = CustomDataItemEditor.editItem(icon);
             if (!nbt.hasUUID())
                 return;
 
@@ -647,7 +649,9 @@ public class ClickGUI implements Listener {
                             // Display inventory to player
                             Future<Void> inventoryReplaceFuture = main.getServer().getScheduler().callSyncMethod(main,
                                     () -> {
-                                        player.getEnderChest().setContents(data.getEnderChest());
+                                        ItemStack[] enderChest = data.getEnderChest();
+                                        if (enderChest == null) enderChest = new ItemStack[0];
+                                        player.getEnderChest().setContents(enderChest);
                                         return null;
                                     });
 

@@ -3,6 +3,7 @@ package com.nuclyon.technicallycoded.inventoryrollback;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
+import com.nuclyon.technicallycoded.inventoryrollback.util.test.SelfTestSerialization;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import com.tcoded.lightlibs.bukkitversion.MCVersion;
 import io.papermc.lib.PaperLib;
@@ -87,6 +88,8 @@ public class InventoryRollbackPlus extends InventoryRollback {
         // Events
         getServer().getPluginManager().registerEvents(new ClickGUI(), this);
         getServer().getPluginManager().registerEvents(new EventLogs(), this);
+        // Run after all plugin enable
+        getServer().getScheduler().runTask(this, EventLogs::patchLowestHandlers);
 
         // PaperLib
         if (!PaperLib.isPaper()) {
@@ -96,6 +99,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
             this.getLogger().info("Learn more at: https://papermc.io/");
             this.getLogger().info("----------------------------------------");
         }
+
+        // Run self-tests
+        SelfTestSerialization.runTests();
     }
 
     @Override
@@ -108,8 +114,8 @@ public class InventoryRollbackPlus extends InventoryRollback {
         getLogger().info("Saving player inventories...");
         for (Player player : this.getServer().getOnlinePlayers()) {
             if (player.hasPermission("inventoryrollbackplus.leavesave")) {
-                new SaveInventory(player, LogType.QUIT, null, null, player.getInventory(), player.getEnderChest())
-                        .createSave(false);
+                new SaveInventory(player, LogType.QUIT, null, null)
+                        .snapshotAndSave(player.getInventory(), player.getEnderChest(), false);
             }
         }
         getLogger().info("Done saving player inventories!");

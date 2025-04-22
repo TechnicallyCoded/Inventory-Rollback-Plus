@@ -2,7 +2,7 @@ package com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollbac
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.IRPCommand;
-import com.nuclyon.technicallycoded.inventoryrollback.util.BackupConversionUtil;
+import com.nuclyon.technicallycoded.inventoryrollback.util.LegacyBackupConversionUtil;
 import me.danjono.inventoryrollback.config.MessageData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,7 +40,7 @@ public class ImportSubCmd extends IRPCommand {
             }
 
             // Execute import
-            Bukkit.getScheduler().runTaskAsynchronously(main, BackupConversionUtil::convertOldBackupData);
+            Bukkit.getScheduler().runTaskAsynchronously(main, LegacyBackupConversionUtil::convertOldBackupData);
 
             // Reset suggestion to not visible
             suggestConfirm.set(false);
