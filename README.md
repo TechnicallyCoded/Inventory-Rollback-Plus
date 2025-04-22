@@ -62,5 +62,5 @@ You can change these values in the configuration file.
  - inventoryrollback.help - (Default: All) Allow viewing the help message of the plugin
  - inventoryrollback.version - (Default: All) Allow viewing version of the plugin
 
-## Spigot Link
-[https://www.spigotmc.org/resources/85811/](https://www.spigotmc.org/resources/85811/)
+## Download Link
+[https://modrinth.com/plugin/inventoryrollbackplus](https://modrinth.com/plugin/inventoryrollbackplus)
