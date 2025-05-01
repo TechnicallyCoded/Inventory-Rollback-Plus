@@ -36,6 +36,8 @@ public class MainInventoryBackupMenu {
 	
     private final Buttons buttons;
     private Inventory inventory;
+
+	private int mainInvLen;
 	
 	public MainInventoryBackupMenu(Player staff, PlayerData data, String location) {
 		this.main = InventoryRollbackPlus.getInstance();
@@ -54,6 +56,8 @@ public class MainInventoryBackupMenu {
 		this.xp = data.getXP();
 		
 		this.buttons = new Buttons(playerUUID);
+
+		this.mainInvLen = mainInventory == null ? 0 : mainInventory.length;
 		
 		createInventory();
 	}
@@ -83,7 +87,7 @@ public class MainInventoryBackupMenu {
 
 				int invPosition = 0;
 				int itemPos = 0;
-				final int max = mainInventory.length - 5; // excluded
+				final int max = mainInvLen - 5; // excluded
 
 				@Override
 				public void run() {
@@ -134,7 +138,7 @@ public class MainInventoryBackupMenu {
 			}
 		} else {
 			try {
-				for (int i = 36; i < mainInventory.length; i++) {
+				for (int i = 36; i < mainInvLen; i++) {
 					if (mainInventory[item] != null) {
 						// Place item safely
 						final int finalPos = position;
