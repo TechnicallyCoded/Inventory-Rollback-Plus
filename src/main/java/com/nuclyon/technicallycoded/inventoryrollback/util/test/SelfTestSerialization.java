@@ -3,6 +3,7 @@ package com.nuclyon.technicallycoded.inventoryrollback.util.test;
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.util.serialization.DeserializationResult;
 import com.nuclyon.technicallycoded.inventoryrollback.util.serialization.Version2Serialization;
+import com.tcoded.lightlibs.bukkitversion.MCVersion;
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class SelfTestSerialization {
 
@@ -24,16 +26,35 @@ public class SelfTestSerialization {
                 SelfTestSerialization.buildTestSerializeAndDeserializeCustomNamedItem()
         );
 
-        int i = 0;
+        MCVersion currentVersion = InventoryRollbackPlus.getInstance().getVersion().getMcVersions()[0];
+
+        int completed = 0;
+        int skipped = 0;
+        int failed = 0;
+
         for (SelfTest test : tests) {
-            try {
-                test.run();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (currentVersion.greaterOrEqThan(test.getMinVersion()) && currentVersion.lessOrEqThan(test.getMaxVersion())) {
+                try {
+                    test.run();
+                    completed++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failed++;
+                }
+            } else {
+                skipped++;
             }
         }
 
-        InventoryRollbackPlus.getInstance().getLogger().info("All tests completed. (" + tests.size() + " tests)");
+        Logger logger = InventoryRollbackPlus.getInstance().getLogger();
+        logger.info("Tests completed: " + completed + ", Skipped: " + skipped + ", Failed: " + failed);
+
+        if (failed > 0) {
+            logger.severe("Some tests failed. Please check the logs for details.");
+        } else {
+            logger.info("All tests passed successfully.");
+        }
+
     }
 
     public static SelfTest buildTestSerializeAndDeserializeItem() {
@@ -169,7 +190,7 @@ public class SelfTestSerialization {
             TestAssertions.assertEquals(shulkerContents[1].getAmount(), deserializedContents[1].getAmount(), "Second item amount should match");
         };
 
-        return new SelfTest("Serialize and Deserialize Shulker Box with Items", test);
+        return new SelfTest("Serialize and Deserialize Shulker Box with Items", MCVersion.v1_11, test);
     }
 
     public static SelfTest buildTestSerializeAndDeserializeCustomNamedItem() {
