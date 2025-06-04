@@ -5,10 +5,7 @@ import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -22,261 +19,221 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventLogs implements Listener {
 
-	private InventoryRollbackPlus main;
-	private Map<UUID, SaveInventory.PlayerDataSnapshot> inventoryCache;
+    private final InventoryRollbackPlus main;
+    private final Map<UUID, SaveInventory.PlayerDataSnapshot> inventoryCache;
+    private static final Set<EntityDamageEvent.DamageCause> ENTITY_CAUSES = createEntityCauses();
 
-	public EventLogs() {
-		this.main = InventoryRollbackPlus.getInstance();
-		this.inventoryCache = new ConcurrentHashMap<>();
-	}
+    public EventLogs() {
+        this.main = InventoryRollbackPlus.getInstance();
+        this.inventoryCache = new ConcurrentHashMap<>();
+    }
 
-	public static void patchLowestHandlers() {
-		// Fix for LOWEST priority handlers.
-		// We move the handlers to the end of the list such that it runs after our handler
-		HandlerList deathEventHandlers = PlayerDeathEvent.getHandlerList();
-		List<RegisteredListener> otherDeathHandlers = new ArrayList<>();
+    private static Set<EntityDamageEvent.DamageCause> createEntityCauses() {
+        Set<EntityDamageEvent.DamageCause> causes = EnumSet.of(
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+            EntityDamageEvent.DamageCause.PROJECTILE
+        );
+        if (BukkitVersion.v1_11_R1.isSupported()) {
+            causes.add(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK);
+        }
+        return Collections.unmodifiableSet(causes);
+    }
 
-		for (RegisteredListener handler : deathEventHandlers.getRegisteredListeners()) {
-			// Ignore and non-LOWEST priority handlers
-			if (handler.getPriority() != EventPriority.LOWEST) continue;
-			// Ignore our own listener
-			if (handler.getListener().getClass() == EventLogs.class) continue;
-			otherDeathHandlers.add(handler);
-		}
+    public static void patchLowestHandlers() {
+        HandlerList deathEventHandlers = PlayerDeathEvent.getHandlerList();
+        List<RegisteredListener> lowestPriorityHandlers = new ArrayList<>();
 
-		// Shift all the handlers to the end of the list, in order
-		for (RegisteredListener handler : otherDeathHandlers) {
-			deathEventHandlers.unregister(handler);
-			deathEventHandlers.register(handler);
-		}
+        for (RegisteredListener handler : deathEventHandlers.getRegisteredListeners()) {
+            if (handler.getPriority() != EventPriority.LOWEST) continue;
+            if (handler.getListener().getClass() == EventLogs.class) continue;
+            lowestPriorityHandlers.add(handler);
+        }
 
-		deathEventHandlers.bake();
-	}
+        for (RegisteredListener handler : lowestPriorityHandlers) {
+            deathEventHandlers.unregister(handler);
+            deathEventHandlers.register(handler);
+        }
 
-	@EventHandler
-	private void playerJoin(PlayerJoinEvent e) {
-		if (!ConfigData.isEnabled()) return;
+        deathEventHandlers.bake();
+    }
 
-		Player player = e.getPlayer();
-		if (player.hasPermission("inventoryrollbackplus.joinsave")) {
-			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null)
-					.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
-		}
-		if (player.hasPermission("inventoryrollbackplus.adminalerts")) {
-			// can send info to admins here
-		}
-	}
-
-	@EventHandler
-	private void playerQuit(PlayerQuitEvent e) {
-		if (!ConfigData.isEnabled()) return;
-
-		Player player = e.getPlayer();
-
-		if (player.hasPermission("inventoryrollbackplus.leavesave")) {
-			new SaveInventory(e.getPlayer(), LogType.QUIT, null, null)
-					.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
-		}
-
-		UUID uuid = player.getUniqueId();
-
-		// Run the cleanup 1 tick later in case the rate limiter should need to provide debug data.
-		// If the cleanup would run and the event is being spammed, this cleanup would delete the rate limiter's data
-		// before it has a chance to act.
-		main.getServer().getScheduler().runTaskLater(main, () -> {
-			// Double check that the player is offline
-			if (main.getServer().getPlayer(uuid) != null) return;
-			// Cleanup the player's data
-			SaveInventory.cleanup(uuid);
-		}, 1);
-	}
-
-	/**
-	 * Save the player's inventory before death.
-	 * @param event Bukkit damage event
-	 */
-    @EventHandler(priority = EventPriority.LOWEST)
-	public void playerPreDeath(EntityDamageEvent event) {
-		// Only run if other plugins are not allowed to edit the death inventory (early event listen)
-		if (ConfigData.isAllowOtherPluginEditDeathInventory()) return;
-
-		if (!(event.getEntity() instanceof Player)) return;
-		Player player = (Player) event.getEntity();
-
-		// This only checks damage and doesn't take into account potential cancellation reasons such
-		// as plugins or totems of undying. Useless SaveInventory objects will be created (not saved)
-		// but this prevents other plugins from interfering with the death save.
-		if (event.getFinalDamage() < player.getHealth()) return;
-
-		SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, event.getCause(), null);
-		SaveInventory.PlayerDataSnapshot snapshot = saveInventory.createSnapshot(player.getInventory(), player.getEnderChest());
-
-		this.inventoryCache.put(player.getUniqueId(), snapshot);
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void playerPreDeathCheck(EntityDamageEvent event) {
-		// Only run if other plugins are not allowed to edit the death inventory (early event listen)
-		if (ConfigData.isAllowOtherPluginEditDeathInventory()) return;
-
-		if (!(event.getEntity() instanceof Player)) return;
-		Player player = (Player) event.getEntity();
-
-		UUID uuid = player.getUniqueId();
-		SaveInventory.PlayerDataSnapshot firstSnapshot = this.inventoryCache.get(uuid);
-		if (firstSnapshot == null) return;
-
-		SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, event.getCause(), null);
-		SaveInventory.PlayerDataSnapshot lastSnapshot = saveInventory.createSnapshot(player.getInventory(), player.getEnderChest());
-
-		// Inventory was not edited during a damage event, we don't need this hacky snapshot
-		if (firstSnapshot.equals(lastSnapshot)) {
-			this.inventoryCache.remove(uuid);
-			return;
-		}
-
-		// If the inventory was edited, warn
-		InventoryRollbackPlus.getInstance().getLogger().warning(
-				player.getName() + "'s inventory was edited during damage handling (instead of death, this is bad). " +
-						"Please find which plugin is misbehaving by disabling one plugin at the time until this message disappears!"
-		);
-	}
-
-	/**
-	 * Handle saving the player's inventory on death. (Early event listen)
-	 * @param event Bukkit damage event
-	 */
-    @EventHandler(priority = EventPriority.LOWEST)
-	public void playerDeathEarly(PlayerDeathEvent event) {
-		// Only run if other plugins are not allowed to edit the death inventory (early event listen)
-		if (ConfigData.isAllowOtherPluginEditDeathInventory()) return;
-
-		playerDeathHandle(event);
-	}
-
-	/**
-	 * Handle saving the player's inventory on death. (Late event listen)
-	 * @param event Bukkit damage event
-	 */
-    @EventHandler(priority = EventPriority.MONITOR)
-	public void playerDeathLate(PlayerDeathEvent event) {
-		// Only run if other plugins are allowed to edit the death inventory (late event listen)
-		if (!ConfigData.isAllowOtherPluginEditDeathInventory()) return;
-
-		playerDeathHandle(event);
-	}
-
-	public void playerDeathHandle(PlayerDeathEvent event) {
-        // Sanity checks to prevent unwanted saves
+    @EventHandler
+    private void playerJoin(PlayerJoinEvent event) {
         if (!ConfigData.isEnabled()) return;
 
-        Player player = event.getEntity();
-
-		// Check that the player has the permission for inventory saves
-        if (player.hasPermission("inventoryrollbackplus.deathsave")) {
-
-            EntityDamageEvent damageEvent = event.getEntity().getLastDamageCause();
-			DetailedReason detailedReason = getDetailedReason(damageEvent);
-
-			// After all checks, create the save with data provided above
-			SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, detailedReason.damageCause, detailedReason.reason);
-
-			UUID uuid = player.getUniqueId();
-			SaveInventory.PlayerDataSnapshot preSnapshot = this.inventoryCache.get(uuid);
-
-			if (preSnapshot == null) {
-				saveInventory.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
-			} else {
-				// Save the snapshot inventory instead of the current one. We apparently had an edit
-				// during the damage event.
-				saveInventory.save(preSnapshot, true);
-				// Remove the snapshot from the cache
-				this.inventoryCache.remove(uuid);
-			}
+        Player player = event.getPlayer();
+        if (hasPermission(player, "inventoryrollbackplus.joinsave")) {
+            createSave(player, LogType.JOIN);
         }
     }
 
-	@EventHandler
-	private void playerChangeWorld(PlayerChangedWorldEvent e) {
-		if (!ConfigData.isEnabled()) return;
+    @EventHandler
+    private void playerQuit(PlayerQuitEvent event) {
+        if (!ConfigData.isEnabled()) return;
 
-		Player player = e.getPlayer();
+        Player player = event.getPlayer();
+        if (hasPermission(player, "inventoryrollbackplus.leavesave")) {
+            createSave(player, LogType.QUIT);
+        }
 
-		if (player.hasPermission("inventoryrollbackplus.worldchangesave")) {
-			new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, null)
-					.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
-		}
-	}
+        scheduleCleanup(player);
+    }
 
-	public boolean isEntityCause(EntityDamageEvent.DamageCause cause) {
-		if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) ||
-				cause.equals(EntityDamageEvent.DamageCause.PROJECTILE)) return true;
-		if (this.main.getVersion().greaterOrEqThan(BukkitVersion.v1_11_R1)) {
-			if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) return true;
-		}
-		return false;
-	}
+    private void createSave(Player player, LogType logType) {
+        new SaveInventory(player, logType, null, null)
+            .snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
+    }
 
-	private @NotNull DetailedReason getDetailedReason(EntityDamageEvent damageEvent) {
-		EntityDamageEvent.DamageCause damageCause;
+    private void scheduleCleanup(Player player) {
+        UUID uuid = player.getUniqueId();
+        main.getServer().getScheduler().runTaskLater(main, () -> {
+            if (main.getServer().getPlayer(uuid) != null) return;
+            SaveInventory.cleanup(uuid);
+        }, 1);
+    }
 
-		if (damageEvent == null) damageCause = EntityDamageEvent.DamageCause.CUSTOM;
-		else damageCause = damageEvent.getCause();
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerPreDeath(EntityDamageEvent event) {
+        if (ConfigData.isAllowOtherPluginEditDeathInventory()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
 
-		// Detailed reason for the death that can be applied given certain conditions
-		String reason = null;
+        UUID uuid = player.getUniqueId();
+        if (!isDeathDamage(event)) {
+            inventoryCache.remove(uuid);
+            return;
+        }
 
-		// Handler the case where the death is caused by an entity
-		if (isEntityCause(damageCause) && damageEvent instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent damageByEntityEvent = (EntityDamageByEntityEvent) damageEvent;
-			Entity damager = damageByEntityEvent.getDamager();
+        SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, event.getCause(), null);
+        inventoryCache.put(uuid, saveInventory.createSnapshot(
+            player.getInventory(), player.getEnderChest()
+        ));
+    }
 
-			// Get the shooter's name if the killing entity is a projectile
-			String shooterName = "";
-			if (damager instanceof Projectile) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerPreDeathCheck(EntityDamageEvent event) {
+        if (ConfigData.isAllowOtherPluginEditDeathInventory()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (event.isCancelled() || event.getFinalDamage() == 0) {
+            inventoryCache.remove(player.getUniqueId());
+            return;
+        }
 
-				Projectile proj = (Projectile) damager;
-				ProjectileSource shooter = proj.getShooter();
+        SaveInventory.PlayerDataSnapshot snapshot = inventoryCache.get(player.getUniqueId());
+        if (snapshot == null) return;
 
-				// Show shooter name if it's a living entity
-				if (shooter instanceof LivingEntity) {
-					LivingEntity shooterEntity = (LivingEntity) shooter;
-					shooterName = ", " + shooterEntity.getName();
-				}
-				// Show shooter block type if it's a block projectile source
-				else if (shooter instanceof BlockProjectileSource) {
-					BlockProjectileSource shooterBlock = (BlockProjectileSource) shooter;
-					shooterName = ", " + shooterBlock.getBlock().getType().name();
+        SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, event.getCause(), null);
+        SaveInventory.PlayerDataSnapshot newSnapshot = saveInventory.createSnapshot(
+            player.getInventory(), player.getEnderChest()
+        );
 
-				}
-				// In all other cases, don't show projectile detailed shooter info
-			}
+        if (!snapshot.equals(newSnapshot)) {
+            main.getLogger().warning(
+                player.getName() + "'s inventory was edited during damage handling. " +
+                "Please identify the conflicting plugin!"
+            );
+        }
+    }
 
-			// Create a more specific reason given the data above
-			reason = damageCause.name() + " (" + damageByEntityEvent.getDamager().getName() + shooterName + ")";
-		}
-		DetailedReason detailedReason = new DetailedReason(damageCause, reason);
-		return detailedReason;
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerDeathEarly(PlayerDeathEvent event) {
+        if (!ConfigData.isAllowOtherPluginEditDeathInventory()) {
+            handlePlayerDeath(event);
+        }
+    }
 
-	private static class DetailedReason {
-		public final EntityDamageEvent.DamageCause damageCause;
-		public final String reason;
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerDeathLate(PlayerDeathEvent event) {
+        if (ConfigData.isAllowOtherPluginEditDeathInventory()) {
+            handlePlayerDeath(event);
+        }
+    }
 
-		public DetailedReason(EntityDamageEvent.DamageCause damageCause, String reason) {
-			this.damageCause = damageCause;
-			this.reason = reason;
-		}
-	}
+    private void handlePlayerDeath(PlayerDeathEvent event) {
+        if (!ConfigData.isEnabled()) return;
+        
+        Player player = event.getEntity();
+        if (!hasPermission(player, "inventoryrollbackplus.deathsave")) return;
 
+        EntityDamageEvent damageEvent = player.getLastDamageCause();
+        DetailedReason detailedReason = getDetailedReason(damageEvent);
+
+        UUID uuid = player.getUniqueId();
+        SaveInventory saveInventory = new SaveInventory(
+            player, LogType.DEATH, detailedReason.damageCause, detailedReason.reason
+        );
+
+        SaveInventory.PlayerDataSnapshot snapshot = inventoryCache.get(uuid);
+        if (snapshot != null) {
+            saveInventory.save(snapshot, true);
+            inventoryCache.remove(uuid);
+        } else {
+            saveInventory.snapshotAndSave(
+                player.getInventory(), player.getEnderChest(), true
+            );
+        }
+    }
+
+    @EventHandler
+    private void playerChangeWorld(PlayerChangedWorldEvent event) {
+        if (!ConfigData.isEnabled()) return;
+        
+        Player player = event.getPlayer();
+        if (hasPermission(player, "inventoryrollbackplus.worldchangesave")) {
+            createSave(player, LogType.WORLD_CHANGE);
+        }
+    }
+
+    private boolean isDeathDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity entity)) return false;
+        return event.getFinalDamage() >= entity.getHealth();
+    }
+
+    private DetailedReason getDetailedReason(EntityDamageEvent damageEvent) {
+        EntityDamageEvent.DamageCause cause = (damageEvent != null) ? 
+            damageEvent.getCause() : EntityDamageEvent.DamageCause.CUSTOM;
+
+        String reason = null;
+        if (ENTITY_CAUSES.contains(cause) && damageEvent instanceof EntityDamageByEntityEvent entityEvent) {
+            reason = buildDetailedReason(entityEvent);
+        }
+        
+        return new DetailedReason(cause, reason);
+    }
+
+    private String buildDetailedReason(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        StringBuilder reasonBuilder = new StringBuilder(event.getCause().name())
+            .append(" (")
+            .append(damager.getName());
+
+        if (damager instanceof Projectile projectile) {
+            appendShooterInfo(reasonBuilder, projectile);
+        }
+
+        return reasonBuilder.append(')').toString();
+    }
+
+    private void appendShooterInfo(StringBuilder builder, Projectile projectile) {
+        ProjectileSource shooter = projectile.getShooter();
+        if (shooter instanceof LivingEntity living) {
+            builder.append(", ").append(living.getName());
+        } else if (shooter instanceof BlockProjectileSource blockSource) {
+            builder.append(", ").append(blockSource.getBlock().getType());
+        }
+    }
+
+    private boolean hasPermission(Player player, String permission) {
+        return player.hasPermission(permission);
+    }
+
+    private record DetailedReason(
+        EntityDamageEvent.DamageCause damageCause, 
+        String reason
+    ) {}
 }
