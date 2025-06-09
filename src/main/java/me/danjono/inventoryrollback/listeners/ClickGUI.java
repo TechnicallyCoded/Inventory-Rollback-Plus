@@ -24,6 +24,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -71,7 +75,7 @@ public class ClickGUI implements Listener {
 
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) throws IOException {
         String title = e.getView().getTitle();
         if (!title.equals(InventoryName.MAIN_MENU.getName()) 
                 && !title.equals(InventoryName.PLAYER_MENU.getName()) 
@@ -260,7 +264,7 @@ public class ClickGUI implements Listener {
         }
     }
 
-    private void mainBackupMenu(InventoryClickEvent e, Player staff, ItemStack icon) {
+    private void mainBackupMenu(InventoryClickEvent e, Player staff, ItemStack icon) throws IOException {
         if (!e.getView().getTitle().equals(InventoryName.MAIN_BACKUP.getName()))
             return;
 
@@ -346,6 +350,8 @@ public class ClickGUI implements Listener {
                 }
             }
 
+            // TODO !!!
+
             // Clicked icon to teleport player to backup coordinates
             else if (icon.getType().equals(Buttons.getTeleportLocationIcon())) {
                 // Perm check
@@ -355,7 +361,19 @@ public class ClickGUI implements Listener {
                 }
 
                 String[] location = nbt.getString("location").split(",");			
-                World world = Bukkit.getWorld(location[0]);
+
+                if (!Objects.equals(ConfigData.getServerName(), location[0])) {
+                    ByteArrayOutputStream b = new ByteArrayOutputStream();
+                    DataOutputStream out = new DataOutputStream(b);
+
+                    out.writeUTF("Connect");
+                    out.writeUTF(location[0]);
+
+                    staff.sendPluginMessage(InventoryRollback.getInstance(), "BungeeCord", b.toByteArray());
+                    return;
+                }
+
+                World world = Bukkit.getWorld(location[1]);
 
                 if (world == null) {
                     //World is not available
@@ -364,9 +382,9 @@ public class ClickGUI implements Listener {
                 }
 
                 Location loc = new Location(world, 
-                        Math.floor(Double.parseDouble(location[1])), 
-                        Math.floor(Double.parseDouble(location[2])), 
-                        Math.floor(Double.parseDouble(location[3])))
+                        Math.floor(Double.parseDouble(location[2])),
+                        Math.floor(Double.parseDouble(location[3])),
+                        Math.floor(Double.parseDouble(location[4])))
                         .add(0.5, 0.5, 0.5);				
 
                 // Teleport player on a slight delay to block the teleport icon glitching out into the player inventory

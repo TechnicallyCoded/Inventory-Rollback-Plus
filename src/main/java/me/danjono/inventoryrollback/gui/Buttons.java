@@ -507,10 +507,11 @@ public class Buttons {
         List<String> lore = new ArrayList<>();
         if (location != null) {
             String[] loc = location.split(",");
-            lore.add(ChatColor.GOLD + "World: " + ChatColor.WHITE + loc[0]);
-            lore.add(ChatColor.GOLD + "X: " + ChatColor.WHITE + loc[1]);
-            lore.add(ChatColor.GOLD + "Y: " + ChatColor.WHITE + loc[2]);
-            lore.add(ChatColor.GOLD + "Z: " + ChatColor.WHITE + loc[3]);
+            lore.add(ChatColor.GOLD + "Server: "+ ChatColor.WHITE + loc[0]);
+            lore.add(ChatColor.GOLD + "World: " + ChatColor.WHITE + loc[1]);
+            lore.add(ChatColor.GOLD + "X: " + ChatColor.WHITE + loc[2]);
+            lore.add(ChatColor.GOLD + "Y: " + ChatColor.WHITE + loc[3]);
+            lore.add(ChatColor.GOLD + "Z: " + ChatColor.WHITE + loc[4]);
 
             meta.setLore(lore);
         } else {

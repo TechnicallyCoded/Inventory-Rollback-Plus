@@ -196,6 +196,14 @@ public class PlayerData {
         }
     }
 
+    public void setServer(String server) {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            yaml.setServer(server);
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            mysql.setServer(server);
+        }
+    }
+
     public void setWorld(String world) {
         if (ConfigData.getSaveType() == SaveType.YAML) {
             yaml.setWorld(world);
@@ -352,6 +360,15 @@ public class PlayerData {
         }
 
         return 0;
+    }
+    public String getServer() {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            return yaml.getServer();
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            return mysql.getServer();
+        }
+
+        return null;
     }
 
     public String getWorld() {
