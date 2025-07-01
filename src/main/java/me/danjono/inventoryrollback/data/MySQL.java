@@ -55,6 +55,7 @@ public class MySQL {
     private double health;
     private int hunger;
     private float saturation;
+    private String server;
     private String world;
     private double x;
     private double y;
@@ -110,7 +111,8 @@ public class MySQL {
                         "`xp` FLOAT NOT NULL," + 
                         "`health` DOUBLE NOT NULL," + 
                         "`hunger` INT NOT NULL," + 
-                        "`saturation` FLOAT NOT NULL," + 
+                        "`saturation` FLOAT NOT NULL," +
+                        "`location_server` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci," +
                         "`location_world` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL," + 
                         "`location_x` DOUBLE NOT NULL," + 
                         "`location_y` DOUBLE NOT NULL," + 
@@ -260,6 +262,8 @@ public class MySQL {
         this.saturation = saturation;
     }
 
+    public void setServer(String server) { this.server = server; }
+
     public void setWorld(String world) {
         this.world = world;
     }
@@ -288,7 +292,7 @@ public class MySQL {
         openConnection();
 
         try {
-            String query = "SELECT timestamp,death_reason,location_world,location_x,location_y,location_z " + 
+            String query = "SELECT timestamp,death_reason,location_server,location_world,location_x,location_y,location_z " +
                     "FROM " + backupTable.getTableName() + " WHERE " +
                     "uuid = ? AND timestamp = ?";
             
@@ -298,7 +302,8 @@ public class MySQL {
                 
                 try (ResultSet results = statement.executeQuery()) {
                     results.next();
-                    
+
+                    server = results.getString("location_server");
                     world = results.getString("location_world");
                     x = results.getDouble("location_x");
                     y = results.getDouble("location_y");
@@ -333,6 +338,7 @@ public class MySQL {
                     health = results.getDouble("health");
                     hunger = results.getInt("hunger");
                     saturation = results.getFloat("saturation");
+                    server = results.getString("location_server");
                     world = results.getString("location_world");
                     x = results.getDouble("location_x");
                     y = results.getDouble("location_y");
@@ -375,6 +381,8 @@ public class MySQL {
         return this.saturation;
     }
 
+    public String getServer() { return this.server; }
+
     public String getWorld() {
         return this.world;
     }
@@ -404,8 +412,8 @@ public class MySQL {
 
         try {
             String update = "INSERT INTO " + backupTable.getTableName() + " " +
-                    "(uuid, timestamp, xp, health, hunger, saturation, location_world, location_x, location_y, location_z, version, death_reason, main_inventory, armour, ender_chest)" + " " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "(uuid, timestamp, xp, health, hunger, saturation, location_server, location_world, location_x, location_y, location_z, version, death_reason, main_inventory, armour, ender_chest)" + " " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             try (PreparedStatement statement = connection.prepareStatement(update)) {
                 statement.setString(1, uuid + "");
@@ -414,15 +422,16 @@ public class MySQL {
                 statement.setDouble(4, health);
                 statement.setInt(5, hunger);
                 statement.setFloat(6, saturation);
-                statement.setString(7, world);
-                statement.setDouble(8, x);
-                statement.setDouble(9, y);
-                statement.setDouble(10, z);
-                statement.setString(11, packageVersion);
-                statement.setString(12, deathReason);
-                statement.setString(13, mainInventory);
-                statement.setString(14, armour);
-                statement.setString(15, enderChest);
+                statement.setString(7, server);
+                statement.setString(8, world);
+                statement.setDouble(9, x);
+                statement.setDouble(10, y);
+                statement.setDouble(11, z);
+                statement.setString(12, packageVersion);
+                statement.setString(13, deathReason);
+                statement.setString(14, mainInventory);
+                statement.setString(15, armour);
+                statement.setString(16, enderChest);
                 statement.executeUpdate();
             }
         } finally {
@@ -482,6 +491,7 @@ public class MySQL {
                     mysql.setHealth(yaml.getHealth());
                     mysql.setFoodLevel(yaml.getFoodLevel());
                     mysql.setSaturation(yaml.getSaturation());
+                    mysql.setServer(yaml.getServer());
                     mysql.setWorld(yaml.getWorld());
                     mysql.setX(yaml.getX());
                     mysql.setY(yaml.getY());

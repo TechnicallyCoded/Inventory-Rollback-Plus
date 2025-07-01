@@ -30,6 +30,8 @@ mysql:
     verifyCertificate: true
     allowPubKeyRetrieval: false
 
+servername: default
+
 ## Sounds will play to the player when parts of their player is restored.
 sounds:
   teleport:

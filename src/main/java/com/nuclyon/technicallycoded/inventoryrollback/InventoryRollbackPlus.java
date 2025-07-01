@@ -91,6 +91,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
         // Run after all plugin enable
         getServer().getScheduler().runTask(this, EventLogs::patchLowestHandlers);
 
+        //register bungeecord messaging channel
+        getServer().getMessenger().registerOutgoingPluginChannel(InventoryRollback.getInstance(), "BungeeCord");
+
         // PaperLib
         if (!PaperLib.isPaper()) {
             this.getLogger().info("----------------------------------------");
@@ -122,6 +125,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
         // Unregister event listeners
         HandlerList.unregisterAll(this);
+
+        //register bungeecord messaging channel
+        getServer().getMessenger().unregisterOutgoingPluginChannel(InventoryRollback.getInstance(), "BungeeCord");
 
         // Cancel tasks
         this.getServer().getScheduler().cancelTasks(this);

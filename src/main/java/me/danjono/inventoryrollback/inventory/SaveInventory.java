@@ -5,6 +5,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.util.UserLogRateLimiter;
 import com.nuclyon.technicallycoded.inventoryrollback.util.serialization.ItemStackSerialization;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.InventoryRollback;
+import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
 import org.bukkit.Location;
@@ -77,6 +78,9 @@ public class SaveInventory {
             data.setHealth(snapshot.health);
             data.setFoodLevel(snapshot.foodLevel);
             data.setSaturation(snapshot.saturation);
+
+            data.setServer(ConfigData.getServerName());
+
             data.setWorld(snapshot.worldName);
 
             data.setX(snapshot.locX);
@@ -137,6 +141,8 @@ public class SaveInventory {
         double health = player.getHealth();
         int foodLevel = player.getFoodLevel();
         float saturation = player.getSaturation();
+
+        String serverName = ConfigData.getServerName();
         String worldName = player.getWorld().getName();
 
         // Location data
@@ -152,7 +158,7 @@ public class SaveInventory {
         ItemStack[] finalMainInvArmor = mainInvArmor;
         ItemStack[] finalEnderInvContents = enderInvContents;
 
-        return new PlayerDataSnapshot(totalXp, health, foodLevel, saturation, worldName, locX, locY, locZ,
+        return new PlayerDataSnapshot(totalXp, health, foodLevel, saturation, serverName, worldName, locX, locY, locZ,
                 finalMainInvContents, finalMainInvArmor, finalEnderInvContents);
     }
 
@@ -171,6 +177,7 @@ public class SaveInventory {
         public final double health;
         public final int foodLevel;
         public final float saturation;
+        public final String serverName;
         public final String worldName;
         public final double locX;
         public final double locY;
@@ -179,11 +186,12 @@ public class SaveInventory {
         public final ItemStack[] finalMainInvArmor;
         public final ItemStack[] finalEnderInvContents;
 
-        public PlayerDataSnapshot(float totalXp, double health, int foodLevel, float saturation, String worldName, double locX, double locY, double locZ, ItemStack[] finalMainInvContents, ItemStack[] finalMainInvArmor, ItemStack[] finalEnderInvContents) {
+        public PlayerDataSnapshot(float totalXp, double health, int foodLevel, float saturation, String serverName, String worldName, double locX, double locY, double locZ, ItemStack[] finalMainInvContents, ItemStack[] finalMainInvArmor, ItemStack[] finalEnderInvContents) {
             this.totalXp = totalXp;
             this.health = health;
             this.foodLevel = foodLevel;
             this.saturation = saturation;
+            this.serverName = serverName;
             this.worldName = worldName;
             this.locX = locX;
             this.locY = locY;
@@ -207,6 +215,7 @@ public class SaveInventory {
             if (Double.compare(that.locY, locY) != 0) return false;
             if (Double.compare(that.locZ, locZ) != 0) return false;
             if (Float.compare(that.totalXp, totalXp) != 0) return false;
+            if (!serverName.equals(that.serverName)) return false;
             if (!worldName.equals(that.worldName)) return false;
             if (!Arrays.equals(finalMainInvContents, that.finalMainInvContents)) return false;
             if (!Arrays.equals(finalMainInvArmor, that.finalMainInvArmor)) return false;
@@ -222,6 +231,7 @@ public class SaveInventory {
                     ", health=" + health +
                     ", foodLevel=" + foodLevel +
                     ", saturation=" + saturation +
+                    ", serverName='" + serverName + "\'" +
                     ", worldName='" + worldName + '\'' +
                     ", locX=" + locX +
                     ", locY=" + locY +
