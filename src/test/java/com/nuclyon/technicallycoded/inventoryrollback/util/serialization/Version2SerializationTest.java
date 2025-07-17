@@ -39,6 +39,7 @@ public class Version2SerializationTest {
     public void testDeserializeCorruptedData() {
         // Create invalid Base64 data to generate an error during deserialization
         String corruptedData = "not_base64_encoded_data";
+        System.out.println("The error below is expected:");
         DeserializationResult result = Version2Serialization.deserialize(corruptedData);
         assertNotNull(result.getErrorMessage(), "An error message is expected for corrupted data");
         assertNull(result.getItems(), "ItemStacks array should be null when deserialization fails");
