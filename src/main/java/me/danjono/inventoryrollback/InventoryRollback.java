@@ -1,6 +1,7 @@
 package me.danjono.inventoryrollback;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import me.danjono.inventoryrollback.UpdateChecker.UpdateResult;
 import me.danjono.inventoryrollback.commands.Commands;
 import me.danjono.inventoryrollback.config.ConfigData;
@@ -165,7 +166,7 @@ public abstract class InventoryRollback extends JavaPlugin {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        SchedulerUtils.runTaskAsynchronously(() -> {
             logger.log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();

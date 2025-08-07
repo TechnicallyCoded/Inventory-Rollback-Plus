@@ -64,13 +64,6 @@
             <systemPath>${project.basedir}/lib/spigot-1.19.3.jar</systemPath>
             <optional>true</optional>
         </dependency>-->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.20.5-R0.1-SNAPSHOT</version>
-            <optional>true</optional>
-            <scope>provided</scope>
-        </dependency>
         <!-- bStats API -->
         <dependency>
             <groupId>org.bstats</groupId>
@@ -84,6 +77,12 @@
             <artifactId>paperlib</artifactId>
             <version>1.0.6</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.folia</groupId>
+            <artifactId>folia-api</artifactId>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

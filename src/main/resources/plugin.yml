@@ -5,6 +5,7 @@ description: ${project.description}
 author: ${project.organization.name}
 authors: [${project.organization.name}, danjono]
 api-version: 1.13
+folia-supported: true
 
 loadbefore:
   - DeluxeCombat
