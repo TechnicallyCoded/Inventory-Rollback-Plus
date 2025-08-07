@@ -2,6 +2,7 @@ package com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollbac
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.IRPCommand;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import com.nuclyon.technicallycoded.inventoryrollback.util.LegacyBackupConversionUtil;
 import me.danjono.inventoryrollback.config.MessageData;
 import org.bukkit.Bukkit;
@@ -32,7 +33,7 @@ public class ImportSubCmd extends IRPCommand {
                 suggestConfirm.set(true);
 
                 // Reset suggestion availability after 10 seconds
-                this.main.getServer().getScheduler().runTaskLaterAsynchronously(this.main, () -> {
+                SchedulerUtils.runTaskLaterAsynchronously(null, () -> {
                     suggestConfirm.set(false);
                 }, 10 * 20);
 
@@ -40,7 +41,7 @@ public class ImportSubCmd extends IRPCommand {
             }
 
             // Execute import
-            Bukkit.getScheduler().runTaskAsynchronously(main, LegacyBackupConversionUtil::convertOldBackupData);
+            SchedulerUtils.runTaskAsynchronously(LegacyBackupConversionUtil::convertOldBackupData);
 
             // Reset suggestion to not visible
             suggestConfirm.set(false);

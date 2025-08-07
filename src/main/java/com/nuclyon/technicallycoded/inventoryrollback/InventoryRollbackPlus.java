@@ -2,6 +2,7 @@ package com.nuclyon.technicallycoded.inventoryrollback;
 
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
 import com.nuclyon.technicallycoded.inventoryrollback.util.test.SelfTestSerialization;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class InventoryRollbackPlus extends InventoryRollback {
 
     private static InventoryRollbackPlus instancePlus;
+    public static boolean usingFolia = false;
 
     private TimeZoneUtil timeZoneUtil = null;
 
@@ -40,6 +42,16 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public static InventoryRollbackPlus getInstance() {
         return instancePlus;
+    }
+
+    @Override
+    public void onLoad() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.scheduler.RegionScheduler");
+            usingFolia = true;
+        } catch (ClassNotFoundException e) {
+            usingFolia = false;
+        }
     }
 
     @Override
@@ -89,7 +101,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         getServer().getPluginManager().registerEvents(new ClickGUI(), this);
         getServer().getPluginManager().registerEvents(new EventLogs(), this);
         // Run after all plugin enable
-        getServer().getScheduler().runTask(this, EventLogs::patchLowestHandlers);
+        SchedulerUtils.runTask(null, EventLogs::patchLowestHandlers);
 
         // PaperLib
         if (!PaperLib.isPaper()) {
@@ -124,7 +136,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         HandlerList.unregisterAll(this);
 
         // Cancel tasks
-        this.getServer().getScheduler().cancelTasks(this);
+        if(!usingFolia) this.getServer().getScheduler().cancelTasks(this);
 
         // Clear instance references
         instancePlus = null;
@@ -149,7 +161,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        SchedulerUtils.runTaskAsynchronously(() -> {
             InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();
