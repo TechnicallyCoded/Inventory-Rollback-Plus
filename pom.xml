@@ -5,7 +5,7 @@
 
     <groupId>com.nuclyon.technicallycoded.inventoryrollback</groupId>
     <artifactId>InventoryRollbackPlus</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.6</version>
     <packaging>jar</packaging>
     <name>InventoryRollbackPlus</name>
     <url>https://github.com/TechnicallyCoded/Inventory-Rollback-Plus/</url>
@@ -40,6 +40,10 @@
         <repository>
             <id>jitpack</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>tcoded-releases</id>
+            <url>https://repo.tcoded.com/releases/</url>
         </repository>
     </repositories>
 
@@ -95,9 +99,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.lightlibs</groupId>
+            <groupId>com.tcoded.lightlibs</groupId>
             <artifactId>BukkitVersion</artifactId>
-            <version>0.0.11</version>
+            <version>0.0.14</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -112,16 +112,18 @@ public class EventLogs implements Listener {
 
 		if (!(event.getEntity() instanceof Player)) return;
 		Player player = (Player) event.getEntity();
+		UUID uuid = player.getUniqueId();
 
-		// This only checks damage and doesn't take into account potential cancellation reasons such
-		// as plugins or totems of undying. Useless SaveInventory objects will be created (not saved)
-		// but this prevents other plugins from interfering with the death save.
-		if (event.getFinalDamage() < player.getHealth()) return;
+		// Not death? Don't make a snapshot & remove any old ones to prevent false-positives
+		if (!isDeathDamage(event)) {
+			this.inventoryCache.remove(uuid);
+			return;
+		}
 
 		SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, event.getCause(), null);
 		SaveInventory.PlayerDataSnapshot snapshot = saveInventory.createSnapshot(player.getInventory(), player.getEnderChest());
 
-		this.inventoryCache.put(player.getUniqueId(), snapshot);
+		this.inventoryCache.put(uuid, snapshot);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -131,8 +133,16 @@ public class EventLogs implements Listener {
 
 		if (!(event.getEntity() instanceof Player)) return;
 		Player player = (Player) event.getEntity();
-
 		UUID uuid = player.getUniqueId();
+
+		// Other plugins may cancel or edit the damage on the event between LOWEST and now MONITOR.
+		// Let's make sure we don't keep our snapshot if that's the case.
+		if (event.isCancelled() || event.getFinalDamage() == 0) {
+			// Remove our temporary snapshot. This will also prevent further checks below from succeeding.
+			this.inventoryCache.remove(uuid);
+			return;
+		}
+
 		SaveInventory.PlayerDataSnapshot firstSnapshot = this.inventoryCache.get(uuid);
 		if (firstSnapshot == null) return;
 
@@ -148,7 +158,8 @@ public class EventLogs implements Listener {
 		// If the inventory was edited, warn
 		InventoryRollbackPlus.getInstance().getLogger().warning(
 				player.getName() + "'s inventory was edited during damage handling (instead of death, this is bad). " +
-						"Please find which plugin is misbehaving by disabling one plugin at the time until this message disappears!"
+						"Please find which plugin is doing this by disabling one plugin at the time " +
+						"(or use \"binary search\" if you know how) until this message disappears!"
 		);
 	}
 
@@ -225,6 +236,18 @@ public class EventLogs implements Listener {
 			if (cause.equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) return true;
 		}
 		return false;
+	}
+
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	private boolean isDeathDamage(EntityDamageEvent event) {
+		// This only checks damage and doesn't take into account potential cancellation reasons such
+		// as plugins or totems of undying. Useless SaveInventory objects will be created (not saved)
+		// but this prevents other plugins from interfering with the death save.
+
+		if (!(event.getEntity() instanceof LivingEntity)) return false;
+		LivingEntity living = (LivingEntity) event.getEntity();
+
+		return event.getFinalDamage() >= living.getHealth();
 	}
 
 	private @NotNull DetailedReason getDetailedReason(EntityDamageEvent damageEvent) {
