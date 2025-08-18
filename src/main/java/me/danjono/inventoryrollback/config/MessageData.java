@@ -124,6 +124,38 @@ public class MessageData {
     private static String previousPageButton;
     private static String backButton;
 
+    // Discord webhook messages
+    private static String discordTitleBackupCreated;
+    private static String discordTitleInventoryRestored;
+    private static String discordTitleEnderChestRestored;
+    private static String discordTitleHealthRestored;
+    private static String discordTitleHungerRestored;
+    private static String discordTitleExperienceRestored;
+    private static String discordTitlePlayerDeath;
+    private static String discordTitleForceBackup;
+
+    private static String discordDescBackupCreated;
+    private static String discordDescInventoryRestored;
+    private static String discordDescEnderChestRestored;
+    private static String discordDescHealthRestored;
+    private static String discordDescHungerRestored;
+    private static String discordDescExperienceRestored;
+    private static String discordDescPlayerDeath;
+    private static String discordDescForceBackup;
+
+    private static String discordMsgBackupCreated;
+    private static String discordMsgInventoryRestored;
+    private static String discordMsgEnderChestRestored;
+    private static String discordMsgHealthRestored;
+    private static String discordMsgHungerRestored;
+    private static String discordMsgExperienceRestored;
+    private static String discordMsgPlayerDeath;
+    private static String discordMsgForceBackup;
+
+    private static String discordErrorWebhookFailed;
+    private static String discordErrorInvalidWebhook;
+    private static String discordErrorConnectionFailed;
+
     public void setMessages() {
         setPluginPrefix(convertColorCodes((String) getDefaultValue("general.prefix", "&f[&bInventoryRollbackPlus&f]&r ")));
 
@@ -193,6 +225,38 @@ public class MessageData {
         setNextPageButton(convertColorCodes((String) getDefaultValue("menu-buttons.next-page", "&fNext Page")));
         setPreviousPageButton(convertColorCodes((String) getDefaultValue("menu-buttons.previous-page", "&fPrevious Page")));
         setBackButton(convertColorCodes((String) getDefaultValue("menu-buttons.back-page", "&fBack")));
+
+        // Discord webhook messages
+        setDiscordTitleBackupCreated((String) getDefaultValue("discord.titles.backup-created", "📦 Backup Created"));
+        setDiscordTitleInventoryRestored((String) getDefaultValue("discord.titles.inventory-restored", "🎒 Inventory Restored"));
+        setDiscordTitleEnderChestRestored((String) getDefaultValue("discord.titles.ender-chest-restored", "📦 Ender Chest Restored"));
+        setDiscordTitleHealthRestored((String) getDefaultValue("discord.titles.health-restored", "❤️ Health Restored"));
+        setDiscordTitleHungerRestored((String) getDefaultValue("discord.titles.hunger-restored", "🍖 Hunger Restored"));
+        setDiscordTitleExperienceRestored((String) getDefaultValue("discord.titles.experience-restored", "✨ Experience Restored"));
+        setDiscordTitlePlayerDeath((String) getDefaultValue("discord.titles.player-death", "💀 Player Death"));
+        setDiscordTitleForceBackup((String) getDefaultValue("discord.titles.force-backup", "🔧 Force Backup"));
+
+        setDiscordDescBackupCreated((String) getDefaultValue("discord.descriptions.backup-created", "Player **%PLAYER%** backup created\n**Type:** %TYPE%\n**Time:** %TIME%"));
+        setDiscordDescInventoryRestored((String) getDefaultValue("discord.descriptions.inventory-restored", "Player **%PLAYER%** inventory restored by **%ADMIN%**\n**From backup:** %TIME%"));
+        setDiscordDescEnderChestRestored((String) getDefaultValue("discord.descriptions.ender-chest-restored", "Player **%PLAYER%** ender chest restored by **%ADMIN%**\n**From backup:** %TIME%"));
+        setDiscordDescHealthRestored((String) getDefaultValue("discord.descriptions.health-restored", "Player **%PLAYER%** health restored by **%ADMIN%**\n**Health:** %HEALTH%\n**From backup:** %TIME%"));
+        setDiscordDescHungerRestored((String) getDefaultValue("discord.descriptions.hunger-restored", "Player **%PLAYER%** hunger restored by **%ADMIN%**\n**Hunger:** %HUNGER%\n**From backup:** %TIME%"));
+        setDiscordDescExperienceRestored((String) getDefaultValue("discord.descriptions.experience-restored", "Player **%PLAYER%** experience restored by **%ADMIN%**\n**Level:** %LEVEL%\n**From backup:** %TIME%"));
+        setDiscordDescPlayerDeath((String) getDefaultValue("discord.descriptions.player-death", "Player **%PLAYER%** died\n**Location:** %WORLD% (%X%, %Y%, %Z%)\n**Cause:** %CAUSE%\n**Time:** %TIME%"));
+        setDiscordDescForceBackup((String) getDefaultValue("discord.descriptions.force-backup", "Force backup created for **%PLAYER%** by **%ADMIN%**\n**Time:** %TIME%"));
+
+        setDiscordMsgBackupCreated((String) getDefaultValue("discord.messages.backup-created", "📦 Backup created for %PLAYER% (%TYPE%) at %TIME%"));
+        setDiscordMsgInventoryRestored((String) getDefaultValue("discord.messages.inventory-restored", "🎒 %PLAYER% inventory restored by %ADMIN% from backup %TIME%"));
+        setDiscordMsgEnderChestRestored((String) getDefaultValue("discord.messages.ender-chest-restored", "📦 %PLAYER% ender chest restored by %ADMIN% from backup %TIME%"));
+        setDiscordMsgHealthRestored((String) getDefaultValue("discord.messages.health-restored", "❤️ %PLAYER% health restored by %ADMIN% (Health: %HEALTH%) from backup %TIME%"));
+        setDiscordMsgHungerRestored((String) getDefaultValue("discord.messages.hunger-restored", "🍖 %PLAYER% hunger restored by %ADMIN% (Hunger: %HUNGER%) from backup %TIME%"));
+        setDiscordMsgExperienceRestored((String) getDefaultValue("discord.messages.experience-restored", "✨ %PLAYER% experience restored by %ADMIN% (Level: %LEVEL%) from backup %TIME%"));
+        setDiscordMsgPlayerDeath((String) getDefaultValue("discord.messages.player-death", "💀 %PLAYER% died at %WORLD% (%X%, %Y%, %Z%) - %CAUSE% at %TIME%"));
+        setDiscordMsgForceBackup((String) getDefaultValue("discord.messages.force-backup", "🔧 Force backup created for %PLAYER% by %ADMIN% at %TIME%"));
+
+        setDiscordErrorWebhookFailed(convertColorCodes((String) getDefaultValue("discord.errors.webhook-failed", "&cFailed to send Discord webhook message")));
+        setDiscordErrorInvalidWebhook(convertColorCodes((String) getDefaultValue("discord.errors.invalid-webhook", "&cInvalid Discord webhook URL configured")));
+        setDiscordErrorConnectionFailed(convertColorCodes((String) getDefaultValue("discord.errors.connection-failed", "&cFailed to connect to Discord webhook")));
 
         if (saveChanges())
             saveConfig();
@@ -398,6 +462,113 @@ public class MessageData {
         backButton = message;
     }
 
+    public static void setDiscordTitleBackupCreated(String message) {
+        discordTitleBackupCreated = message;
+    }
+
+    public static void setDiscordTitleInventoryRestored(String message) {
+        discordTitleInventoryRestored = message;
+    }
+
+    public static void setDiscordTitleEnderChestRestored(String message) {
+        discordTitleEnderChestRestored = message;
+    }
+
+    public static void setDiscordTitleHealthRestored(String message) {
+        discordTitleHealthRestored = message;
+    }
+
+    public static void setDiscordTitleHungerRestored(String message) {
+        discordTitleHungerRestored = message;
+    }
+
+    public static void setDiscordTitleExperienceRestored(String message) {
+        discordTitleExperienceRestored = message;
+    }
+
+    public static void setDiscordTitlePlayerDeath(String message) {
+        discordTitlePlayerDeath = message;
+    }
+
+    public static void setDiscordTitleForceBackup(String message) {
+        discordTitleForceBackup = message;
+    }
+
+    public static void setDiscordDescBackupCreated(String message) {
+        discordDescBackupCreated = message;
+    }
+
+    public static void setDiscordDescInventoryRestored(String message) {
+        discordDescInventoryRestored = message;
+    }
+
+    public static void setDiscordDescEnderChestRestored(String message) {
+        discordDescEnderChestRestored = message;
+    }
+
+    public static void setDiscordDescHealthRestored(String message) {
+        discordDescHealthRestored = message;
+    }
+
+    public static void setDiscordDescHungerRestored(String message) {
+        discordDescHungerRestored = message;
+    }
+
+    public static void setDiscordDescExperienceRestored(String message) {
+        discordDescExperienceRestored = message;
+    }
+
+    public static void setDiscordDescPlayerDeath(String message) {
+        discordDescPlayerDeath = message;
+    }
+
+    public static void setDiscordDescForceBackup(String message) {
+        discordDescForceBackup = message;
+    }
+
+    public static void setDiscordMsgBackupCreated(String message) {
+        discordMsgBackupCreated = message;
+    }
+
+    public static void setDiscordMsgInventoryRestored(String message) {
+        discordMsgInventoryRestored = message;
+    }
+
+    public static void setDiscordMsgEnderChestRestored(String message) {
+        discordMsgEnderChestRestored = message;
+    }
+
+    public static void setDiscordMsgHealthRestored(String message) {
+        discordMsgHealthRestored = message;
+    }
+
+    public static void setDiscordMsgHungerRestored(String message) {
+        discordMsgHungerRestored = message;
+    }
+
+    public static void setDiscordMsgExperienceRestored(String message) {
+        discordMsgExperienceRestored = message;
+    }
+
+    public static void setDiscordMsgPlayerDeath(String message) {
+        discordMsgPlayerDeath = message;
+    }
+
+    public static void setDiscordMsgForceBackup(String message) {
+        discordMsgForceBackup = message;
+    }
+
+    public static void setDiscordErrorWebhookFailed(String message) {
+        discordErrorWebhookFailed = message;
+    }
+
+    public static void setDiscordErrorInvalidWebhook(String message) {
+        discordErrorInvalidWebhook = message;
+    }
+
+    public static void setDiscordErrorConnectionFailed(String message) {
+        discordErrorConnectionFailed = message;
+    }
 
     // GETTERS
 
@@ -452,7 +623,7 @@ public class MessageData {
     public static String getForceBackupPlayer(String name) {
         return forceSavedPlayer.replaceAll(nameVariable, name);
     }
-    
+
     public static String getForceBackupAll() {
         return forceSavedAll;
     }
@@ -460,7 +631,7 @@ public class MessageData {
     public static String getForceBackupError(String name) {
         return notForcedSaved.replaceAll(nameVariable, name);
     }
-    
+
     public static String getMainInventoryRestored(String name) {
         return mainInventoryRestored.replaceAll(nameVariable, name);
     }
@@ -472,7 +643,7 @@ public class MessageData {
     public static String getMainInventoryNotOnline(String name) {
         return mainInventoryNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getMainInventoryRestoreButton() {
         return mainInventoryButton;
     }
@@ -492,7 +663,7 @@ public class MessageData {
     public static String getEnderChestNotOnline(String name) {
         return enderChestNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getEnderChestRestoreButton() {
         return enderChestButton;
     }
@@ -508,7 +679,7 @@ public class MessageData {
     public static String getHealthNotOnline(String name) {
         return healthNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getHealthRestoreButton() {
         return healthButton;
     }
@@ -524,7 +695,7 @@ public class MessageData {
     public static String getHungerNotOnline(String name) {
         return hungerNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getHungerRestoreButton() {
         return hungerButton;
     }
@@ -540,11 +711,11 @@ public class MessageData {
     public static String getExperienceNotOnlinePlayer(String name) {
         return experienceNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getExperienceRestoreButton() {
         return experienceButton;
     }
-    
+
     public static String getExperienceRestoreLevel(int xp) {
         return experienceButtonLore.replaceAll(xpVariable, xp + "");
     }
@@ -572,11 +743,11 @@ public class MessageData {
     public static String getDeathTime(String time) {
         return deathTime.replace("%TIME%", time);
     }
-    
+
     public static String getDeathLocation() {
         return deathLocationTeleportTo;
     }
-    
+
     public static String getDeathLocationTeleport(Location location) {
         return deathLocationTeleport.replace("%LOCATION%", "X:" + (int) location.getX() + " Y:" + (int) location.getY() + " Z:" + (int) location.getZ());
     }
@@ -600,7 +771,116 @@ public class MessageData {
     public static String getBackButton() {
         return backButton;
     }
-    
+
+    // Discord webhook message getters
+    public static String getDiscordTitleBackupCreated() {
+        return discordTitleBackupCreated;
+    }
+
+    public static String getDiscordTitleInventoryRestored() {
+        return discordTitleInventoryRestored;
+    }
+
+    public static String getDiscordTitleEnderChestRestored() {
+        return discordTitleEnderChestRestored;
+    }
+
+    public static String getDiscordTitleHealthRestored() {
+        return discordTitleHealthRestored;
+    }
+
+    public static String getDiscordTitleHungerRestored() {
+        return discordTitleHungerRestored;
+    }
+
+    public static String getDiscordTitleExperienceRestored() {
+        return discordTitleExperienceRestored;
+    }
+
+    public static String getDiscordTitlePlayerDeath() {
+        return discordTitlePlayerDeath;
+    }
+
+    public static String getDiscordTitleForceBackup() {
+        return discordTitleForceBackup;
+    }
+
+    public static String getDiscordDescBackupCreated() {
+        return discordDescBackupCreated;
+    }
+
+    public static String getDiscordDescInventoryRestored() {
+        return discordDescInventoryRestored;
+    }
+
+    public static String getDiscordDescEnderChestRestored() {
+        return discordDescEnderChestRestored;
+    }
+
+    public static String getDiscordDescHealthRestored() {
+        return discordDescHealthRestored;
+    }
+
+    public static String getDiscordDescHungerRestored() {
+        return discordDescHungerRestored;
+    }
+
+    public static String getDiscordDescExperienceRestored() {
+        return discordDescExperienceRestored;
+    }
+
+    public static String getDiscordDescPlayerDeath() {
+        return discordDescPlayerDeath;
+    }
+
+    public static String getDiscordDescForceBackup() {
+        return discordDescForceBackup;
+    }
+
+    public static String getDiscordMsgBackupCreated() {
+        return discordMsgBackupCreated;
+    }
+
+    public static String getDiscordMsgInventoryRestored() {
+        return discordMsgInventoryRestored;
+    }
+
+    public static String getDiscordMsgEnderChestRestored() {
+        return discordMsgEnderChestRestored;
+    }
+
+    public static String getDiscordMsgHealthRestored() {
+        return discordMsgHealthRestored;
+    }
+
+    public static String getDiscordMsgHungerRestored() {
+        return discordMsgHungerRestored;
+    }
+
+    public static String getDiscordMsgExperienceRestored() {
+        return discordMsgExperienceRestored;
+    }
+
+    public static String getDiscordMsgPlayerDeath() {
+        return discordMsgPlayerDeath;
+    }
+
+    public static String getDiscordMsgForceBackup() {
+        return discordMsgForceBackup;
+    }
+
+    public static String getDiscordErrorWebhookFailed() {
+        return discordErrorWebhookFailed;
+    }
+
+    public static String getDiscordErrorInvalidWebhook() {
+        return discordErrorInvalidWebhook;
+    }
+
+    public static String getDiscordErrorConnectionFailed() {
+        return discordErrorConnectionFailed;
+    }
+
     private static String convertColorCodes(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
@@ -613,6 +893,14 @@ public class MessageData {
 
             messages.set(path, defaultValue);
             saveChanges = true;
+        }
+
+        // Process newline characters for Discord messages
+        if (obj instanceof String && path.startsWith("discord.")) {
+            String str = (String) obj;
+            // Convert literal \n sequences to actual newlines
+            str = str.replace("\\n", "\n");
+            obj = str;
         }
 
         return obj;

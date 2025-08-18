@@ -17,6 +17,47 @@ backup:
   force-saved-all: 'All online player inventories have been force saved.'
   not-forced-saved: 'There was an issue with saving %NAME%''s inventory.'
 
+# Discord webhook messages
+discord:
+  # Event titles for Discord embeds
+  titles:
+    backup-created: '📦 Backup Created'
+    inventory-restored: '🎒 Inventory Restored'
+    ender-chest-restored: '📦 Ender Chest Restored'
+    health-restored: '❤️ Health Restored'
+    hunger-restored: '🍖 Hunger Restored'
+    experience-restored: '✨ Experience Restored'
+    player-death: '💀 Player Death'
+    force-backup: '🔧 Force Backup'
+
+  # Event descriptions for Discord embeds
+  descriptions:
+    backup-created: 'Player **%PLAYER%** backup created\n**Type:** %TYPE%\n**Time:** %TIME%'
+    inventory-restored: 'Player **%PLAYER%** inventory restored by **%ADMIN%**\n**From backup:** %TIME%'
+    ender-chest-restored: 'Player **%PLAYER%** ender chest restored by **%ADMIN%**\n**From backup:** %TIME%'
+    health-restored: 'Player **%PLAYER%** health restored by **%ADMIN%**\n**Health:** %HEALTH%\n**From backup:** %TIME%'
+    hunger-restored: 'Player **%PLAYER%** hunger restored by **%ADMIN%**\n**Hunger:** %HUNGER%\n**From backup:** %TIME%'
+    experience-restored: 'Player **%PLAYER%** experience restored by **%ADMIN%**\n**Level:** %LEVEL%\n**From backup:** %TIME%'
+    player-death: 'Player **%PLAYER%** died\n**Location:** %WORLD% (%X%, %Y%, %Z%)\n**Cause:** %CAUSE%\n**Time:** %TIME%'
+    force-backup: 'Force backup created for **%PLAYER%** by **%ADMIN%**\n**Time:** %TIME%'
+
+  # Simple text messages (when embeds are disabled)
+  messages:
+    backup-created: '📦 Backup created for %PLAYER% (%TYPE%) at %TIME%'
+    inventory-restored: '🎒 %PLAYER% inventory restored by %ADMIN% from backup %TIME%'
+    ender-chest-restored: '📦 %PLAYER% ender chest restored by %ADMIN% from backup %TIME%'
+    health-restored: '❤️ %PLAYER% health restored by %ADMIN% (Health: %HEALTH%) from backup %TIME%'
+    hunger-restored: '🍖 %PLAYER% hunger restored by %ADMIN% (Hunger: %HUNGER%) from backup %TIME%'
+    experience-restored: '✨ %PLAYER% experience restored by %ADMIN% (Level: %LEVEL%) from backup %TIME%'
+    player-death: '💀 %PLAYER% died at %WORLD% (%X%, %Y%, %Z%) - %CAUSE% at %TIME%'
+    force-backup: '🔧 Force backup created for %PLAYER% by %ADMIN% at %TIME%'
+
+  # Error messages
+  errors:
+    webhook-failed: '&cFailed to send Discord webhook message'
+    invalid-webhook: '&cInvalid Discord webhook URL configured'
+    connection-failed: '&cFailed to connect to Discord webhook'
+
 attribute-restore:
   main-inventory:
     restored: '%NAME%''s main inventory has been restored.'

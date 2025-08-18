@@ -4,6 +4,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.discord.DiscordWebhook;
 import me.danjono.inventoryrollback.inventory.SaveInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -71,6 +72,16 @@ public class EventLogs implements Listener {
 		if (player.hasPermission("inventoryrollbackplus.joinsave")) {
 			new SaveInventory(e.getPlayer(), LogType.JOIN, null, null)
 					.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
+
+			// Send Discord webhook for backup creation
+			try {
+				String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+				DiscordWebhook.sendBackupCreated(player.getName(), "JOIN", timestamp);
+			} catch (Exception ex) {
+				if (ConfigData.isDebugEnabled()) {
+					main.getLogger().warning("Failed to send Discord webhook for join backup: " + ex.getMessage());
+				}
+			}
 		}
 		if (player.hasPermission("inventoryrollbackplus.adminalerts")) {
 			// can send info to admins here
@@ -86,6 +97,16 @@ public class EventLogs implements Listener {
 		if (player.hasPermission("inventoryrollbackplus.leavesave")) {
 			new SaveInventory(e.getPlayer(), LogType.QUIT, null, null)
 					.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
+
+			// Send Discord webhook for backup creation
+			try {
+				String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+				DiscordWebhook.sendBackupCreated(player.getName(), "QUIT", timestamp);
+			} catch (Exception ex) {
+				if (ConfigData.isDebugEnabled()) {
+					main.getLogger().warning("Failed to send Discord webhook for quit backup: " + ex.getMessage());
+				}
+			}
 		}
 
 		UUID uuid = player.getUniqueId();
@@ -214,6 +235,22 @@ public class EventLogs implements Listener {
 				// Remove the snapshot from the cache
 				this.inventoryCache.remove(uuid);
 			}
+
+			// Send Discord webhook for player death
+			try {
+				String deathCause = detailedReason.reason != null ? detailedReason.reason : detailedReason.damageCause.name();
+				String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+				DiscordWebhook.sendPlayerDeath(
+					player.getName(),
+					player.getLocation(),
+					deathCause,
+					timestamp
+				);
+			} catch (Exception e) {
+				if (ConfigData.isDebugEnabled()) {
+					main.getLogger().warning("Failed to send Discord webhook for player death: " + e.getMessage());
+				}
+			}
         }
     }
 
@@ -226,6 +263,16 @@ public class EventLogs implements Listener {
 		if (player.hasPermission("inventoryrollbackplus.worldchangesave")) {
 			new SaveInventory(e.getPlayer(), LogType.WORLD_CHANGE, null, null)
 					.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
+
+			// Send Discord webhook for backup creation
+			try {
+				String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+				DiscordWebhook.sendBackupCreated(player.getName(), "WORLD_CHANGE", timestamp);
+			} catch (Exception ex) {
+				if (ConfigData.isDebugEnabled()) {
+					main.getLogger().warning("Failed to send Discord webhook for world change backup: " + ex.getMessage());
+				}
+			}
 		}
 	}
 
