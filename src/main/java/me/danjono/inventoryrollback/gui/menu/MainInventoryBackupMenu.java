@@ -1,6 +1,8 @@
 package me.danjono.inventoryrollback.gui.menu;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.FoliaRunnable;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -11,11 +13,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainInventoryBackupMenu {
 
@@ -78,12 +80,12 @@ public class MainInventoryBackupMenu {
 		assert !Bukkit.isPrimaryThread();
 
 		int item = 0;
-		int position = 0;
+		AtomicInteger position = new AtomicInteger();
 
 		//If the backup file is invalid it will return null, we want to catch it here
 		try {
     		// Add items, 5 per tick
-			new BukkitRunnable() {
+			SchedulerUtils.runTaskTimer(null, new FoliaRunnable() {
 
 				int invPosition = 0;
 				int itemPos = 0;
@@ -108,7 +110,7 @@ public class MainInventoryBackupMenu {
 						itemPos++;
 					}
 				}
-			}.runTaskTimer(main, 0, 1);
+			}, 1, 1);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
@@ -116,47 +118,43 @@ public class MainInventoryBackupMenu {
 		}
 
 		item = 36;
-		position = 44;
+		position.set(44);
 		
 		//Add armour
 		if (armour != null && armour.length > 0) {
-			try {
-				for (int i = 0; i < armour.length; i++) {
-					// Place item safely
-					final int finalPos = position;
-					final int finalItem = i;
-					Future<Void> placeItemFuture = main.getServer().getScheduler().callSyncMethod(main,
-							() -> {
-								inventory.setItem(finalPos, armour[finalItem]);
-								return null;
-							});
-					placeItemFuture.get();
-					position--;
-				}
-			} catch (ExecutionException | InterruptedException ex) {
-				ex.printStackTrace();
-			}
-		} else {
-			try {
-				for (int i = 36; i < mainInvLen; i++) {
-					if (mainInventory[item] != null) {
-						// Place item safely
-						final int finalPos = position;
-						final int finalItem = item;
-						Future<Void> placeItemFuture = main.getServer().getScheduler().callSyncMethod(main,
-								() -> {
-									inventory.setItem(finalPos, mainInventory[finalItem]);
-									return null;
-								});
-						placeItemFuture.get();
-						position--;
-					}
-					item++;
-				}
-			} catch (ExecutionException | InterruptedException ex) {
-				ex.printStackTrace();
-			}
-		}
+            for (int i = 0; i < armour.length; i++) {
+                // Place item safely
+                final int finalPos = position.get();
+                final int finalItem = i;
+                SchedulerUtils.callSyncMethod(null, () -> {
+                    inventory.setItem(finalPos, armour[finalItem]);
+                    return null;
+                }).whenComplete((res, ex) -> {
+                    if (ex != null) ex.printStackTrace();
+                    else position.getAndDecrement();
+                });
+
+            }
+        } else {
+            for (int i = 36; i < mainInvLen; i++) {
+                if (mainInventory[item] != null) {
+                    // Place item safely
+                    final int finalPos = position.get();
+                    final int finalItem = item;
+                    SchedulerUtils.callSyncMethod(null, () -> {
+                        inventory.setItem(finalPos, mainInventory[finalItem]);
+                        return null;
+                    }).whenComplete((res, ex) -> {
+                        if (ex != null) {
+                            ex.printStackTrace();
+                        } else {
+                            position.getAndDecrement();
+                        }
+                    });
+                }
+                item++;
+            }
+        }
 				
 		// Add restore all player inventory button
 		if (ConfigData.isRestoreToPlayerButton())
