@@ -101,7 +101,26 @@ public class ConfigData {
     private static boolean bStatsEnabled;
     private static boolean debugEnabled;
 
-    public void setVariables() {		
+    // Discord webhook configuration
+    private static boolean discordEnabled;
+    private static String discordWebhookUrl;
+    private static boolean discordBackupCreated;
+    private static boolean discordInventoryRestored;
+    private static boolean discordEnderChestRestored;
+    private static boolean discordHealthRestored;
+    private static boolean discordHungerRestored;
+    private static boolean discordExperienceRestored;
+    private static boolean discordPlayerDeath;
+    private static boolean discordForceBackup;
+    private static boolean discordIncludeServerName;
+    private static String discordServerName;
+    private static boolean discordUseEmbeds;
+    private static String discordColorBackup;
+    private static String discordColorRestore;
+    private static String discordColorDeath;
+    private static String discordColorWarning;
+
+    public void setVariables() {
         setEnabled((boolean) getDefaultValue("enabled", true));
 
         String folder = (String) getDefaultValue("folder-location", "DEFAULT");
@@ -148,6 +167,25 @@ public class ConfigData {
         setUpdateChecker((boolean) getDefaultValue("update-checker", true));
         setbStatsEnabled((boolean) getDefaultValue("bStats", true));
         setDebugEnabled((boolean) getDefaultValue("debug", false));
+
+        // Discord webhook settings
+        setDiscordEnabled((boolean) getDefaultValue("discord.enabled", false));
+        setDiscordWebhookUrl((String) getDefaultValue("discord.webhook-url", ""));
+        setDiscordBackupCreated((boolean) getDefaultValue("discord.events.backup-created", true));
+        setDiscordInventoryRestored((boolean) getDefaultValue("discord.events.inventory-restored", true));
+        setDiscordEnderChestRestored((boolean) getDefaultValue("discord.events.ender-chest-restored", true));
+        setDiscordHealthRestored((boolean) getDefaultValue("discord.events.health-restored", true));
+        setDiscordHungerRestored((boolean) getDefaultValue("discord.events.hunger-restored", true));
+        setDiscordExperienceRestored((boolean) getDefaultValue("discord.events.experience-restored", true));
+        setDiscordPlayerDeath((boolean) getDefaultValue("discord.events.player-death", true));
+        setDiscordForceBackup((boolean) getDefaultValue("discord.events.force-backup", true));
+        setDiscordIncludeServerName((boolean) getDefaultValue("discord.settings.include-server-name", true));
+        setDiscordServerName((String) getDefaultValue("discord.settings.server-name", "My Server"));
+        setDiscordUseEmbeds((boolean) getDefaultValue("discord.settings.use-embeds", true));
+        setDiscordColorBackup((String) getDefaultValue("discord.settings.colors.backup", "#00ff00"));
+        setDiscordColorRestore((String) getDefaultValue("discord.settings.colors.restore", "#0099ff"));
+        setDiscordColorDeath((String) getDefaultValue("discord.settings.colors.death", "#ff3300"));
+        setDiscordColorWarning((String) getDefaultValue("discord.settings.colors.warning", "#ffcc00"));
 
         if (saveChanges())
             saveConfig();
@@ -281,6 +319,74 @@ public class ConfigData {
         debugEnabled = enabled;
     }
 
+    public static void setDiscordEnabled(boolean enabled) {
+        discordEnabled = enabled;
+    }
+
+    public static void setDiscordWebhookUrl(String url) {
+        discordWebhookUrl = url;
+    }
+
+    public static void setDiscordBackupCreated(boolean enabled) {
+        discordBackupCreated = enabled;
+    }
+
+    public static void setDiscordInventoryRestored(boolean enabled) {
+        discordInventoryRestored = enabled;
+    }
+
+    public static void setDiscordEnderChestRestored(boolean enabled) {
+        discordEnderChestRestored = enabled;
+    }
+
+    public static void setDiscordHealthRestored(boolean enabled) {
+        discordHealthRestored = enabled;
+    }
+
+    public static void setDiscordHungerRestored(boolean enabled) {
+        discordHungerRestored = enabled;
+    }
+
+    public static void setDiscordExperienceRestored(boolean enabled) {
+        discordExperienceRestored = enabled;
+    }
+
+    public static void setDiscordPlayerDeath(boolean enabled) {
+        discordPlayerDeath = enabled;
+    }
+
+    public static void setDiscordForceBackup(boolean enabled) {
+        discordForceBackup = enabled;
+    }
+
+    public static void setDiscordIncludeServerName(boolean enabled) {
+        discordIncludeServerName = enabled;
+    }
+
+    public static void setDiscordServerName(String name) {
+        discordServerName = name;
+    }
+
+    public static void setDiscordUseEmbeds(boolean enabled) {
+        discordUseEmbeds = enabled;
+    }
+
+    public static void setDiscordColorBackup(String color) {
+        discordColorBackup = color;
+    }
+
+    public static void setDiscordColorRestore(String color) {
+        discordColorRestore = color;
+    }
+
+    public static void setDiscordColorDeath(String color) {
+        discordColorDeath = color;
+    }
+
+    public static void setDiscordColorWarning(String color) {
+        discordColorWarning = color;
+    }
+
     public static boolean isEnabled() {
         return pluginEnabled;
     }
@@ -387,6 +493,74 @@ public class ConfigData {
 
     public static boolean isDebugEnabled() {
         return debugEnabled;
+    }
+
+    public static boolean isDiscordEnabled() {
+        return discordEnabled;
+    }
+
+    public static String getDiscordWebhookUrl() {
+        return discordWebhookUrl;
+    }
+
+    public static boolean isDiscordBackupCreated() {
+        return discordBackupCreated;
+    }
+
+    public static boolean isDiscordInventoryRestored() {
+        return discordInventoryRestored;
+    }
+
+    public static boolean isDiscordEnderChestRestored() {
+        return discordEnderChestRestored;
+    }
+
+    public static boolean isDiscordHealthRestored() {
+        return discordHealthRestored;
+    }
+
+    public static boolean isDiscordHungerRestored() {
+        return discordHungerRestored;
+    }
+
+    public static boolean isDiscordExperienceRestored() {
+        return discordExperienceRestored;
+    }
+
+    public static boolean isDiscordPlayerDeath() {
+        return discordPlayerDeath;
+    }
+
+    public static boolean isDiscordForceBackup() {
+        return discordForceBackup;
+    }
+
+    public static boolean isDiscordIncludeServerName() {
+        return discordIncludeServerName;
+    }
+
+    public static String getDiscordServerName() {
+        return discordServerName;
+    }
+
+    public static boolean isDiscordUseEmbeds() {
+        return discordUseEmbeds;
+    }
+
+    public static String getDiscordColorBackup() {
+        return discordColorBackup;
+    }
+
+    public static String getDiscordColorRestore() {
+        return discordColorRestore;
+    }
+
+    public static String getDiscordColorDeath() {
+        return discordColorDeath;
+    }
+
+    public static String getDiscordColorWarning() {
+        return discordColorWarning;
     }
 
     private boolean saveChanges = false;
