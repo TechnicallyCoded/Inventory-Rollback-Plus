@@ -35,6 +35,7 @@ public class YAML {
     private double health;
     private int hunger;
     private float saturation;
+    private String server;
     private String world;
     private double x;
     private double y;
@@ -244,6 +245,7 @@ public class YAML {
         this.saturation = saturation;
     }
 
+    public void setServer(String server) { this.server = server; }
     public void setWorld(String world) {
         this.world = world;
     }
@@ -303,6 +305,7 @@ public class YAML {
         return Float.parseFloat(data.getString("saturation"));
     }
 
+    public String getServer() { return data.getString("location.server"); }
     public String getWorld() {
         return data.getString("location.world");
     }
@@ -347,6 +350,7 @@ public class YAML {
         data.set("health", health);
         data.set("hunger", hunger);
         data.set("saturation", saturation);
+        data.set("location.server", server);
         data.set("location.world", world);
         data.set("location.x", x);
         data.set("location.y", y);

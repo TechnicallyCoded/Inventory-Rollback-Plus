@@ -108,6 +108,7 @@ public class MessageData {
     private static String experienceButtonLore;
 
     // Death logs messages
+    private static String deathLocationServer;
     private static String deathLocationWorld;
     private static String deathLocationX;
     private static String deathLocationY;
@@ -178,6 +179,7 @@ public class MessageData {
         setExperienceButtonLore(convertColorCodes((String) getDefaultValue("attribute-restore.experience.button-lore", "&rLevel %XP%")));
 
         // Death only gui
+        setDeathLocationServer(convertColorCodes((String) getDefaultValue("death-location.server", "&6Server: &f%SERVER%")));
         setDeathLocationWorld(convertColorCodes((String) getDefaultValue("death-location.world", "&6World: &f%WORLD%")));
         setDeathLocationX(convertColorCodes((String) getDefaultValue("death-location.x", "&6X: &f%X%")));
         setDeathLocationY(convertColorCodes((String) getDefaultValue("death-location.y", "&6Y: &f%Y%")));
@@ -345,6 +347,9 @@ public class MessageData {
         experienceButtonLore = message;
     }
 
+    public static void setDeathLocationServer(String message) {
+        deathLocationServer = message;
+    }
     public static void setDeathLocationWorld(String message) {
         deathLocationWorld = message;
     }
@@ -549,6 +554,9 @@ public class MessageData {
         return experienceButtonLore.replaceAll(xpVariable, xp + "");
     }
 
+    public static String getDeathLocationServer(String server) {
+        return deathLocationServer.replace("%SERVER%", server);
+    }
     public static String getDeathLocationWorld(String world) {
         return deathLocationWorld.replace("%WORLD%", world);
     }

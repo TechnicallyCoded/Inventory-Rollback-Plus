@@ -82,6 +82,7 @@ public class ConfigData {
     private static boolean mysqlVerifyCertificate;
     private static boolean mysqlPubKeyRetrieval;
 
+    private static String serverName;
     private static boolean allowOtherPluginEditDeathInventory;
     private static boolean restoreToPlayerButton;
     private static int backupLinesVisible;
@@ -130,7 +131,9 @@ public class ConfigData {
         setMySQLPassword((String) getDefaultValue("mysql.details.password", "password"));
         setMySQLUseSSL((boolean) getDefaultValue("mysql.details.use-SSL", true));
         setMySQLVerifyCertificate((boolean) getDefaultValue("mysql.details.verifyCertificate", true));
-        setMysqlPubKeyRetrievalAllowed((boolean) getDefaultValue("mysql.details.allowPubKeyRetrieval", false));
+        setMySQLPubKeyRetrievalAllowed((boolean) getDefaultValue("mysql.details.allowPubKeyRetrieval", false));
+
+        setServerName((String) getDefaultValue("servername", "default"));
 
         setAllowOtherPluginEditDeathInventory((boolean) getDefaultValue("allow-other-plugins-edit-death-inventory", false));
         setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", true));
@@ -201,9 +204,11 @@ public class ConfigData {
         mysqlVerifyCertificate = value;
     }
 
-    public static void setMysqlPubKeyRetrievalAllowed(boolean value) {
+    public static void setMySQLPubKeyRetrievalAllowed(boolean value) {
         mysqlPubKeyRetrieval = value;
     }
+
+    public static void setServerName(String value) { serverName = value; }
 
     public static void setRestoreToPlayerButton(boolean value) {
         restoreToPlayerButton = value;
@@ -332,6 +337,8 @@ public class ConfigData {
     public static boolean isMySQLPubKeyRetrievalAllowed() {
         return mysqlPubKeyRetrieval;
     }
+
+    public static String getServerName() { return serverName; }
 
     public static boolean isRestoreToPlayerButton() {
         return restoreToPlayerButton;

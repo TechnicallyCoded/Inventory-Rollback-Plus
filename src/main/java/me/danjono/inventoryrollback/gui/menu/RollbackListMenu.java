@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -99,12 +100,16 @@ public class RollbackListMenu {
                 if (deathReason != null)
                     lore.add(MessageData.getDeathReason(deathReason));
 
+                String server = playerData.getServer();
                 String world = playerData.getWorld();
                 double x = playerData.getX();
                 double y = playerData.getY();
                 double z = playerData.getZ();
-                String location = world + "," + x + "," + y + "," + z;
+                String location = server + "," + world + "," + x + "," + y + "," + z;
 
+                InventoryRollbackPlus.getInstance().getLogger().info(location);
+
+                lore.add(MessageData.getDeathLocationServer(server));
                 lore.add(MessageData.getDeathLocationWorld(world));
                 lore.add(MessageData.getDeathLocationX(x));
                 lore.add(MessageData.getDeathLocationY(y));
