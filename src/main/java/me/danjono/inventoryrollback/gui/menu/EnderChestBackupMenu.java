@@ -1,6 +1,8 @@
 package me.danjono.inventoryrollback.gui.menu;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.FoliaRunnable;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -11,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +86,7 @@ public class EnderChestBackupMenu {
         try {
 
             // Add items, 5 per tick
-            new BukkitRunnable() {
+            SchedulerUtils.runTaskTimer(null, new FoliaRunnable() {
 
                 int invPosition = 0;
                 int itemPos = (pageNumber - 1) * 27;
@@ -111,7 +112,7 @@ public class EnderChestBackupMenu {
                         itemPos++;
                     }
                 }
-            }.runTaskTimer(InventoryRollbackPlus.getInstance(), 0, 1);
+            }, 1, 1);
         } catch (NullPointerException e) {
             staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
             return;
