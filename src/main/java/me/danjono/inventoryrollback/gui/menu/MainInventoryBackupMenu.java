@@ -87,7 +87,11 @@ public class MainInventoryBackupMenu {
 
 				int invPosition = 0;
 				int itemPos = 0;
-				final int max = mainInvLen - 5; // excluded
+
+				// Calculate max based on whether armor is stored separately or not
+				// Old versions (<=1.8): armor stored separately in 'armour' array, process all main inventory
+				// New versions (>=1.9): armor in mainInventory from slot 36+, only process slots 0-35
+				final int max = (armour != null && armour.length > 0) ? mainInvLen : Math.min(36, mainInvLen);
 
 				@Override
 				public void run() {

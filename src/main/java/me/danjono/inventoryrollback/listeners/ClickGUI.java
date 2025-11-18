@@ -377,7 +377,7 @@ public class ClickGUI implements Listener {
 
                 if (world == null) {
                     //World is not available
-                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getDeathLocationInvalidWorldError(location[0]));
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getDeathLocationInvalidWorldError(location[1]));
                     return;
                 }
 
