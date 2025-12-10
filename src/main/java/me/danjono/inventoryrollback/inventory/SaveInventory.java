@@ -18,13 +18,13 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SaveInventory {
 
-    private static final HashMap<UUID, UserLogRateLimiter> rateLimiters = new HashMap<>();
+    private static final ConcurrentHashMap<UUID, UserLogRateLimiter> rateLimiters = new ConcurrentHashMap<>();
 
     private final InventoryRollbackPlus main;
 
