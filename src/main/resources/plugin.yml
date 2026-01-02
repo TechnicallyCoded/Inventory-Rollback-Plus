@@ -36,6 +36,7 @@ permissions:
       inventoryrollbackplus.help: true
       inventoryrollbackplus.adminalerts: true
       inventoryrollbackplus.viewbackups: true
+      inventoryrollbackplus.purge: true
     default: op
   inventoryrollbackplus.cmd:
     description: Allows InventoryRollback commands to work.
@@ -84,6 +85,9 @@ permissions:
   inventoryrollbackplus.help:
     description: Get the list of commands and what they do
     default: true
+  inventoryrollbackplus.purge:
+    description: Allows purging backup data
+    default: op
 
   # ---- LEGACY COMPATIBILITY ----
   inventoryrollback.cmd:

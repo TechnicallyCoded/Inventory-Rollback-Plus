@@ -216,6 +216,209 @@ public class YAML {
         }
     }
 
+    /**
+     * Purge all saves for this player/logType combination.
+     * @return The number of backups deleted
+     */
+    public int purgeAllSaves() {
+        if (!playerBackupFolder.exists()) return 0;
+
+        File[] backupFiles = playerBackupFolder.listFiles();
+        if (backupFiles == null) return 0;
+
+        int deletedCount = 0;
+        for (File file : backupFiles) {
+            if (file.isDirectory()) continue;
+            if (!file.getName().endsWith(".yml")) continue;
+
+            try {
+                Files.deleteIfExists(file.toPath());
+                deletedCount++;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        // Try to delete the player folder if empty
+        try {
+            String[] remaining = playerBackupFolder.list();
+            if (remaining != null && remaining.length == 0) {
+                Files.deleteIfExists(playerBackupFolder.toPath());
+            }
+        } catch (IOException ignored) {}
+
+        return deletedCount;
+    }
+
+    /**
+     * Purge saves older than the given timestamp.
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public int purgeOlderThan(long olderThanTimestamp) {
+        if (!playerBackupFolder.exists()) return 0;
+
+        File[] backupFiles = playerBackupFolder.listFiles();
+        if (backupFiles == null) return 0;
+
+        int deletedCount = 0;
+        for (File file : backupFiles) {
+            if (file.isDirectory()) continue;
+
+            int pos = file.getName().lastIndexOf('.');
+            if (pos <= 0) continue;
+            String fileName = file.getName().substring(0, pos);
+
+            if (!StringUtils.isNumeric(fileName)) continue;
+
+            long saveTimeStamp;
+            try {
+                saveTimeStamp = Long.parseLong(fileName);
+            } catch (NumberFormatException ex) {
+                continue;
+            }
+
+            if (saveTimeStamp < olderThanTimestamp) {
+                try {
+                    Files.deleteIfExists(file.toPath());
+                    deletedCount++;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        return deletedCount;
+    }
+
+    /**
+     * Purge all backups for a specific LogType across all players.
+     * @param logType The log type to purge
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsForLogType(LogType logType) {
+        File logTypeFolder = getBackupFolderForLogType(logType);
+        if (!logTypeFolder.exists()) return 0;
+
+        return deleteDirectoryContents(logTypeFolder);
+    }
+
+    /**
+     * Purge all backups older than a given timestamp for a specific LogType.
+     * @param logType The log type to purge
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public static int purgeBackupsOlderThanForLogType(LogType logType, long olderThanTimestamp) {
+        File logTypeFolder = getBackupFolderForLogType(logType);
+        if (!logTypeFolder.exists()) return 0;
+
+        File[] playerFolders = logTypeFolder.listFiles();
+        if (playerFolders == null) return 0;
+
+        int deletedCount = 0;
+        for (File playerFolder : playerFolders) {
+            if (!playerFolder.isDirectory()) continue;
+
+            File[] backupFiles = playerFolder.listFiles();
+            if (backupFiles == null) continue;
+
+            for (File file : backupFiles) {
+                if (file.isDirectory()) continue;
+
+                int pos = file.getName().lastIndexOf('.');
+                if (pos <= 0) continue;
+                String fileName = file.getName().substring(0, pos);
+
+                if (!StringUtils.isNumeric(fileName)) continue;
+
+                long saveTimeStamp;
+                try {
+                    saveTimeStamp = Long.parseLong(fileName);
+                } catch (NumberFormatException ex) {
+                    continue;
+                }
+
+                if (saveTimeStamp < olderThanTimestamp) {
+                    try {
+                        Files.deleteIfExists(file.toPath());
+                        deletedCount++;
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            // Clean up empty player folders
+            try {
+                String[] remaining = playerFolder.list();
+                if (remaining != null && remaining.length == 0) {
+                    Files.deleteIfExists(playerFolder.toPath());
+                }
+            } catch (IOException ignored) {}
+        }
+
+        return deletedCount;
+    }
+
+    /**
+     * Purge ALL backups across all players and all types.
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackups() {
+        int totalDeleted = 0;
+        for (LogType logType : LogType.values()) {
+            if (logType == LogType.UNKNOWN) continue;
+            totalDeleted += purgeAllBackupsForLogType(logType);
+        }
+        return totalDeleted;
+    }
+
+    /**
+     * Purge all backups older than a given timestamp across all types.
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsOlderThan(long olderThanTimestamp) {
+        int totalDeleted = 0;
+        for (LogType logType : LogType.values()) {
+            if (logType == LogType.UNKNOWN) continue;
+            totalDeleted += purgeBackupsOlderThanForLogType(logType, olderThanTimestamp);
+        }
+        return totalDeleted;
+    }
+
+    /**
+     * Helper method to delete all contents of a directory including subdirectories.
+     * @param directory The directory to clear
+     * @return The number of files deleted
+     */
+    private static int deleteDirectoryContents(File directory) {
+        if (!directory.exists() || !directory.isDirectory()) return 0;
+
+        File[] files = directory.listFiles();
+        if (files == null) return 0;
+
+        int deletedCount = 0;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                deletedCount += deleteDirectoryContents(file);
+                try {
+                    Files.deleteIfExists(file.toPath());
+                } catch (IOException ignored) {}
+            } else {
+                try {
+                    Files.deleteIfExists(file.toPath());
+                    deletedCount++;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        return deletedCount;
+    }
+
     public void setMainInventory(ItemStack[] items) {
         this.mainInventory = SaveInventory.toBase64(items);
     }

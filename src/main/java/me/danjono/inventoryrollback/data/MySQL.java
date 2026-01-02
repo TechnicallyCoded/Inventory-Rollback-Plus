@@ -232,6 +232,121 @@ public class MySQL {
         }
     }
 
+    /**
+     * Purge all saves for this player/logType combination.
+     * @return The number of backups deleted
+     */
+    public int purgeAllSaves() throws SQLException {
+        openConnection();
+
+        try {
+            String delete = "DELETE FROM " + backupTable.getTableName() + " WHERE uuid = ?";
+            
+            try (PreparedStatement statement = connection.prepareStatement(delete)) {
+                statement.setString(1, uuid.toString());
+                return statement.executeUpdate();
+            }
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * Purge saves older than the given timestamp.
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public int purgeOlderThan(long olderThanTimestamp) throws SQLException {
+        openConnection();
+
+        try {
+            String delete = "DELETE FROM " + backupTable.getTableName() + " WHERE uuid = ? AND timestamp < ?";
+            
+            try (PreparedStatement statement = connection.prepareStatement(delete)) {
+                statement.setString(1, uuid.toString());
+                statement.setLong(2, olderThanTimestamp);
+                return statement.executeUpdate();
+            }
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * Purge all backups for a specific LogType across all players.
+     * @param logType The log type to purge
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsForLogType(LogType logType) throws SQLException {
+        MySQL mysql = new MySQL(UUID.randomUUID(), logType, 0L);
+        mysql.openConnection();
+
+        try {
+            BackupTable table = mysql.getBackupTable();
+            if (table == null) return 0;
+
+            String delete = "DELETE FROM " + table.getTableName();
+            
+            try (PreparedStatement statement = mysql.connection.prepareStatement(delete)) {
+                return statement.executeUpdate();
+            }
+        } finally {
+            mysql.closeConnection();
+        }
+    }
+
+    /**
+     * Purge all backups older than a given timestamp for a specific LogType.
+     * @param logType The log type to purge
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public static int purgeBackupsOlderThanForLogType(LogType logType, long olderThanTimestamp) throws SQLException {
+        MySQL mysql = new MySQL(UUID.randomUUID(), logType, 0L);
+        mysql.openConnection();
+
+        try {
+            BackupTable table = mysql.getBackupTable();
+            if (table == null) return 0;
+
+            String delete = "DELETE FROM " + table.getTableName() + " WHERE timestamp < ?";
+            
+            try (PreparedStatement statement = mysql.connection.prepareStatement(delete)) {
+                statement.setLong(1, olderThanTimestamp);
+                return statement.executeUpdate();
+            }
+        } finally {
+            mysql.closeConnection();
+        }
+    }
+
+    /**
+     * Purge ALL backups across all players and all types.
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackups() throws SQLException {
+        int totalDeleted = 0;
+        for (LogType logType : LogType.values()) {
+            if (logType == LogType.UNKNOWN) continue;
+            totalDeleted += purgeAllBackupsForLogType(logType);
+        }
+        return totalDeleted;
+    }
+
+    /**
+     * Purge all backups older than a given timestamp across all types.
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsOlderThan(long olderThanTimestamp) throws SQLException {
+        int totalDeleted = 0;
+        for (LogType logType : LogType.values()) {
+            if (logType == LogType.UNKNOWN) continue;
+            totalDeleted += purgeBackupsOlderThanForLogType(logType, olderThanTimestamp);
+        }
+        return totalDeleted;
+    }
+
     public void setMainInventory(ItemStack[] items) {
         this.mainInventory = SaveInventory.toBase64(items);
     }

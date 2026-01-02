@@ -40,6 +40,7 @@ You can change these values in the configuration file.
 
  - /ir restore <player> - Open a menu to view all player backups
  - /ir forcebackup <player> - Create a backup manually
+ - /ir purge <player|type|older|all> - Purge backup data (requires confirmation)
  - /ir enable - Enable the plugin if disabled
  - /ir disable - Disable the plugin if enabled
  - /ir reload - Reload the configuration file
@@ -50,6 +51,7 @@ You can change these values in the configuration file.
  - inventoryrollback.restore - (Default: OP) Allow /ir restore command
  - inventoryrollback.restore.teleport - (Default: OP) Allow player to teleport to location of backup
  - inventoryrollback.forcebackup - (Default: OP) Allow /ir forcebackup command
+ - inventoryrollback.purge - (Default: OP) Allow /ir purge command
  - inventoryrollback.enable - (Default: OP) Allow /ir enable command
  - inventoryrollback.disable - (Default: OP) Allow /ir disable command
  - inventoryrollback.reload - (Default: OP) Allow /ir reload command

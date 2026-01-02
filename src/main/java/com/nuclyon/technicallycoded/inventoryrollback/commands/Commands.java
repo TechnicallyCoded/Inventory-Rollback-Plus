@@ -16,9 +16,11 @@ public class Commands implements CommandExecutor, TabCompleter {
 
     private InventoryRollbackPlus main;
 
-    private String[] defaultOptions = new String[] {"restore", "forcebackup", "enable", "disable", "reload", "version", "import", "help"};
+    private String[] defaultOptions = new String[] {"restore", "forcebackup", "enable", "disable", "reload", "version", "import", "purge", "help"};
     private String[] backupOptions = new String[] {"all", "player"};
     private String[] importOptions = new String[] {"confirm"};
+    private String[] purgeOptions = new String[] {"player", "type", "older", "all"};
+    private String[] purgeTypeOptions = new String[] {"death", "join", "quit", "world-change", "force"};
 
     private HashMap<String, IRPCommand> subCommands = new HashMap<>();
 
@@ -31,6 +33,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         this.subCommands.put("version", new VersionSubCmd(mainIn));
         this.subCommands.put("forcebackup", new ForceBackupSubCmd(mainIn));
         this.subCommands.put("import", new ImportSubCmd(mainIn));
+        this.subCommands.put("purge", new PurgeSubCmd(mainIn));
         this.subCommands.put("help", new HelpSubCmd(mainIn));
     }
 
@@ -77,6 +80,11 @@ public class Commands implements CommandExecutor, TabCompleter {
             ) {
                 opts = this.importOptions;
 
+            } else if (args[0].equalsIgnoreCase("purge") &&
+                    commandSender.hasPermission("inventoryrollbackplus.purge")
+            ) {
+                opts = this.purgeOptions;
+
             } else {
                 opts = null;
             }
@@ -89,6 +97,41 @@ public class Commands implements CommandExecutor, TabCompleter {
                     suggestions.add(option);
             }
             return suggestions;
+        } else if (args.length == 3) {
+            // Tab complete for purge type options
+            if (args[0].equalsIgnoreCase("purge") &&
+                    args[1].equalsIgnoreCase("type") &&
+                    commandSender.hasPermission("inventoryrollbackplus.purge")
+            ) {
+                ArrayList<String> suggestions = new ArrayList<>();
+                for (String option : this.purgeTypeOptions) {
+                    if (option.startsWith(args[2].toLowerCase()))
+                        suggestions.add(option);
+                }
+                return suggestions;
+            }
+        } else if (args.length == 4) {
+            // Tab complete for confirm on purge commands
+            if (args[0].equalsIgnoreCase("purge") &&
+                    (args[1].equalsIgnoreCase("player") || args[1].equalsIgnoreCase("type") || args[1].equalsIgnoreCase("older")) &&
+                    (PurgeSubCmd.shouldShowConfirmOption() || args[3].toLowerCase().startsWith("c")) &&
+                    commandSender.hasPermission("inventoryrollbackplus.purge")
+            ) {
+                ArrayList<String> suggestions = new ArrayList<>();
+                if ("confirm".startsWith(args[3].toLowerCase()))
+                    suggestions.add("confirm");
+                return suggestions;
+            }
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("purge") && args[1].equalsIgnoreCase("all")) {
+            // Tab complete for confirm on purge all
+            if ((PurgeSubCmd.shouldShowConfirmOption() || args[2].toLowerCase().startsWith("c")) &&
+                    commandSender.hasPermission("inventoryrollbackplus.purge")
+            ) {
+                ArrayList<String> suggestions = new ArrayList<>();
+                if ("confirm".startsWith(args[2].toLowerCase()))
+                    suggestions.add("confirm");
+                return suggestions;
+            }
         }
         return null;
     }

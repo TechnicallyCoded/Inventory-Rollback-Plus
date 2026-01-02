@@ -32,6 +32,7 @@ public class HelpSubCmd extends IRPCommand {
                         ChatColor.WHITE + "    /irp enable" + ChatColor.GRAY + " - Enable the plugin\n" +
                         ChatColor.WHITE + "    /irp disable" + ChatColor.GRAY + " - Disable the plugin\n" +
                         ChatColor.WHITE + "    /irp reload" + ChatColor.GRAY + " - Reload the plugin\n" +
+                        ChatColor.WHITE + "    /irp purge <player|type|older|all>" + ChatColor.GRAY + " - Purge backup data\n" +
                         ChatColor.WHITE + "    /irp help" + ChatColor.GRAY + " - Get this message\n" +
                         ChatColor.WHITE + "    /irp version" + ChatColor.GRAY + " - Get plugin info & version\n");
     }

@@ -140,6 +140,109 @@ public class PlayerData {
         return future;
     }
 
+    /**
+     * Purge all saves for this player/logType combination.
+     * @return The number of backups deleted
+     */
+    public int purgeAllSaves() {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            return yaml.purgeAllSaves();
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            try {
+                return mysql.purgeAllSaves();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Purge saves older than the given timestamp for this player/logType.
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public int purgeOlderThan(long olderThanTimestamp) {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            return yaml.purgeOlderThan(olderThanTimestamp);
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            try {
+                return mysql.purgeOlderThan(olderThanTimestamp);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Purge all backups for a player across all log types.
+     * @param uuid The player's UUID
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsForPlayer(UUID uuid) {
+        int totalDeleted = 0;
+        for (LogType logType : LogType.values()) {
+            if (logType == LogType.UNKNOWN) continue;
+            PlayerData data = new PlayerData(uuid, logType, 0L);
+            totalDeleted += data.purgeAllSaves();
+        }
+        return totalDeleted;
+    }
+
+    /**
+     * Purge all backups for a specific LogType across all players.
+     * @param logType The log type to purge
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsForLogType(LogType logType) {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            return YAML.purgeAllBackupsForLogType(logType);
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            try {
+                return MySQL.purgeAllBackupsForLogType(logType);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Purge ALL backups across all players and all types.
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackups() {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            return YAML.purgeAllBackups();
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            try {
+                return MySQL.purgeAllBackups();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Purge all backups older than a given timestamp across all types.
+     * @param olderThanTimestamp Delete backups with timestamp less than this value
+     * @return The number of backups deleted
+     */
+    public static int purgeAllBackupsOlderThan(long olderThanTimestamp) {
+        if (ConfigData.getSaveType() == SaveType.YAML) {
+            return YAML.purgeAllBackupsOlderThan(olderThanTimestamp);
+        } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            try {
+                return MySQL.purgeAllBackupsOlderThan(olderThanTimestamp);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
     public void setMainInventory(ItemStack[] items) {
         if (ConfigData.getSaveType() == SaveType.YAML) {
             yaml.setMainInventory(items);
