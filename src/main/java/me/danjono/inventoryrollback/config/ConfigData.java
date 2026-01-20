@@ -81,6 +81,9 @@ public class ConfigData {
     private static boolean mysqlUseSSL;
     private static boolean mysqlVerifyCertificate;
     private static boolean mysqlPubKeyRetrieval;
+    private static int mysqlPoolMaximumPoolSize;
+    private static int mysqlPoolMinimumIdle;
+    private static int mysqlPoolConnectionTimeout;
 
     private static boolean allowOtherPluginEditDeathInventory;
     private static boolean restoreToPlayerButton;
@@ -133,6 +136,9 @@ public class ConfigData {
         setMySQLUseSSL((boolean) getDefaultValue("mysql.details.use-SSL", true));
         setMySQLVerifyCertificate((boolean) getDefaultValue("mysql.details.verifyCertificate", true));
         setMysqlPubKeyRetrievalAllowed((boolean) getDefaultValue("mysql.details.allowPubKeyRetrieval", false));
+        setMySQLPoolMaximumPoolSize((int) getDefaultValue("mysql.pool.maximum-pool-size", 10));
+        setMySQLPoolMinimumIdle((int) getDefaultValue("mysql.pool.minimum-idle", 2));
+        setMySQLPoolConnectionTimeout((int) getDefaultValue("mysql.pool.connection-timeout", 30000));
 
         setAllowOtherPluginEditDeathInventory((boolean) getDefaultValue("allow-other-plugins-edit-death-inventory", false));
         setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", true));
@@ -206,6 +212,18 @@ public class ConfigData {
 
     public static void setMysqlPubKeyRetrievalAllowed(boolean value) {
         mysqlPubKeyRetrieval = value;
+    }
+
+    public static void setMySQLPoolMaximumPoolSize(int value) {
+        mysqlPoolMaximumPoolSize = value;
+    }
+
+    public static void setMySQLPoolMinimumIdle(int value) {
+        mysqlPoolMinimumIdle = value;
+    }
+
+    public static void setMySQLPoolConnectionTimeout(int value) {
+        mysqlPoolConnectionTimeout = value;
     }
 
     public static void setRestoreToPlayerButton(boolean value) {
@@ -338,6 +356,18 @@ public class ConfigData {
 
     public static boolean isMySQLPubKeyRetrievalAllowed() {
         return mysqlPubKeyRetrieval;
+    }
+
+    public static int getMySQLPoolMaximumPoolSize() {
+        return mysqlPoolMaximumPoolSize;
+    }
+
+    public static int getMySQLPoolMinimumIdle() {
+        return mysqlPoolMinimumIdle;
+    }
+
+    public static int getMySQLPoolConnectionTimeout() {
+        return mysqlPoolConnectionTimeout;
     }
 
     public static boolean isRestoreToPlayerButton() {
