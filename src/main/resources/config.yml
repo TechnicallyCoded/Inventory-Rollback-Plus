@@ -36,6 +36,12 @@ mysql:
     minimum-idle: 2
     ## Connection timeout in milliseconds (30000 = 30 seconds)
     connection-timeout: 30000
+    ## Enable prepared statement caching for better performance
+    cache-prep-stmts: true
+    ## Number of prepared statements to cache per connection
+    prep-stmt-cache-size: 250
+    ## Maximum length of SQL to cache (in characters)
+    prep-stmt-cache-sql-limit: 2048
 
 ## Sounds will play to the player when parts of their player is restored.
 sounds:

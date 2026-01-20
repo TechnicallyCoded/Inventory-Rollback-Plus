@@ -28,7 +28,13 @@ public class MySQL {
                 "?useSSL=" + ConfigData.isMySQLUseSSL() +
                 "&verifyServerCertificate=" + ConfigData.isMySQLVerifyCertificate() +
                 "&allowPublicKeyRetrieval=" + ConfigData.isMySQLPubKeyRetrievalAllowed() +
-                "&characterEncoding=UTF-8");
+                "&characterEncoding=UTF-8" +
+                "&autoReconnect=true" +
+                "&cachePrepStmts=" + ConfigData.isMySQLCachePrepStmts() +
+                "&prepStmtCacheSize=" + ConfigData.getMySQLPrepStmtCacheSize() +
+                "&prepStmtCacheSqlLimit=" + ConfigData.getMySQLPrepStmtCacheSqlLimit() +
+                "&useServerPrepStmts=" + ConfigData.isMySQLCachePrepStmts() +
+                "&rewriteBatchedStatements=true");
         config.setUsername(ConfigData.getMySQLUsername());
         config.setPassword(ConfigData.getMySQLPassword());
         config.setMaximumPoolSize(ConfigData.getMySQLPoolMaximumPoolSize());

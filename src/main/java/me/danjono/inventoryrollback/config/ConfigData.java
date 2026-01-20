@@ -84,6 +84,9 @@ public class ConfigData {
     private static int mysqlPoolMaximumPoolSize;
     private static int mysqlPoolMinimumIdle;
     private static int mysqlPoolConnectionTimeout;
+    private static boolean mysqlCachePrepStmts;
+    private static int mysqlPrepStmtCacheSize;
+    private static int mysqlPrepStmtCacheSqlLimit;
 
     private static boolean allowOtherPluginEditDeathInventory;
     private static boolean restoreToPlayerButton;
@@ -139,6 +142,9 @@ public class ConfigData {
         setMySQLPoolMaximumPoolSize((int) getDefaultValue("mysql.pool.maximum-pool-size", 10));
         setMySQLPoolMinimumIdle((int) getDefaultValue("mysql.pool.minimum-idle", 2));
         setMySQLPoolConnectionTimeout((int) getDefaultValue("mysql.pool.connection-timeout", 30000));
+        setMySQLCachePrepStmts((boolean) getDefaultValue("mysql.pool.cache-prep-stmts", true));
+        setMySQLPrepStmtCacheSize((int) getDefaultValue("mysql.pool.prep-stmt-cache-size", 250));
+        setMySQLPrepStmtCacheSqlLimit((int) getDefaultValue("mysql.pool.prep-stmt-cache-sql-limit", 2048));
 
         setAllowOtherPluginEditDeathInventory((boolean) getDefaultValue("allow-other-plugins-edit-death-inventory", false));
         setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", true));
@@ -224,6 +230,18 @@ public class ConfigData {
 
     public static void setMySQLPoolConnectionTimeout(int value) {
         mysqlPoolConnectionTimeout = value;
+    }
+
+    public static void setMySQLCachePrepStmts(boolean value) {
+        mysqlCachePrepStmts = value;
+    }
+
+    public static void setMySQLPrepStmtCacheSize(int value) {
+        mysqlPrepStmtCacheSize = value;
+    }
+
+    public static void setMySQLPrepStmtCacheSqlLimit(int value) {
+        mysqlPrepStmtCacheSqlLimit = value;
     }
 
     public static void setRestoreToPlayerButton(boolean value) {
@@ -368,6 +386,18 @@ public class ConfigData {
 
     public static int getMySQLPoolConnectionTimeout() {
         return mysqlPoolConnectionTimeout;
+    }
+
+    public static boolean isMySQLCachePrepStmts() {
+        return mysqlCachePrepStmts;
+    }
+
+    public static int getMySQLPrepStmtCacheSize() {
+        return mysqlPrepStmtCacheSize;
+    }
+
+    public static int getMySQLPrepStmtCacheSqlLimit() {
+        return mysqlPrepStmtCacheSqlLimit;
     }
 
     public static boolean isRestoreToPlayerButton() {
