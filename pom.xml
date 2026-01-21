@@ -64,13 +64,6 @@
             <systemPath>${project.basedir}/lib/spigot-1.19.3.jar</systemPath>
             <optional>true</optional>
         </dependency>-->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.20.5-R0.1-SNAPSHOT</version>
-            <optional>true</optional>
-            <scope>provided</scope>
-        </dependency>
         <!-- bStats API -->
         <dependency>
             <groupId>org.bstats</groupId>
@@ -109,6 +102,24 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.9.3</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.36</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -179,6 +190,18 @@
                         <relocation>
                             <pattern>com.tcoded.lightlibs.bukkitversion</pattern>
                             <shadedPattern>${project.groupId}.bukkitversion</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>${project.groupId}.hikari</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>${project.groupId}.slf4j</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache.commons.lang3</pattern>
+                            <shadedPattern>${project.groupId}.commons.lang3</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

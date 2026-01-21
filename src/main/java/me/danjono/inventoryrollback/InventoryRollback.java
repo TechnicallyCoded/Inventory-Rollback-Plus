@@ -47,7 +47,7 @@ public abstract class InventoryRollback extends JavaPlugin {
     }
 
     public static String getPluginVersion() {
-        return instance.getDescription().getVersion();  
+        return instance.getDescription().getVersion();
     }
 
     @Override
@@ -74,6 +74,9 @@ public abstract class InventoryRollback extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (ConfigData.getSaveType() == SaveType.MYSQL) {
+            MySQL.shutdown();
+        }
         setInstance(null);
     }
 
@@ -83,13 +86,13 @@ public abstract class InventoryRollback extends JavaPlugin {
             YAML.createStorageFolders();
         } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
             try {
-                new MySQL(null, null, (long) 0).createTables();
+                MySQL.createTables();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
-        new MessageData().setMessages();    
+        new MessageData().setMessages();
         new SoundData().setSounds();
 
         InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Inventory backup data is set to save to: " + ConfigData.getSaveType().getName());
