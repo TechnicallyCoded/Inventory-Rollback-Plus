@@ -46,6 +46,20 @@ attribute-restore:
     button-name: '&2Restore Player XP'
     button-lore: '&rLevel %XP%'
 
+shulkerbox:
+  exported: "Exported inventory to shulker boxes. Check your inventory!"
+  button-name: "&dExport to Shulker Boxes"
+  first-shulker:
+    name: "&dFirst Shulker Box"
+    lore: "&7Contains the hotbar, armor & off-hand slots."
+  second-shulker:
+    name: "&dSecond Shulker Box"
+    lore: "&7Contains the main inventory slots."
+  ender-chest-shulker:
+    name: "&dEnder Chest Shulker Box"
+    extra-shulkers: " &7(#%NUMBER%)"
+    lore: "&7Contains the ender chest inventory."
+
 death-location:  
   world: '&6World: &f%WORLD%'
   x: '&6X: &f%X%'

@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 
 public class MainInventoryBackupMenu {
 
-	public static final int GIVE_SHULKERS_BUTTON_SLOT = 47;
+    public static final int GIVE_SHULKERS_BUTTON_SLOT = 47;
 	private final InventoryRollbackPlus main;
 
 	private final Player staff;
