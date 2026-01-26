@@ -8,6 +8,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class MessageData {
@@ -81,7 +83,6 @@ public class MessageData {
     private static String mainInventoryNotOnline;
     private static String mainInventoryButton;
     private static String mainInventoryDisabledButton;
-    private static String shulkerBoxButton;
 
     // Ender chest GUI messages
     private static String enderChestRestored;
@@ -107,6 +108,17 @@ public class MessageData {
     private static String experienceNotOnline;
     private static String experienceButton;
     private static String experienceButtonLore;
+
+    // Shulkerbox GUI messages
+    private static String shulkerBoxExported;
+    private static String shulkerBoxButton;
+    private static String shulkerBoxFirstShulkerName;
+    private static List<String> shulkerBoxFirstShulkerLore;
+    private static String shulkerBoxSecondShulkerName;
+    private static List<String> shulkerBoxSecondShulkerLore;
+    private static String shulkerBoxEnderChestShulkerName;
+    private static String shulkerBoxEnderChestShulkerExtraShulkers;
+    private static List<String> shulkerBoxEnderChestShulkerLore;
 
     // Death logs messages
     private static String deathLocationWorld;
@@ -152,7 +164,6 @@ public class MessageData {
         setMainInventoryNotOnline(convertColorCodes((String) getDefaultValue("attribute-restore.main-inventory.not-online", "You can't restore %NAME%'s inventory while they are offline.")));
         setMainInventoryButton(convertColorCodes((String) getDefaultValue("attribute-restore.main-inventory.button-name", "&cOverwrite Main Inventory from Backup")));
         setMainInventoryDisabledButton(convertColorCodes((String) getDefaultValue("attribute-restore.main-inventory.button-disabled", "&cYou must enable this option in the configuration")));
-        setShulkerBoxButton(convertColorCodes((String) getDefaultValue("attribute-restore.main-inventory.shulker-box", "&dExport to Shulker Boxes")));
 
         // Ender chest gui
         setEnderChestRestored(convertColorCodes((String) getDefaultValue("attribute-restore.ender-chest.restored", "%NAME%'s ender chest has been restored.")));
@@ -189,6 +200,17 @@ public class MessageData {
         setDeathLocation(convertColorCodes((String) getDefaultValue("death-location.teleport-to", "&3Teleport to where this entry was logged.")));
         setDeathLocationTeleport(convertColorCodes((String) getDefaultValue("death-location.teleport", "You have been teleported to %LOCATION%")));
         setDeathLocationInvalidWorldError(convertColorCodes((String) getDefaultValue("death-location.invalid-world", "The world %WORLD% is not currently loaded on the server.")));
+
+        // Shulkerbox gui
+        setShulkerBoxExported(convertColorCodes((String) getDefaultValue("shulkerbox.exported", "Exported inventory to shulker boxes. Check your inventory!")));
+        setShulkerBoxButton(convertColorCodes((String) getDefaultValue("shulkerbox.button-name", "&dExport to Shulker Boxes")));
+        setShulkerBoxFirstShulkerName(convertColorCodes((String) getDefaultValue("shulkerbox.first-shulker.name", "&dFirst Shulker Box")));
+        setShulkerBoxFirstShulkerLore(convertColorCodes((String) getDefaultValue("shulkerbox.first-shulker.lore", "&7Contains the hotbar, armor & off-hand slots.")));
+        setShulkerBoxSecondShulkerName(convertColorCodes((String) getDefaultValue("shulkerbox.second-shulker.name", "&dSecond Shulker Box")));
+        setShulkerBoxSecondShulkerLore(convertColorCodes((String) getDefaultValue("shulkerbox.second-shulker.lore", "&7Contains the main inventory slots.")));
+        setShulkerBoxEnderChestShulkerName(convertColorCodes((String) getDefaultValue("shulkerbox.ender-chest-shulker.name", "&dEnder Chest Shulker Box")));
+        setShulkerBoxEnderChestShulkerExtraShulkers(convertColorCodes((String) getDefaultValue("shulkerbox.ender-chest-shulker.extra-shulkers", " &7(#%NUMBER%)")));
+        setShulkerBoxEnderChestShulkerLore(convertColorCodes((String) getDefaultValue("shulkerbox.ender-chest-shulker.lore", "&7Contains the ender chest inventory.")));
 
         // Generic gui buttons
         setMainMenuButton(convertColorCodes((String) getDefaultValue("menu-buttons.main-menu", "&fMain Menu")));
@@ -270,17 +292,13 @@ public class MessageData {
     public static void setMainInventoryNotOnline(String message) {
         mainInventoryNotOnline = message;
     }
-    
+
     public static void setMainInventoryButton(String message) {
         mainInventoryButton = message;
     }
 
     public static void setMainInventoryDisabledButton(String message) {
         mainInventoryDisabledButton = message;
-    }
-
-    public static void setShulkerBoxButton(String message) {
-        shulkerBoxButton = message;
     }
 
     public static void setEnderChestRestored(String message) {
@@ -294,7 +312,7 @@ public class MessageData {
     public static void setEnderChestNotOnline(String message) {
         enderChestNotOnline = message;
     }
-    
+
     public static void setEnderChestButton(String message) {
         enderChestButton = message;
     }
@@ -310,7 +328,7 @@ public class MessageData {
     public static void setHealthNotOnline(String message) {
         healthNotOnline = message;
     }
-    
+
     public static void setHealthButton(String message) {
         healthButton = message;
     }
@@ -326,7 +344,7 @@ public class MessageData {
     public static void setHungerNotOnline(String message) {
         hungerNotOnline = message;
     }
-    
+
     public static void setHungerButton(String message) {
         hungerButton = message;
     }
@@ -342,13 +360,61 @@ public class MessageData {
     public static void setExperienceNotOnlinePlayer(String message) {
         experienceNotOnline = message;
     }
-    
+
     public static void setExperienceButton(String message) {
         experienceButton = message;
     }
 
     public static void setExperienceButtonLore(String message) {
         experienceButtonLore = message;
+    }
+
+    public static void setShulkerBoxExported(String message) {
+        shulkerBoxExported = message;
+    }
+
+    public static void setShulkerBoxButton(String message) {
+        shulkerBoxButton = message;
+    }
+
+    public static void setShulkerBoxFirstShulkerName(String message) {
+        shulkerBoxFirstShulkerName = message;
+    }
+
+    public static void setShulkerBoxFirstShulkerLore(List<String> message) {
+        shulkerBoxFirstShulkerLore = message;
+    }
+    public static void setShulkerBoxFirstShulkerLore(String message) {
+        shulkerBoxFirstShulkerLore = new ArrayList<>();
+        shulkerBoxFirstShulkerLore.add(message);
+    }
+
+    public static void setShulkerBoxSecondShulkerName(String message) {
+        shulkerBoxSecondShulkerName = message;
+    }
+
+    public static void setShulkerBoxSecondShulkerLore(List<String> message) {
+        shulkerBoxSecondShulkerLore = message;
+    }
+    public static void setShulkerBoxSecondShulkerLore(String message) {
+        shulkerBoxSecondShulkerLore = new ArrayList<>();
+        shulkerBoxSecondShulkerLore.add(message);
+    }
+
+    public static void setShulkerBoxEnderChestShulkerName(String message) {
+        shulkerBoxEnderChestShulkerName = message;
+    }
+
+    public static void setShulkerBoxEnderChestShulkerExtraShulkers(String message) {
+        shulkerBoxEnderChestShulkerExtraShulkers = message;
+    }
+
+    public static void setShulkerBoxEnderChestShulkerLore(List<String> message) {
+        shulkerBoxEnderChestShulkerLore = message;
+    }
+    public static void setShulkerBoxEnderChestShulkerLore(String message) {
+        shulkerBoxEnderChestShulkerLore = new ArrayList<>();
+        shulkerBoxEnderChestShulkerLore.add(message);
     }
 
     public static void setDeathLocationWorld(String message) {
@@ -366,7 +432,7 @@ public class MessageData {
     public static void setDeathLocationZ(String message) {
         deathLocationZ = message;
     }
-    
+
     public static void setDeathReason(String message) {
         deathReason = message;
     }
@@ -374,7 +440,7 @@ public class MessageData {
     public static void setDeathTime(String message) {
         deathTime = message;
     }
-    
+
     public static void setDeathLocation(String message) {
         deathLocationTeleportTo = message;
     }
@@ -458,7 +524,7 @@ public class MessageData {
     public static String getForceBackupPlayer(String name) {
         return forceSavedPlayer.replaceAll(nameVariable, name);
     }
-    
+
     public static String getForceBackupAll() {
         return forceSavedAll;
     }
@@ -466,7 +532,7 @@ public class MessageData {
     public static String getForceBackupError(String name) {
         return notForcedSaved.replaceAll(nameVariable, name);
     }
-    
+
     public static String getMainInventoryRestored(String name) {
         return mainInventoryRestored.replaceAll(nameVariable, name);
     }
@@ -478,17 +544,13 @@ public class MessageData {
     public static String getMainInventoryNotOnline(String name) {
         return mainInventoryNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getMainInventoryRestoreButton() {
         return mainInventoryButton;
     }
 
     public static String getMainInventoryDisabledButton() {
         return mainInventoryDisabledButton;
-    }
-
-    public static String getShulkerBoxButton() {
-        return shulkerBoxButton;
     }
 
     public static String getEnderChestRestored(String name) {
@@ -502,7 +564,7 @@ public class MessageData {
     public static String getEnderChestNotOnline(String name) {
         return enderChestNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getEnderChestRestoreButton() {
         return enderChestButton;
     }
@@ -518,7 +580,7 @@ public class MessageData {
     public static String getHealthNotOnline(String name) {
         return healthNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getHealthRestoreButton() {
         return healthButton;
     }
@@ -534,7 +596,7 @@ public class MessageData {
     public static String getHungerNotOnline(String name) {
         return hungerNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getHungerRestoreButton() {
         return hungerButton;
     }
@@ -550,13 +612,49 @@ public class MessageData {
     public static String getExperienceNotOnlinePlayer(String name) {
         return experienceNotOnline.replaceAll(nameVariable, name);
     }
-    
+
     public static String getExperienceRestoreButton() {
         return experienceButton;
     }
-    
+
     public static String getExperienceRestoreLevel(int xp) {
         return experienceButtonLore.replaceAll(xpVariable, xp + "");
+    }
+
+    public static String getShulkerBoxExported() {
+        return shulkerBoxExported;
+    }
+
+    public static String getShulkerBoxButton() {
+        return shulkerBoxButton;
+    }
+
+    public static String getShulkerBoxFirstShulkerName() {
+        return shulkerBoxFirstShulkerName;
+    }
+
+    public static List<String> getShulkerBoxFirstShulkerLore() {
+        return shulkerBoxFirstShulkerLore;
+    }
+
+    public static String getShulkerBoxSecondShulkerName() {
+        return shulkerBoxSecondShulkerName;
+    }
+
+    public static List<String> getShulkerBoxSecondShulkerLore() {
+        return shulkerBoxSecondShulkerLore;
+    }
+
+    public static String getShulkerBoxEnderChestShulkerName() {
+        return shulkerBoxEnderChestShulkerName;
+    }
+
+    public static String getShulkerBoxEnderChestShulkerExtraShulkers(int number) {
+        return shulkerBoxEnderChestShulkerExtraShulkers.replace("%NUMBER%", String.valueOf(number));
+    }
+
+    public static List<String> getShulkerBoxEnderChestShulkerLore() {
+        return shulkerBoxEnderChestShulkerLore;
     }
 
     public static String getDeathLocationWorld(String world) {

@@ -28,7 +28,9 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -346,6 +348,8 @@ public class ClickGUI implements Listener {
                             ShulkerBox shulkerBox = (ShulkerBox) blockMeta.getBlockState();
                             shulkerBox.getInventory().setContents(firstShulkerContents);
                             blockMeta.setBlockState(shulkerBox);
+                            blockMeta.setDisplayName(MessageData.getShulkerBoxFirstShulkerName());
+                            blockMeta.setLore(MessageData.getShulkerBoxFirstShulkerLore());
                             firstShulker.setItemMeta(blockMeta);
                         }
                     }
@@ -357,6 +361,8 @@ public class ClickGUI implements Listener {
                             ShulkerBox shulkerBox = (ShulkerBox) blockMeta.getBlockState();
                             shulkerBox.getInventory().setContents(secondShulkerContents);
                             blockMeta.setBlockState(shulkerBox);
+                            blockMeta.setDisplayName(MessageData.getShulkerBoxSecondShulkerName());
+                            blockMeta.setLore(MessageData.getShulkerBoxSecondShulkerLore());
                             secondShulker.setItemMeta(blockMeta);
                         }
                     }
@@ -704,6 +710,77 @@ public class ClickGUI implements Listener {
                         }
                     }.runTaskAsynchronously(this.main);
                 }
+            }
+
+            //Click on page selector button to go back to rollback menu
+            else if (e.getRawSlot() == EnderChestBackupMenu.GIVE_SHULKERS_BUTTON_SLOT) {
+                // Perm check
+                if (!staff.hasPermission("inventoryrollbackplus.restore")) {
+                    staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
+                    return;
+                }
+
+                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+                    // Unsupported on older versions
+                    if (main.getVersion().lessThan(MCVersion.v1_11.toBukkitVersion())) {
+                        return;
+                    }
+
+                    // Give shulkers
+
+                    // Init from MySQL or, if YAML, init & load config file
+                    PlayerData data = new PlayerData(offlinePlayer, logType, timestamp);
+
+                    // Get data if using MySQL
+                    if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                        try {
+                            data.getAllBackupData().get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                    ItemStack[] enderChest = data.getEnderChest();
+
+                    List<ItemStack> shulkers = new ArrayList<>();
+                    if (enderChest != null && enderChest.length != 0) {
+                        int totalItems = enderChest.length;
+                        int shulkerCount = (int) Math.ceil(totalItems / 27.0);
+
+                        for (int i = 0; i < shulkerCount; i++) {
+                            int start = i * 27;
+                            int end = Math.min(start + 27, totalItems);
+
+                            ItemStack[] shulkerContents = new ItemStack[27];
+                            System.arraycopy(enderChest, start, shulkerContents, 0, end - start);
+
+                            ItemStack shulker = new ItemStack(Material.SHULKER_BOX);
+                            ItemMeta meta = shulker.getItemMeta();
+
+                            if (meta instanceof BlockStateMeta) {
+                                BlockStateMeta blockMeta = (BlockStateMeta) meta;
+                                if (blockMeta.getBlockState() instanceof ShulkerBox) {
+                                    ShulkerBox shulkerBox = (ShulkerBox) blockMeta.getBlockState();
+                                    shulkerBox.getInventory().setContents(shulkerContents);
+                                    blockMeta.setBlockState(shulkerBox);
+                                    String name = (shulkerCount == 1)
+                                            ? MessageData.getShulkerBoxEnderChestShulkerName()
+                                            : (MessageData.getShulkerBoxEnderChestShulkerName() + MessageData.getShulkerBoxEnderChestShulkerExtraShulkers(i+1));
+                                    blockMeta.setDisplayName(name);
+                                    blockMeta.setLore(MessageData.getShulkerBoxEnderChestShulkerLore());
+                                    shulker.setItemMeta(blockMeta);
+                                }
+                            }
+
+                            shulkers.add(shulker);
+                        }
+                    };
+
+                    Bukkit.getScheduler().runTask(main, t -> {
+                        staff.getInventory().addItem(shulkers.toArray(new ItemStack[0]));
+                        staff.closeInventory();
+                    });
+                });
             }
 
             //Clicked icon to overwrite player ender chest with backup data
