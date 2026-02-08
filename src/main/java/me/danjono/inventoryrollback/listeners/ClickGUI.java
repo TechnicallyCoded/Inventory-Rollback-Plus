@@ -11,6 +11,7 @@ import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.config.SoundData;
 import me.danjono.inventoryrollback.data.LogType;
 import me.danjono.inventoryrollback.data.PlayerData;
+import me.danjono.inventoryrollback.discord.DiscordWebhook;
 import me.danjono.inventoryrollback.gui.Buttons;
 import me.danjono.inventoryrollback.gui.InventoryName;
 import me.danjono.inventoryrollback.gui.menu.*;
@@ -425,6 +426,16 @@ public class ClickGUI implements Listener {
                             player.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestoredPlayer(staff.getName()));
                             if (!staff.getUniqueId().equals(player.getUniqueId()))
                                 staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getMainInventoryRestored(offlinePlayer.getName()));
+
+                            // Send Discord webhook for inventory restoration
+                            try {
+                                String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+                                DiscordWebhook.sendInventoryRestored(offlinePlayer.getName(), staff.getName(), timestamp);
+                            } catch (Exception ex) {
+                                if (ConfigData.isDebugEnabled()) {
+                                    InventoryRollback.getInstance().getLogger().warning("Failed to send Discord webhook for inventory restore: " + ex.getMessage());
+                                }
+                            }
                         }
                     }.runTaskAsynchronously(main);
 
@@ -527,6 +538,16 @@ public class ClickGUI implements Listener {
                     player.sendMessage(MessageData.getPluginPrefix() + MessageData.getHealthRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
                         staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHealthRestored(player.getName()));
+
+                    // Send Discord webhook for health restoration
+                    try {
+                        String healthTimestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+                        DiscordWebhook.sendHealthRestored(offlinePlayer.getName(), staff.getName(), health, healthTimestamp);
+                    } catch (Exception ex) {
+                        if (ConfigData.isDebugEnabled()) {
+                            InventoryRollback.getInstance().getLogger().warning("Failed to send Discord webhook for health restore: " + ex.getMessage());
+                        }
+                    }
                 } else {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHealthNotOnline(offlinePlayer.getName()));
                 }
@@ -554,6 +575,16 @@ public class ClickGUI implements Listener {
                     player.sendMessage(MessageData.getPluginPrefix() + MessageData.getHungerRestoredPlayer(staff.getName()));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
                         staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHungerRestored(player.getName()));
+
+                    // Send Discord webhook for hunger restoration
+                    try {
+                        String hungerTimestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+                        DiscordWebhook.sendHungerRestored(offlinePlayer.getName(), staff.getName(), hunger, hungerTimestamp);
+                    } catch (Exception ex) {
+                        if (ConfigData.isDebugEnabled()) {
+                            InventoryRollback.getInstance().getLogger().warning("Failed to send Discord webhook for hunger restore: " + ex.getMessage());
+                        }
+                    }
                 } else {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getHungerNotOnline(offlinePlayer.getName()));
                 }
@@ -580,7 +611,17 @@ public class ClickGUI implements Listener {
                     player.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestoredPlayer(staff.getName(), level));
                     if (!staff.getUniqueId().equals(player.getUniqueId()))
                         staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceRestored(player.getName(), level));
-                } else {				    
+
+                    // Send Discord webhook for experience restoration
+                    try {
+                        String experienceTimestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+                        DiscordWebhook.sendExperienceRestored(offlinePlayer.getName(), staff.getName(), level, experienceTimestamp);
+                    } catch (Exception ex) {
+                        if (ConfigData.isDebugEnabled()) {
+                            InventoryRollback.getInstance().getLogger().warning("Failed to send Discord webhook for experience restore: " + ex.getMessage());
+                        }
+                    }
+                } else {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getExperienceNotOnlinePlayer(offlinePlayer.getName()));
                 }
             }

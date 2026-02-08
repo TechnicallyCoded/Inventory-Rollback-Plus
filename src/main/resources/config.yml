@@ -30,6 +30,35 @@ mysql:
     verifyCertificate: true
     allowPubKeyRetrieval: false
 
+## Discord webhook logging configuration
+## Allows sending backup and restore events to a Discord channel via webhook
+discord:
+  enabled: false
+  webhook-url: ''
+  # Events to log to Discord (set to false to disable specific events)
+  events:
+    backup-created: true
+    inventory-restored: true
+    ender-chest-restored: true
+    health-restored: true
+    hunger-restored: true
+    experience-restored: true
+    player-death: true
+    force-backup: true
+  # Additional settings
+  settings:
+    # Include server name in Discord messages
+    include-server-name: true
+    server-name: 'My Server'
+    # Use embeds for richer formatting
+    use-embeds: true
+    # Color for different event types (hex colors)
+    colors:
+      backup: '#00ff00'      # Green for backups
+      restore: '#0099ff'     # Blue for restores
+      death: '#ff3300'       # Red for deaths
+      warning: '#ffcc00'     # Yellow for warnings
+
 ## Sounds will play to the player when parts of their player is restored.
 sounds:
   teleport:
