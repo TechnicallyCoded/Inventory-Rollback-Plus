@@ -208,11 +208,13 @@ public class EventLogs implements Listener {
 			if (preSnapshot == null) {
 				saveInventory.snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
 			} else {
+				// Remove the snapshot from the cache
+				this.inventoryCache.remove(uuid);
+				// Ensure we don't save the empty snapshot
+				if (preSnapshot.isEmptySnapshot()) return;
 				// Save the snapshot inventory instead of the current one. We apparently had an edit
 				// during the damage event.
 				saveInventory.save(preSnapshot, true);
-				// Remove the snapshot from the cache
-				this.inventoryCache.remove(uuid);
 			}
         }
     }

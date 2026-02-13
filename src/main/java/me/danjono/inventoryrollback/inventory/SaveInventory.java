@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,13 +44,13 @@ public class SaveInventory {
 
     public void snapshotAndSave(PlayerInventory mainInventory, Inventory enderChestInventory, boolean saveAsync) {
         PlayerDataSnapshot snapshot = createSnapshot(mainInventory, enderChestInventory);
-        if (snapshot == null) return;
+        if (snapshot.isEmptySnapshot()) return;
         
         save(snapshot, saveAsync);
     }
 
     public void save(PlayerDataSnapshot snapshot, boolean async) {
-        if (snapshot == null) return;
+        if (snapshot.isEmptySnapshot()) return;
         UUID uuid = player.getUniqueId();
 
         // Rate limiter
@@ -103,7 +103,7 @@ public class SaveInventory {
 
     }
 
-    public @Nullable PlayerDataSnapshot createSnapshot(PlayerInventory mainInventory, Inventory enderChestInventory) {
+    public @NotNull PlayerDataSnapshot createSnapshot(PlayerInventory mainInventory, Inventory enderChestInventory) {
         ItemStack[] mainInvContents = null;
         ItemStack[] mainInvArmor = null;
         ItemStack[] enderInvContents = null;
@@ -125,7 +125,7 @@ public class SaveInventory {
 
         // Skip saving when inv is empty and config allows skipping empty invs
         if (emptyInvAndArmor && !ConfigData.isSaveEmptyInventories()) {
-            return null;
+            return PlayerDataSnapshot.EMPTY_SNAPSHOT;
         }
 
         ItemStack[] enderContents = enderChestInventory.getContents();
@@ -201,6 +201,24 @@ public class SaveInventory {
             this.finalMainInvContents = finalMainInvContents;
             this.finalMainInvArmor = finalMainInvArmor;
             this.finalEnderInvContents = finalEnderInvContents;
+        }
+
+        private static final PlayerDataSnapshot EMPTY_SNAPSHOT = new PlayerDataSnapshot(
+                -1,
+                -1,
+                -1,
+                -1,
+                null,
+                -1,
+                -1,
+                -1,
+                null,
+                null,
+                null
+        );
+
+        public boolean isEmptySnapshot() {
+            return this == EMPTY_SNAPSHOT;
         }
 
         @Override
