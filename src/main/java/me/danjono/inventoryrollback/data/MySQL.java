@@ -69,7 +69,8 @@ public class MySQL {
         JOIN(ConfigData.getMySQLTablePrefix() + "joins"),
         QUIT(ConfigData.getMySQLTablePrefix() + "quits"),
         WORLD_CHANGE(ConfigData.getMySQLTablePrefix() + "world_changes"),
-        FORCE(ConfigData.getMySQLTablePrefix() + "force_backups");
+        FORCE(ConfigData.getMySQLTablePrefix() + "force_backups"),
+        AUTO(ConfigData.getMySQLTablePrefix() + "auto_backups");
 
         private final String tableName;
 
@@ -98,6 +99,7 @@ public class MySQL {
         backupLocations.add(new File(backupArea, "quits"));
         backupLocations.add(new File(backupArea, "worldChanges"));
         backupLocations.add(new File(backupArea, "force"));
+        backupLocations.add(new File(backupArea, "auto"));
 
         List<LogType> logTypeFiles = new ArrayList<>();
         logTypeFiles.add(LogType.DEATH);
@@ -105,6 +107,7 @@ public class MySQL {
         logTypeFiles.add(LogType.QUIT);
         logTypeFiles.add(LogType.WORLD_CHANGE);
         logTypeFiles.add(LogType.FORCE);
+        logTypeFiles.add(LogType.AUTO);
 
         for (int i = 0; i < backupLocations.size(); i++) {
             File backupType = backupLocations.get(i);
@@ -185,6 +188,8 @@ public class MySQL {
             return BackupTable.WORLD_CHANGE;
         } else if (logType == LogType.FORCE) {
             return BackupTable.FORCE;
+        } else if (logType == LogType.AUTO) {
+            return BackupTable.AUTO;
         } else {
             throw new IllegalArgumentException("Unknown log type: " + logType);
         }

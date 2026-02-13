@@ -84,6 +84,11 @@ public class YAML {
         File forceSavesFolder = new File(savesFolder, "force");
         if(!forceSavesFolder.exists())
             forceSavesFolder.mkdir();
+
+        //Create folder for auto saves
+        File autoSavesFolder = new File(savesFolder, "auto");
+        if(!autoSavesFolder.exists())
+            autoSavesFolder.mkdir();
     }
 
     private static File getRootBackupsFolder() {
@@ -103,6 +108,8 @@ public class YAML {
             backupLocation = new File(backupLocation, "worldChanges");
         } else if (backupLogType == LogType.FORCE) {
             backupLocation = new File(backupLocation, "force");
+        } else if (backupLogType == LogType.AUTO) {
+            backupLocation = new File(backupLocation, "auto");
         }
 
         return backupLocation;
@@ -374,6 +381,7 @@ public class YAML {
         backupLocations.add(new File(ConfigData.getFolderLocation(), "saves/quits"));
         backupLocations.add(new File(ConfigData.getFolderLocation(), "saves/worldChanges"));
         backupLocations.add(new File(ConfigData.getFolderLocation(), "saves/force"));
+        backupLocations.add(new File(ConfigData.getFolderLocation(), "saves/auto"));
 
         List<LogType> logTypeFiles = new ArrayList<>();
         int logTypeNumber = 0;
@@ -382,6 +390,7 @@ public class YAML {
         logTypeFiles.add(LogType.QUIT);
         logTypeFiles.add(LogType.WORLD_CHANGE);
         logTypeFiles.add(LogType.FORCE);
+        logTypeFiles.add(LogType.AUTO);
 
         for (File backupFolders : backupLocations) {
             if (!backupFolders.exists()) {

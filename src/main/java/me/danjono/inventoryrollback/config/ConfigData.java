@@ -91,6 +91,7 @@ public class ConfigData {
     private static boolean allowOtherPluginEditDeathInventory;
     private static boolean restoreToPlayerButton;
     private static int backupLinesVisible;
+    private static int autoSaveInterval;
 
     private static boolean saveEmptyInventories;
 
@@ -99,6 +100,7 @@ public class ConfigData {
     private static int maxSavesDeath;
     private static int maxSavesWorldChange;
     private static int maxSavesForce;
+    private static int maxSavesAuto;
 
     private static long timeZoneOffsetMillis;
     private static TimeZone timeZone;
@@ -149,6 +151,7 @@ public class ConfigData {
         setAllowOtherPluginEditDeathInventory((boolean) getDefaultValue("allow-other-plugins-edit-death-inventory", false));
         setRestoreToPlayerButton((boolean) getDefaultValue("restore-to-player-button", true));
         setBackupLinesVisible((int) getDefaultValue("backup-lines-visible", 1));
+        setAutoSaveInterval((int) getDefaultValue("auto-save-interval", 300));
         setSaveEmptyInventories((boolean) getDefaultValue("save-empty-inventories", true));
 
         setMaxSavesJoin((int) getDefaultValue("max-saves.join", 10));
@@ -156,6 +159,7 @@ public class ConfigData {
         setMaxSavesDeath((int) getDefaultValue("max-saves.death", 50));
         setMaxSavesWorldChange((int) getDefaultValue("max-saves.world-change", 10));	
         setMaxSavesForce((int) getDefaultValue("max-saves.force", 10));
+        setMaxSavesAuto((int) getDefaultValue("max-saves.auto", 50));
 
         setTimeZone((String) getDefaultValue("time-zone", "GMT"));
         setTimeFormat((String) getDefaultValue("time-format", "dd/MM/yyyy HH:mm:ss a"));
@@ -266,6 +270,10 @@ public class ConfigData {
         }
     }
 
+    public static void setAutoSaveInterval(int value) {
+        autoSaveInterval = value;
+    }
+
     public static void setMaxSavesJoin(int value) {
         maxSavesJoin = value;
     }
@@ -284,6 +292,10 @@ public class ConfigData {
 
     public static void setMaxSavesForce(int value) {
         maxSavesForce = value;
+    }
+
+    public static void setMaxSavesAuto(int value) {
+        maxSavesAuto = value;
     }
 
     public static void setTimeZone(String zone) {
@@ -416,6 +428,10 @@ public class ConfigData {
         return backupLinesVisible;
     }
 
+    public static int getAutoSaveInterval() {
+        return autoSaveInterval;
+    }
+
     public static int getMaxSavesJoin() {
         return maxSavesJoin;
     }
@@ -434,6 +450,10 @@ public class ConfigData {
 
     public static int getMaxSavesForce() {
         return maxSavesForce;
+    }
+
+    public static int getMaxSavesAuto() {
+        return maxSavesAuto;
     }
 
     public static long getTimeZoneOffsetMillis() {

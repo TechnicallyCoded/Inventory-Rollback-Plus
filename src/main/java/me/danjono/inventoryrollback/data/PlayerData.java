@@ -452,6 +452,8 @@ public class PlayerData {
             return ConfigData.getMaxSavesWorldChange();
         } else if (logType == LogType.FORCE) {
             return ConfigData.getMaxSavesForce();
+        } else if (logType == LogType.AUTO) {
+            return ConfigData.getMaxSavesAuto();
         }
 
 
