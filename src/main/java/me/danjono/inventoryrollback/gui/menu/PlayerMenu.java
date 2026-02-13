@@ -41,6 +41,7 @@ public class PlayerMenu {
         inventory.setItem(4, buttons.createQuitLogButton(LogType.QUIT, null));
         inventory.setItem(5, buttons.createWorldChangeLogButton(LogType.WORLD_CHANGE, null));
         inventory.setItem(6, buttons.createForceSaveLogButton(LogType.FORCE, null));
+        inventory.setItem(7, buttons.createAutoSaveLogButton(LogType.AUTO, null));
     }
 
     public Inventory getInventory() {
@@ -71,12 +72,14 @@ public class PlayerMenu {
         PlayerData quitBackup = new PlayerData(uuid, LogType.QUIT, null);
         PlayerData worldChangeBackup = new PlayerData(uuid, LogType.WORLD_CHANGE, null);
         PlayerData forceSaveBackup = new PlayerData(uuid, LogType.FORCE, null);
+        PlayerData autoSaveBackup = new PlayerData(uuid, LogType.AUTO, null);
 
         if (!joinBackup.doesBackupTypeExist()
                 && !quitBackup.doesBackupTypeExist()
                 && !deathBackup.doesBackupTypeExist()
                 && !worldChangeBackup.doesBackupTypeExist()
-                && !forceSaveBackup.doesBackupTypeExist()) {
+                && !forceSaveBackup.doesBackupTypeExist()
+                && !autoSaveBackup.doesBackupTypeExist()) {
 
             //No backups have been found for the player
             staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoBackupError(offlinePlayer.getName()));
@@ -98,6 +101,9 @@ public class PlayerMenu {
         
         List<String> forceSaves = Arrays.asList(forceSaveBackup.getAmountOfBackups() + backupsAvailable);
         inventory.setItem(6, buttons.createForceSaveLogButton(LogType.FORCE, forceSaves));
+
+        List<String> autoSaves = Arrays.asList(autoSaveBackup.getAmountOfBackups() + backupsAvailable);
+        inventory.setItem(7, buttons.createAutoSaveLogButton(LogType.AUTO, autoSaves));
     }
 
 }

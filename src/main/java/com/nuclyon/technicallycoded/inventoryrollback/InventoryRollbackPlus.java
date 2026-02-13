@@ -91,6 +91,9 @@ public class InventoryRollbackPlus extends InventoryRollback {
         // Run after all plugin enable
         getServer().getScheduler().runTask(this, EventLogs::patchLowestHandlers);
 
+        // Auto Backups
+        scheduleAutoSave(ConfigData.getAutoSaveInterval());
+
         // PaperLib
         if (!PaperLib.isPaper()) {
             this.getLogger().info("----------------------------------------");
@@ -196,6 +199,19 @@ public class InventoryRollbackPlus extends InventoryRollback {
             }
 
         });
+    }
+
+    public void scheduleAutoSave(int interval) {
+        if (interval <= 0) return;
+
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            for (Player player : getServer().getOnlinePlayers()) {
+                if (player.hasPermission("inventoryrollbackplus.autosave")) {
+                    new SaveInventory(player, LogType.AUTO, null, null)
+                            .snapshotAndSave(player.getInventory(), player.getEnderChest(), true);
+                }
+            }
+        }, 0, interval * 20L);
     }
 
     public void initBStats() {

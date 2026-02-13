@@ -27,6 +27,7 @@ permissions:
       inventoryrollbackplus.joinsave: true
       inventoryrollbackplus.leavesave: true
       inventoryrollbackplus.worldchangesave: true
+      inventoryrollbackplus.autosave: true
       inventoryrollbackplus.enable: true
       inventoryrollbackplus.disable: true
       inventoryrollbackplus.reload: true
@@ -51,6 +52,9 @@ permissions:
     default: true
   inventoryrollbackplus.worldchangesave:
     description: Player inventories will be saved when they change worlds.
+    default: true
+  inventoryrollbackplus.autosave:
+    description: Player inventories will be saved when auto save timer.
     default: true
   inventoryrollbackplus.enable:
     description: Grants access to enable the plugin globally.
@@ -111,6 +115,11 @@ permissions:
     default: false
     children:
       inventoryrollbackplus.worldchangesave: true
+  inventoryrollback.autosave:
+    description: Player inventories will be saved when auto save timer.
+    default: false
+    children:
+      inventoryrollbackplus.autosave: true
   inventoryrollback.enable:
     description: Grants access to enable the plugin globally.
     default: false

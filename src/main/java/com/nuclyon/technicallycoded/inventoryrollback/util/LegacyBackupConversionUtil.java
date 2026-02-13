@@ -40,6 +40,7 @@ public class LegacyBackupConversionUtil {
         oldBackupTypeFolders.add(new File(oldBackupsRoot, "quits"));
         oldBackupTypeFolders.add(new File(oldBackupsRoot, "worldChanges"));
         oldBackupTypeFolders.add(new File(oldBackupsRoot, "force"));
+        oldBackupTypeFolders.add(new File(oldBackupsRoot, "auto"));
 
         int logTypeNumber = -1;
         List<LogType> logTypes = new ArrayList<>();
@@ -48,6 +49,7 @@ public class LegacyBackupConversionUtil {
         logTypes.add(LogType.QUIT);
         logTypes.add(LogType.WORLD_CHANGE);
         logTypes.add(LogType.FORCE);
+        logTypes.add(LogType.AUTO);
 
         for (File oldBackupFolder : oldBackupTypeFolders) {
 
