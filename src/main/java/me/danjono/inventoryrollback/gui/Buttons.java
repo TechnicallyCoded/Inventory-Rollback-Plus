@@ -41,6 +41,7 @@ public class Buttons {
 
     private static final Material forceSave = Material.DIAMOND;
 
+    private static final Material autoSave = Material.NETHER_STAR;
 
     private static final Material pageSelector =
             InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_13_R1) ?
@@ -95,6 +96,10 @@ public class Buttons {
     
     public static Material getForceSaveLogIcon() {
         return forceSave;
+    }
+
+    public static Material getAutoSaveLogIcon() {
+        return autoSave;
     }
 
     public static Material getPageSelectorIcon() {
@@ -437,6 +442,28 @@ public class Buttons {
         }
         
         meta.setDisplayName(ChatColor.AQUA + "Force Saves");
+
+        item.setItemMeta(meta);
+
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(item);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        item = nbt.setItemData();
+
+        return item;
+    }
+
+    public ItemStack createAutoSaveLogButton(LogType logType, List<String> lore) {
+        ItemStack item = new ItemStack(getAutoSaveLogIcon());
+        ItemMeta meta = item.getItemMeta();
+
+        assert meta != null;
+        if (lore != null) {
+            meta.setLore(lore);
+        }
+
+        meta.setDisplayName(ChatColor.YELLOW + "Auto Saves");
 
         item.setItemMeta(meta);
 

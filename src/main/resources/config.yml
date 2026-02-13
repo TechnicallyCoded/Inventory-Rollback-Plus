@@ -8,9 +8,13 @@ max-saves:
   death: 50
   world-change: 10
   force: 10
+  auto: 50
 
 ## Number of lines shown with backups on (Max: 5)
 backup-lines-visible: 4
+
+# Auto save backups interval in seconds. Set to -1 to disable.
+auto-save-interval: 300
 
 ## Set folder path where the data is saved to. Set as "DEFAULT" to keep it in the plugin folder.
 folder-location: 'DEFAULT'
