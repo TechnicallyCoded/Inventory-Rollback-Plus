@@ -46,21 +46,21 @@ You can change these values in the configuration file.
 
 **Permissions**
 
- - inventoryrollback.viewbackups - (Default: OP) Allow /ir restore command (without ability to give items back)
- - inventoryrollback.restore - (Default: OP) Allow /ir restore command
- - inventoryrollback.restore.teleport - (Default: OP) Allow player to teleport to location of backup
- - inventoryrollback.forcebackup - (Default: OP) Allow /ir forcebackup command
- - inventoryrollback.enable - (Default: OP) Allow /ir enable command
- - inventoryrollback.disable - (Default: OP) Allow /ir disable command
- - inventoryrollback.reload - (Default: OP) Allow /ir reload command
- - inventoryrollback.adminalerts - (Default: OP) Allow viewing important information for admins when they join
+ - inventoryrollbackplus.viewbackups - (Default: OP) Allow /ir restore command (without ability to give items back)
+ - inventoryrollbackplus.restore - (Default: OP) Allow /ir restore command
+ - inventoryrollbackplus.restore.teleport - (Default: OP) Allow player to teleport to location of backup
+ - inventoryrollbackplus.forcebackup - (Default: OP) Allow /ir forcebackup command
+ - inventoryrollbackplus.enable - (Default: OP) Allow /ir enable command
+ - inventoryrollbackplus.disable - (Default: OP) Allow /ir disable command
+ - inventoryrollbackplus.reload - (Default: OP) Allow /ir reload command
+ - inventoryrollbackplus.adminalerts - (Default: OP) Allow viewing important information for admins when they join
 
- - inventoryrollback.deathsave - (Default: All) Allow backup on death
- - inventoryrollback.joinsave - (Default: All) Allow backup on join
- - inventoryrollback.leavesave - (Default: All) Allow backup on leave
- - inventoryrollback.worldchangesave - (Default: All) Allow backup on world change
- - inventoryrollback.help - (Default: All) Allow viewing the help message of the plugin
- - inventoryrollback.version - (Default: All) Allow viewing version of the plugin
+ - inventoryrollbackplus.deathsave - (Default: All) Allow backup on death
+ - inventoryrollbackplus.joinsave - (Default: All) Allow backup on join
+ - inventoryrollbackplus.leavesave - (Default: All) Allow backup on leave
+ - inventoryrollbackplus.worldchangesave - (Default: All) Allow backup on world change
+ - inventoryrollbackplus.help - (Default: All) Allow viewing the help message of the plugin
+ - inventoryrollbackplus.version - (Default: All) Allow viewing version of the plugin
 
 ## Download Link
 [https://modrinth.com/plugin/inventoryrollbackplus](https://modrinth.com/plugin/inventoryrollbackplus)
