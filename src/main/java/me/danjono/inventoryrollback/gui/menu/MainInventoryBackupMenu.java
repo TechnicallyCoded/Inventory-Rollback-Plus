@@ -157,32 +157,29 @@ public class MainInventoryBackupMenu {
 		if (armor != null && armor.length > 0) {
             for (int i = 0; i < armor.length; i++) {
                 // Place item safely
-                final int finalPos = position.get();
+                final int finalPos = position.getAndDecrement();
                 final int finalItem = i;
                 SchedulerUtils.callSyncMethod(null, () -> {
                     inventory.setItem(finalPos, armor[finalItem]);
                     return null;
                 }).whenComplete((res, ex) -> {
                     if (ex != null) ex.printStackTrace();
-                    else position.getAndDecrement();
                 });
             }
 		} else {
             for (; item < mainInvLen; item++) {
                 if (mainInventory[item] != null) {
                     // Place item safely
-                    final int finalPos = position.get();
+                    final int finalPos = position.getAndDecrement();
                     final int finalItem = item;
                     SchedulerUtils.callSyncMethod(null, () -> {
                         inventory.setItem(finalPos, mainInventory[finalItem]);
                         return null;
                     }).whenComplete((res, ex) -> {
-                        if (ex != null) {
-                            ex.printStackTrace();
-                        } else {
-                            position.getAndDecrement();
-                        }
+                        if (ex != null) ex.printStackTrace();
                     });
+                } else {
+                    position.getAndDecrement();
                 }
             }
 		}
