@@ -1,6 +1,8 @@
 package me.danjono.inventoryrollback.gui.menu;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.FoliaRunnable;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import com.tcoded.lightlibs.bukkitversion.MCVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
@@ -12,11 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainInventoryBackupMenu {
 
@@ -105,12 +105,12 @@ public class MainInventoryBackupMenu {
 		assert !Bukkit.isPrimaryThread();
 
 		int item = 0;
-		int position = 0;
+		AtomicInteger position = new AtomicInteger();
 
 		//If the backup file is invalid it will return null, we want to catch it here
 		try {
     		// Add items, 5 per tick
-			new BukkitRunnable() {
+			SchedulerUtils.runTaskTimer(null, new FoliaRunnable() {
 
 				boolean processedHotbar;
 				int menuPos = 27;
@@ -143,7 +143,7 @@ public class MainInventoryBackupMenu {
 						backupPos++;
 					}
 				}
-			}.runTaskTimer(main, 0, 1);
+			}, 1, 1);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
@@ -151,45 +151,37 @@ public class MainInventoryBackupMenu {
 		}
 
 		item = 36;
-		position = 44;
+		position.set(44);
 		
 		//Add armor
 		if (armor != null && armor.length > 0) {
-			try {
-				for (int i = 0; i < armor.length; i++) {
-					// Place item safely
-					final int finalPos = position;
-					final int finalItem = i;
-					Future<Void> placeItemFuture = main.getServer().getScheduler().callSyncMethod(main,
-							() -> {
-								inventory.setItem(finalPos, armor[finalItem]);
-								return null;
-							});
-					placeItemFuture.get();
-					position--;
-				}
-			} catch (ExecutionException | InterruptedException ex) {
-				ex.printStackTrace();
-			}
+            for (int i = 0; i < armor.length; i++) {
+                // Place item safely
+                final int finalPos = position.getAndDecrement();
+                final int finalItem = i;
+                SchedulerUtils.callSyncMethod(null, () -> {
+                    inventory.setItem(finalPos, armor[finalItem]);
+                    return null;
+                }).whenComplete((res, ex) -> {
+                    if (ex != null) ex.printStackTrace();
+                });
+            }
 		} else {
-			try {
-				for (; item < mainInvLen; item++) {
-					if (mainInventory[item] != null) {
-						// Place item safely
-						final int finalPos = position;
-						final int finalItem = item;
-						Future<Void> placeItemFuture = main.getServer().getScheduler().callSyncMethod(main,
-								() -> {
-									inventory.setItem(finalPos, mainInventory[finalItem]);
-									return null;
-								});
-						placeItemFuture.get();
-						position--;
-					}
-				}
-			} catch (ExecutionException | InterruptedException ex) {
-				ex.printStackTrace();
-			}
+            for (; item < mainInvLen; item++) {
+                if (mainInventory[item] != null) {
+                    // Place item safely
+                    final int finalPos = position.getAndDecrement();
+                    final int finalItem = item;
+                    SchedulerUtils.callSyncMethod(null, () -> {
+                        inventory.setItem(finalPos, mainInventory[finalItem]);
+                        return null;
+                    }).whenComplete((res, ex) -> {
+                        if (ex != null) ex.printStackTrace();
+                    });
+                } else {
+                    position.getAndDecrement();
+                }
+            }
 		}
 	}
 		

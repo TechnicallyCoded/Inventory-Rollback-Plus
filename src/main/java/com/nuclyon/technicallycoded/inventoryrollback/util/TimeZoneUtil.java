@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TimeZoneUtil {
 
@@ -125,8 +125,8 @@ public class TimeZoneUtil {
     // INIT DATA
 
     public void loadDefaultData() {
-        HashMap<String, String> offsetsMapBuilder = new HashMap<>();
-        HashMap<String, String> shortCodeNamesBuilder = new HashMap<>();
+        ConcurrentHashMap<String, String> offsetsMapBuilder = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, String> shortCodeNamesBuilder = new ConcurrentHashMap<>();
 
         offsetsMapBuilder.put("ACDT", "GMT+10:30");
         offsetsMapBuilder.put("ACST", "GMT+09:30");

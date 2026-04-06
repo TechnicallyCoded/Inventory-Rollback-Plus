@@ -4,8 +4,8 @@ import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.commands.inventoryrollback.*;
 import me.danjono.inventoryrollback.config.MessageData;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +20,7 @@ public class Commands implements CommandExecutor, TabCompleter {
     private String[] backupOptions = new String[] {"all", "player"};
     private String[] importOptions = new String[] {"confirm"};
 
-    private HashMap<String, IRPCommand> subCommands = new HashMap<>();
+    private ConcurrentHashMap<String, IRPCommand> subCommands = new ConcurrentHashMap<>();
 
     public Commands(InventoryRollbackPlus mainIn) {
         this.main = mainIn;
