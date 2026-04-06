@@ -119,7 +119,7 @@ public class SelfTestSerialization {
 
     public static SelfTest buildTestSerializeAndDeserializeShulkerBoxWithItems() {
         Consumer<List<String>> test = logs -> {
-            ItemStack shulkerBox = new ItemStack(Material.SHULKER_BOX);
+            ItemStack shulkerBox = new ItemStack(Material.RED_SHULKER_BOX);
 
             // Add items to the shulker box (requires a valid Bukkit API environment)
             ItemStack[] shulkerContents = new ItemStack[] {
@@ -157,7 +157,7 @@ public class SelfTestSerialization {
 
             ItemStack deserializedShulker = result.getItems()[0];
             TestAssertions.assertNotNull(deserializedShulker, "Deserialized shulker box should not be null");
-            TestAssertions.assertEquals(Material.SHULKER_BOX, deserializedShulker.getType(), "Item type should be SHULKER_BOX");
+            TestAssertions.assertEquals(Material.RED_SHULKER_BOX, deserializedShulker.getType(), "Item type should be RED_SHULKER_BOX");
 
             logs.add("deserializedShulker = " + deserializedShulker);
 
