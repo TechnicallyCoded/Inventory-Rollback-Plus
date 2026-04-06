@@ -1,6 +1,7 @@
 package me.danjono.inventoryrollback.gui.menu;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.tcoded.lightlibs.bukkitversion.MCVersion;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
@@ -19,6 +20,8 @@ import java.util.UUID;
 
 public class EnderChestBackupMenu {
 
+    public static final int GIVE_SHULKERS_BUTTON_SLOT = InventoryName.ENDER_CHEST_BACKUP.getSize() - 6;
+    private final InventoryRollbackPlus main;
     private int pageNumber;
 
     private Player staff;
@@ -31,6 +34,8 @@ public class EnderChestBackupMenu {
     private Inventory inventory;
 
     public EnderChestBackupMenu(Player staff, PlayerData data, int pageNumberIn) {
+        this.main = InventoryRollbackPlus.getInstance();
+
         this.staff = staff;
         this.playerUUID = data.getOfflinePlayer().getUniqueId();
         this.logType = data.getLogType();
@@ -102,12 +107,8 @@ public class EnderChestBackupMenu {
 
 
                         ItemStack itemStack = enderchest[itemPos];
-                        if (itemStack != null) {
-                            inventory.setItem(invPosition, itemStack);
-                            // Don't change inv position if there was nothing to place
-                            invPosition++;
-                        }
-                        // Move to next item stack
+                        inventory.setItem(invPosition, itemStack); // setting null is fine (clears/keeps empty)
+                        invPosition++;
                         itemPos++;
                     }
                 }
@@ -128,6 +129,8 @@ public class EnderChestBackupMenu {
                     buttons.restoreAllInventoryDisabled(logType, timestamp));
         }
 
+        if (main.getVersion().greaterOrEqThan(MCVersion.v1_11.toBukkitVersion()))
+            inventory.setItem(GIVE_SHULKERS_BUTTON_SLOT, buttons.giveShulkerBox(logType, timestamp));
 
         List<String> lore = new ArrayList<>();
         if (pageNumber < pagesRequired) {
