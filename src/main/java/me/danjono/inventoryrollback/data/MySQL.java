@@ -295,6 +295,30 @@ public class MySQL {
         }
     }
 
+    public List<Long> getAllTimestamps() throws SQLException {
+        openConnection();
+        
+        List<Long> timeStamps = new ArrayList<>();
+                
+        try {
+            String query = "SELECT timestamp FROM " + backupTable.getTableName() + " WHERE uuid = ? ORDER BY timestamp DESC";
+            
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, uuid + "");
+                
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        timeStamps.add(results.getLong(1));
+                    }
+                }
+            }
+
+            return timeStamps;
+        } finally {
+            closeConnection();
+        }
+    }
+
     public void purgeExcessSaves(int deleteAmount) throws SQLException {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);

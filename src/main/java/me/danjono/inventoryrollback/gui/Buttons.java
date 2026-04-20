@@ -5,6 +5,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.customdata.CustomDataItemE
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
 import me.danjono.inventoryrollback.config.MessageData;
 import me.danjono.inventoryrollback.data.LogType;
+import me.danjono.inventoryrollback.data.PlayerData;
 import me.danjono.inventoryrollback.inventory.RestoreInventory;
 import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
@@ -310,6 +311,74 @@ public class Buttons {
         nbt.setString("logType", logType.name());
         nbt.setLong("timestamp", timestamp);
         nbt.setInt("page", 0);
+
+        button = nbt.setItemData();
+
+        return button;
+    }
+
+    public ItemStack inventorySnapshotPreviousButton(String displayName, LogType logType, Long timestamp, List<String> lore) {
+        ItemStack button = new ItemStack(getPageSelectorIcon());
+        BannerMeta meta = (BannerMeta) button.getItemMeta();
+
+        List<Pattern> patterns = createBannerPatterns(false);
+
+        assert meta != null;
+        meta.setPatterns(patterns);
+
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
+
+        if (displayName != null) {
+            meta.setDisplayName(displayName);
+        }
+
+        if (lore != null) {
+            meta.setLore(lore);
+        }
+
+        button.setItemMeta(meta);
+
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        nbt.setLong("timestamp", timestamp);
+        nbt.setInt("page", 1);
+
+        button = nbt.setItemData();
+
+        return button;
+    }
+
+    public ItemStack inventorySnapshotNextButton(String displayName, LogType logType, Long timestamp, List<String> lore) {
+        ItemStack button = new ItemStack(getPageSelectorIcon());
+        BannerMeta meta = (BannerMeta) button.getItemMeta();
+
+        List<Pattern> patterns = createBannerPatterns(true);
+
+        assert meta != null;
+        meta.setPatterns(patterns);
+
+        if (InventoryRollbackPlus.getInstance().getVersion().greaterOrEqThan(BukkitVersion.v1_20_R4)) meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        else meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
+
+        if (displayName != null) {
+            meta.setDisplayName(displayName);
+        }
+
+        if (lore != null) {
+            meta.setLore(lore);
+        }
+
+        button.setItemMeta(meta);
+
+        CustomDataItemEditor nbt = CustomDataItemEditor.editItem(button);
+
+        nbt.setString("uuid", uuid.toString());
+        nbt.setString("logType", logType.name());
+        nbt.setLong("timestamp", timestamp);
+        nbt.setInt("page", 2);
 
         button = nbt.setItemData();
 
@@ -707,6 +776,7 @@ public class Buttons {
         for (int i = 1; i < nameParts.length; i ++) {
             loreParts.add(nameParts[i]);
         }
+        loreParts.add(MessageData.getMenuTimestamp(PlayerData.getTime(timestamp)));
         meta.setLore(loreParts);
 
         item.setItemMeta(meta);
