@@ -26,6 +26,8 @@ import org.bukkit.event.HandlerList;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InventoryRollbackPlus extends InventoryRollback {
 
@@ -58,14 +60,27 @@ public class InventoryRollbackPlus extends InventoryRollback {
         String serverVersion = this.getServer().getVersion();
         getLogger().info("Attempting support for version: " + serverVersion);
         MCVersion mcVersion = MCVersion.fromServerVersion(serverVersion);
-        BukkitVersion nmsVersion = mcVersion.toBukkitVersion();
+        BukkitVersion nmsVersion = (mcVersion != null) ? mcVersion.toBukkitVersion() : null;
+
+        // BukkitVersion's regex only matches 1.x MC versions so 26.x comes back null
         if (nmsVersion == null) {
-            getLogger().severe(MessageData.getPluginPrefix() + "\n" +
-                    " ** WARNING! IRP may not be compatible with this version of Minecraft. **\n" +
-                    " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
-                    MessageData.getPluginPrefix()
-            );
-            setPackageVersion(BukkitVersion.getLatest().name());
+            BukkitVersion guessed = guessVersionFromServerString(serverVersion);
+            if (guessed != null) {
+                getLogger().warning(MessageData.getPluginPrefix() +
+                        " Unrecognised Minecraft version \"" + serverVersion +
+                        "\"; falling back to " + guessed.name() + ".");
+                setVersion(guessed);
+                InventoryRollback.setPackageVersion(guessed.name());
+            } else {
+                getLogger().severe(MessageData.getPluginPrefix() + "\n" +
+                        " ** WARNING! IRP may not be compatible with this version of Minecraft. **\n" +
+                        " ** Please fully test the plugin before using on your server as features may be broken. **\n" +
+                        MessageData.getPluginPrefix()
+                );
+                BukkitVersion latest = BukkitVersion.getLatest();
+                setVersion(latest);
+                InventoryRollback.setPackageVersion(latest.name());
+            }
         } else {
             setVersion(nmsVersion);
             InventoryRollback.setPackageVersion(nmsVersion.name());
@@ -135,6 +150,30 @@ public class InventoryRollbackPlus extends InventoryRollback {
 
     public void setVersion(BukkitVersion versionName) {
         version = versionName;
+    }
+
+    // (MC: X.Y.Z) - matches any major, not just 1.x
+    private static final Pattern MC_TOKEN_PATTERN = Pattern.compile("\\(MC: (\\d+(?:\\.\\d+)+)\\)");
+
+    // Fallback parser for MC versions BukkitVersion doesn't know about.
+    // 26+ = new year-based scheme, just treat them as latest.
+    private static BukkitVersion guessVersionFromServerString(String serverVersion) {
+        if (serverVersion == null) return null;
+
+        Matcher m = MC_TOKEN_PATTERN.matcher(serverVersion);
+        if (!m.find()) return null;
+
+        String mcVer = m.group(1);
+        int firstDot = mcVer.indexOf('.');
+        String majorStr = (firstDot >= 0) ? mcVer.substring(0, firstDot) : mcVer;
+        try {
+            int major = Integer.parseInt(majorStr);
+            // 1.x should've been handled by the library
+            if (major == 1) return null;
+            if (major >= 2) return BukkitVersion.getLatest();
+        } catch (NumberFormatException ignored) {
+        }
+        return null;
     }
 
     public boolean isCompatibleCb(String cbVersion) {
