@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class LegacyNBTWrapper implements CustomDataItemEditor {
@@ -17,8 +17,8 @@ public class LegacyNBTWrapper implements CustomDataItemEditor {
 	private ItemStack item;
 	private final NMSHandler nmsHandler;
 
-	private static HashMap<Class<?>, String> getTagElementMethodNames;
-	private static HashMap<Class<?>, String> setTagElementMethodNames;
+	private static ConcurrentHashMap<Class<?>, String> getTagElementMethodNames;
+	private static ConcurrentHashMap<Class<?>, String> setTagElementMethodNames;
 
 	// 1.8 - 1.20.4
 	private static String getTagMethodName;
@@ -104,8 +104,8 @@ public class LegacyNBTWrapper implements CustomDataItemEditor {
 	}
 	
 	private void resolveNbtTagCompoundReflectionNames(BukkitVersion nmsVersion) {
-		getTagElementMethodNames = new HashMap<>();
-		setTagElementMethodNames = new HashMap<>();
+		getTagElementMethodNames = new ConcurrentHashMap<>();
+		setTagElementMethodNames = new ConcurrentHashMap<>();
 		
 		if (nmsVersion.greaterOrEqThan(BukkitVersion.v1_18_R1)) {
 			getTagElementMethodNames.put(Integer.class, "h");
