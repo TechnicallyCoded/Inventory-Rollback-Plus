@@ -123,6 +123,9 @@ public class EventLogs implements Listener {
 		SaveInventory saveInventory = new SaveInventory(player, LogType.DEATH, event.getCause(), null);
 		SaveInventory.PlayerDataSnapshot snapshot = saveInventory.createSnapshot(player.getInventory(), player.getEnderChest());
 
+		// createSnapshot() returns null if the inventory is empty and saving empty inventories is disabled
+		if (snapshot == null) return;
+
 		this.inventoryCache.put(uuid, snapshot);
 	}
 
