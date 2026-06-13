@@ -1,6 +1,7 @@
 package com.nuclyon.technicallycoded.inventoryrollback.folia;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
@@ -14,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus.usingFolia;
 
@@ -68,22 +70,18 @@ public abstract class SchedulerUtils {
         JavaPlugin plugin = InventoryRollbackPlus.getInstance();
         if (usingFolia) {
             try {
-                if (loc != null) {
-                    Method getRegionScheduler = plugin.getServer().getClass().getMethod("getRegionScheduler");
-                    RegionScheduler regionScheduler = (RegionScheduler) getRegionScheduler.invoke(plugin.getServer());
-                    regionScheduler.runDelayed(
-                            plugin,
-                            loc,
-                            (ScheduledTask scheduledTask) -> task.run(),
-                            delay
-                    );
+                // Use the async scheduler not a region/global tick thread!
+                // the async scheduler is time based so convert ticks to milliseconds.
+                Method getAsyncScheduler = plugin.getServer().getClass().getMethod("getAsyncScheduler");
+                AsyncScheduler asyncScheduler = (AsyncScheduler) getAsyncScheduler.invoke(plugin.getServer());
+                if (delay <= 0) {
+                    asyncScheduler.runNow(plugin, (ScheduledTask scheduledTask) -> task.run());
                 } else {
-                    Method getGlobalScheduler = plugin.getServer().getClass().getMethod("getGlobalRegionScheduler");
-                    GlobalRegionScheduler globalScheduler = (GlobalRegionScheduler) getGlobalScheduler.invoke(plugin.getServer());
-                    globalScheduler.runDelayed(
+                    asyncScheduler.runDelayed(
                             plugin,
                             (ScheduledTask scheduledTask) -> task.run(),
-                            delay
+                            delay * 50L,
+                            TimeUnit.MILLISECONDS
                     );
                 }
                 return;
@@ -145,19 +143,20 @@ public abstract class SchedulerUtils {
         JavaPlugin plugin = InventoryRollbackPlus.getInstance();
         if (usingFolia) {
             try {
-                Method getGlobalScheduler = plugin.getServer().getClass().getMethod("getGlobalRegionScheduler");
-                GlobalRegionScheduler globalScheduler = (GlobalRegionScheduler) getGlobalScheduler.invoke(plugin.getServer());
-                class AsyncRepeatingTask {
-                    private ScheduledTask task;
-                    void start(long initialDelay) {
-                        task = globalScheduler.runDelayed(plugin, (ScheduledTask t) -> {
-                            runnable.run();
-                            start(period);
-                        }, initialDelay);
-                        runnable.setScheduledTask(task);
-                    }
-                }
-                new AsyncRepeatingTask().start(delay);
+                // True asyncronous repeating task via the async scheduler (time based)
+                // requires strictly positive initial delay/period, so convert ticks to ms and clamp to a minimum of one tick
+                Method getAsyncScheduler = plugin.getServer().getClass().getMethod("getAsyncScheduler");
+                AsyncScheduler asyncScheduler = (AsyncScheduler) getAsyncScheduler.invoke(plugin.getServer());
+                long initialDelayMs = Math.max(1L, delay) * 50L;
+                long periodMs = Math.max(1L, period) * 50L;
+                ScheduledTask task = asyncScheduler.runAtFixedRate(
+                        plugin,
+                        (ScheduledTask t) -> runnable.run(),
+                        initialDelayMs,
+                        periodMs,
+                        TimeUnit.MILLISECONDS
+                );
+                runnable.setScheduledTask(task);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -174,9 +173,13 @@ public abstract class SchedulerUtils {
         JavaPlugin plugin = InventoryRollbackPlus.getInstance();
         if (usingFolia) {
             try {
-                Method getGlobalScheduler = plugin.getServer().getClass().getMethod("getGlobalRegionScheduler");
-                GlobalRegionScheduler globalScheduler = (GlobalRegionScheduler) getGlobalScheduler.invoke(plugin.getServer());
-                globalScheduler.execute(plugin, task);
+                // Must use the async scheduler NOT the global region scheduler
+                // running here lets callers safely block (eg CompletableFuture.get()) without
+                // freezing the global region. Using the global scheduler caused a self deadlock
+                // whenever a task here blocked on a future completed by another such "async" task
+                Method getAsyncScheduler = plugin.getServer().getClass().getMethod("getAsyncScheduler");
+                AsyncScheduler asyncScheduler = (AsyncScheduler) getAsyncScheduler.invoke(plugin.getServer());
+                asyncScheduler.runNow(plugin, (ScheduledTask t) -> task.run());
                 return;
             } catch (Exception e) {
                 e.printStackTrace();
