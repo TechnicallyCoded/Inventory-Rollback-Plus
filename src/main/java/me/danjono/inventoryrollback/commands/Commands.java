@@ -1,5 +1,6 @@
 package me.danjono.inventoryrollback.commands;
 
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
@@ -114,14 +115,14 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
         MainMenu menu = new MainMenu(staff, 1);
 
         staff.openInventory(menu.getInventory());
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getMainMenu);
+        SchedulerUtils.runTaskAsynchronously(menu::getMainMenu);
     }
 
     private void openPlayerMenu(Player staff, OfflinePlayer offlinePlayer) {
         PlayerMenu menu = new PlayerMenu(staff, offlinePlayer);
 
         staff.openInventory(menu.getInventory());
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::getPlayerMenu);
+        SchedulerUtils.runTaskAsynchronously(menu::getPlayerMenu);
     }
 
     private void forceBackupCommand(CommandSender sender, String[] args) {
@@ -220,13 +221,13 @@ public class Commands extends ConfigData implements CommandExecutor, TabComplete
 
     private void convertMySQL(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender && sender.isOp()) {
-            Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), MySQL::convertYAMLToMySQL);
+            SchedulerUtils.runTaskAsynchronously(MySQL::convertYAMLToMySQL);
         }
     }
 
     private void convertYAML(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender && sender.isOp()) {
-            Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), YAML::convertOldBackupData);
+            SchedulerUtils.runTaskAsynchronously(YAML::convertOldBackupData);
         }
     }
 

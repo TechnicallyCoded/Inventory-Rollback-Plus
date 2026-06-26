@@ -9,6 +9,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.FoliaRunnable;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.ConfigData.SaveType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerData {
 
@@ -134,7 +135,7 @@ public class PlayerData {
         };
 
         InventoryRollbackPlus instance = InventoryRollbackPlus.getInstance();
-        if (saveAsync) instance.getServer().getScheduler().runTaskAsynchronously(instance, purgeTask);
+        if (saveAsync) SchedulerUtils.runTaskAsynchronously(purgeTask);
         else purgeTask.run();
 
         return future;
@@ -263,7 +264,7 @@ public class PlayerData {
     public CompletableFuture<Void> getAllBackupData() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         if (ConfigData.getSaveType() == SaveType.MYSQL) {
-            new BukkitRunnable() {
+            SchedulerUtils.runTaskAsynchronously(new FoliaRunnable() {
                 @Override
                 public void run() {
                     try {
@@ -273,7 +274,7 @@ public class PlayerData {
                     }
                     future.complete(null);
                 }
-            }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
+            });
         }
         return future;
     }
@@ -437,7 +438,7 @@ public class PlayerData {
             }
         };
 
-        if (saveAsync) Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(),saveDataTask);
+        if (saveAsync) SchedulerUtils.runTaskAsynchronously(saveDataTask);
         else saveDataTask.run();
     }
 
