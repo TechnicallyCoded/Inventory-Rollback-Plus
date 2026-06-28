@@ -132,6 +132,7 @@ public class MessageData {
     private static String deathLocationInvalidWorld;
 
     // Generic gui messages
+    private static String menuTimestamp;
     private static String mainMenuButton;
     private static String nextPageButton;
     private static String previousPageButton;
@@ -213,6 +214,7 @@ public class MessageData {
         setShulkerBoxEnderChestShulkerLore(convertColorCodes((String) getDefaultValue("shulkerbox.ender-chest-shulker.lore", "&7Contains the ender chest inventory.")));
 
         // Generic gui buttons
+        setMenuTimestamp(convertColorCodes((String) getDefaultValue("menu-buttons.timestamp", "&7Timestamp: &f%TIME%")));
         setMainMenuButton(convertColorCodes((String) getDefaultValue("menu-buttons.main-menu", "&fMain Menu")));
         setNextPageButton(convertColorCodes((String) getDefaultValue("menu-buttons.next-page", "&fNext Page")));
         setPreviousPageButton(convertColorCodes((String) getDefaultValue("menu-buttons.previous-page", "&fPrevious Page")));
@@ -454,6 +456,10 @@ public class MessageData {
         deathLocationInvalidWorld = message;
     }
 
+    public static void setMenuTimestamp(String message) {
+        menuTimestamp = message;
+    }
+
     public static void setMainMenuButton(String message) {
         mainMenuButton = message;
     }
@@ -691,6 +697,10 @@ public class MessageData {
 
     public static String getDeathLocationInvalidWorldError(String world) {
         return deathLocationInvalidWorld.replace("%WORLD%", world);
+    }
+
+    public static String getMenuTimestamp(String time) {
+        return menuTimestamp.replace("%TIME%", time);
     }
 
     public static String getMainMenuButton() {

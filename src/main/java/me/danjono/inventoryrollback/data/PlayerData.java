@@ -108,6 +108,24 @@ public class PlayerData {
         return timeStamps;
     }
 
+    public CompletableFuture<List<Long>> getAllTimestamps() {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Long> timeStamps = new ArrayList<>();
+
+            if (ConfigData.getSaveType() == SaveType.YAML) {
+                timeStamps = yaml.getAllTimestamps();
+            } else if (ConfigData.getSaveType() == SaveType.MYSQL) {
+                try {
+                    timeStamps = mysql.getAllTimestamps();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return timeStamps;
+        });
+    }
+
     public CompletableFuture<Void> purgeExcessSaves(boolean shouldSaveAsync) {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
