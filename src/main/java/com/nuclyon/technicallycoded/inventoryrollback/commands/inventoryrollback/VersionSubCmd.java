@@ -23,7 +23,7 @@ public class VersionSubCmd extends IRPCommand {
             .append(ChatColor.WHITE)
             .append("Plugin:").append("\n")
             .append(ChatColor.GRAY)
-            .append("  Running InventoryRollbackPlus");
+            .append("  Running InventoryRollbackPlusFolia");
         // Can see version?
         if (hasVersionPerm) strb.append(" v").append(InventoryRollback.getPluginVersion());
         strb.append("\n");
@@ -37,10 +37,10 @@ public class VersionSubCmd extends IRPCommand {
             .append("Authors:").append("\n")
             .append(ChatColor.GRAY)
             .append("  - Maintained/updated by: TechnicallyCoded").append("\n")
-            .append("  - Original author: danjono").append("\n")
+            .append("  - Original author: danjono").append("\n").append("  - Folia support: yLeoft")
             .append("\n")
             .append(ChatColor.WHITE).append("Update link:").append("\n")
-            .append(ChatColor.BLUE).append(ChatColor.ITALIC).append("  https://www.spigotmc.org/resources/inventoryrollback-plus.85811/");
+            .append(ChatColor.BLUE).append(ChatColor.ITALIC).append("  https://github.com/yL3oft/Inventory-Rollback-Plus-Folia/releases");
 
 
         // Send

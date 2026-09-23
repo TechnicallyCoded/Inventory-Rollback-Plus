@@ -1,6 +1,7 @@
 package me.danjono.inventoryrollback.inventory;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.folia.SchedulerUtils;
 import com.nuclyon.technicallycoded.inventoryrollback.util.UserLogRateLimiter;
 import com.nuclyon.technicallycoded.inventoryrollback.util.serialization.ItemStackSerialization;
 import com.tcoded.lightlibs.bukkitversion.BukkitVersion;
@@ -17,13 +18,13 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SaveInventory {
 
-    private static final HashMap<UUID, UserLogRateLimiter> rateLimiters = new HashMap<>();
+    private static final ConcurrentHashMap<UUID, UserLogRateLimiter> rateLimiters = new ConcurrentHashMap<>();
 
     private final InventoryRollbackPlus main;
 
@@ -98,7 +99,7 @@ public class SaveInventory {
             purgeTask.thenRun(() -> data.saveData(saveAsync));
         };
 
-        if (saveAsync) main.getServer().getScheduler().runTaskAsynchronously(main, saveTask);
+        if (saveAsync) SchedulerUtils.runTaskAsynchronously(saveTask);
         else saveTask.run();
 
     }
