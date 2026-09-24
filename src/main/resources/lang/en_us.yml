@@ -73,6 +73,7 @@ death-location:
   invalid-world: 'The world %WORLD% is not currently loaded on the server.'
 
 menu-buttons:
+  timestamp: '&7Timestamp: &f%TIME%'
   main-menu: '&fMain Menu'
   next-page: '&fNext Page'
   previous-page: '&fPrevious Page'

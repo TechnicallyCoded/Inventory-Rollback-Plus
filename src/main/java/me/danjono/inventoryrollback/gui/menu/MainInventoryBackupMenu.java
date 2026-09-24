@@ -14,6 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -41,7 +43,11 @@ public class MainInventoryBackupMenu {
 
 	private int mainInvLen;
 	
-	public MainInventoryBackupMenu(Player staff, PlayerData data, String location) {
+	private int backupPageIndex;
+	private List<Long> allBackups;
+	private int totalBackups;
+	
+	public MainInventoryBackupMenu(Player staff, PlayerData data, String location, List<Long> allBackups) {
 		this.main = InventoryRollbackPlus.getInstance();
 
 		this.staff = staff;
@@ -61,14 +67,32 @@ public class MainInventoryBackupMenu {
 
 		this.mainInvLen = mainInventory == null ? 0 : mainInventory.length;
 		
+		this.allBackups = allBackups;
+		this.backupPageIndex = allBackups != null ? allBackups.indexOf(timestamp) : 0;
+		this.totalBackups = allBackups != null ? allBackups.size() : data.getAmountOfBackups();
+		
 		createInventory();
 	}
 	
 	public void createInventory() {
 	    inventory = Bukkit.createInventory(staff, InventoryName.MAIN_BACKUP.getSize(), InventoryName.MAIN_BACKUP.getName());
-	    
-	    //Add back button
-        inventory.setItem(45, buttons.inventoryMenuBackButton(MessageData.getBackButton(), logType, timestamp));
+        
+        // Add previous backup button if not at first backup
+        if (backupPageIndex > 0) {
+        	Long previousTimestamp = allBackups.get(backupPageIndex - 1);
+        	List<String> lore = new ArrayList<>();
+        	lore.add("Go to backup " + (backupPageIndex) + " / " + totalBackups);
+        	lore.add("Right-click to return to backup list");
+        	inventory.setItem(45, buttons.inventorySnapshotPreviousButton(MessageData.getPreviousPageButton(), logType, previousTimestamp, lore));
+        }
+        
+        // Add next backup button if not at last backup
+        if (backupPageIndex < totalBackups - 1) {
+        	Long nextTimestamp = allBackups.get(backupPageIndex + 1);
+        	List<String> lore = new ArrayList<>();
+        	lore.add("Go to backup " + (backupPageIndex + 2) + " / " + totalBackups);
+        	inventory.setItem(46, buttons.inventorySnapshotNextButton(MessageData.getNextPageButton(), logType, nextTimestamp, lore));
+        }
 
 		// Add get shulker button
 		if (main.getVersion().greaterOrEqThan(MCVersion.v1_11.toBukkitVersion()))

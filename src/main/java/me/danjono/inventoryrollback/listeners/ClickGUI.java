@@ -222,8 +222,16 @@ public class ClickGUI implements Listener {
                             }
                         }
 
+                        // Get all timestamps for navigation
+                        List<Long> allBackupTimestamps = null;
+                        try {
+                            allBackupTimestamps = data.getAllTimestamps().get();
+                        } catch (ExecutionException | InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+
                         // Create inventory
-                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                        MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location, allBackupTimestamps);
 
                         // Display inventory to player
                         Future<InventoryView> inventoryViewFuture =
@@ -280,15 +288,65 @@ public class ClickGUI implements Listener {
             LogType logType = LogType.valueOf(nbt.getString("logType"));
             Long timestamp = nbt.getLong("timestamp");
 
-            //Click on page selector button to go back to rollback menu
+            // Click on page selector button - handle navigation or go back to rollback menu
             if (icon.getType().equals(Buttons.getPageSelectorIcon())) {
-                RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
+                int page = nbt.getInt("page");
 
-                staff.openInventory(menu.getInventory());
-                Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                if (e.isRightClick() && page == 1) {
+                    page = 0;
+                }
+
+                // page == 1 means previous backup, page == 2 means next backup
+                if (page == 1 || page == 2) {
+                    UUID uuid = offlinePlayer.getUniqueId();
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            PlayerData data = new PlayerData(uuid, logType, timestamp);
+
+                            if (ConfigData.getSaveType() == ConfigData.SaveType.MYSQL) {
+                                try {
+                                    data.getAllBackupData().get();
+                                } catch (ExecutionException | InterruptedException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+
+                            // Get all timestamps for navigation
+                            List<Long> allBackupTimestamps = null;
+                            try {
+                                allBackupTimestamps = data.getAllTimestamps().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+
+                            String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
+
+                            MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location, allBackupTimestamps);
+
+                            Future<InventoryView> inventoryViewFuture =
+                                    main.getServer().getScheduler().callSyncMethod(main,
+                                            () -> staff.openInventory(menu.getInventory()));
+                            try {
+                                inventoryViewFuture.get();
+                                // Start placing items in the inventory async
+                                menu.showBackupItems();
+                            } catch (NullPointerException | ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }.runTaskAsynchronously(main);
+                } else {
+                    // page == 0 or other - go back to rollback list menu
+                    RollbackListMenu menu = new RollbackListMenu(staff, offlinePlayer, logType, 1);
+
+                    staff.openInventory(menu.getInventory());
+                    Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), menu::showBackups);
+                }
             }
 
-            //Click on page selector button to go back to rollback menu
+            // Click on page selector button to go back to rollback menu
             else if (e.getRawSlot() == MainInventoryBackupMenu.GIVE_SHULKERS_BUTTON_SLOT) {
                 // Perm check
                 if (!staff.hasPermission("inventoryrollbackplus.restore")) {
@@ -656,8 +714,16 @@ public class ClickGUI implements Listener {
                             // Get location of where the backup was made from data
                             String location = data.getWorld() + "," + data.getX() + "," + data.getY() + "," + data.getZ();
 
+                            // Get all timestamps for navigation
+                            List<Long> allBackupTimestamps = null;
+                            try {
+                                allBackupTimestamps = data.getAllTimestamps().get();
+                            } catch (ExecutionException | InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+
                             // Create inventory
-                            MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location);
+                            MainInventoryBackupMenu menu = new MainInventoryBackupMenu(staff, data, location, allBackupTimestamps);
 
                             // Display inventory to player
                             Future<InventoryView> inventoryViewFuture = main.getServer().getScheduler().callSyncMethod(main,

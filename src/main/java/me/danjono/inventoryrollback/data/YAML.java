@@ -125,7 +125,7 @@ public class YAML {
         return filesArr.length;
     }
 
-    public List<Long> getSelectedPageTimestamps(int pageNumber) {
+    public List<Long> getAllTimestamps() {
         List<Long> allTimeStamps = new ArrayList<>();
 
         if (!playerBackupFolder.exists())
@@ -150,6 +150,12 @@ public class YAML {
 
         //Set timestamps in order
         Collections.sort(allTimeStamps, Collections.reverseOrder());
+
+        return allTimeStamps;
+    }
+
+    public List<Long> getSelectedPageTimestamps(int pageNumber) {
+        List<Long> allTimeStamps = getAllTimestamps();
 
         //Number of backups that will be on the page
         int backups = InventoryName.ROLLBACK_LIST.getSize() - 9;
